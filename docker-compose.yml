@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  homelink-db:
+    image: pgvector/pgvector:pg16
+    container_name: homelink-db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: homelink2
+    ports:
+      - "5435:5432"
+    volumes:
+      - homelink-db-data:/var/lib/postgresql/data
+
+volumes:
+  homelink-db-data:

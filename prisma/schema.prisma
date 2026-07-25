@@ -1,0 +1,442 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [vector]
+}
+
+
+
+enum Role {
+  BUYER
+  OWNER
+  PARTNER_AGENT
+  INTERNAL_AGENT
+  SURVEYOR
+  PHOTOGRAPHER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  name            String
+  role            Role     @default(BUYER)
+  passwordHash    String
+  isEmailVerified Boolean  @default(false)
+  isDeleted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  properties         Property[]
+  bookings           Booking[]
+  verificationAudits VerificationAudit[]
+  accounts           Account[]
+  auditLogs          AuditLog[]
+  savedProperties    SavedProperty[]
+  leads              Lead[]
+  articles           Article[]
+  savedSearches      SavedSearch[]
+  offersSent         Offer[]       @relation("OffersSent")
+  offersReceived     Offer[]       @relation("OffersReceived")
+  documents          Document[]
+  messagesSent       Message[]     @relation("MessagesSent")
+  messagesReceived   Message[]     @relation("MessagesReceived")
+  surveyTasks        SurveyTask[]  @relation("SurveyTasks")
+  commissions        Commission[]  @relation("AgentCommissions")
+  notifications      Notification[]
+  subscription       Subscription?
+  invoices           Invoice[]
+  mediaUploads       Media[]       @relation("MediaUploader")
+}
+
+model Property {
+  id              String   @id @default(uuid())
+  ownerId         String
+  title           String
+  description     String
+  price           Decimal
+  propertyType    String
+  bedrooms        Int?
+  bathrooms       Int?
+  surfaceArea     Float?
+  buildingArea    Float?
+  status          String
+  address         String
+  latitude        Float
+  longitude       Float
+  embedding       Unsupported("vector(1536)")?
+  isDeleted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  owner              User                @relation(fields: [ownerId], references: [id])
+  media              PropertyMedia[]
+  bookings           Booking[]
+  verificationAudits VerificationAudit[]
+  savedProperties    SavedProperty[]
+  viewLogs           PropertyViewLog[]
+  leads              Lead[]
+  offers             Offer[]
+  documents          Document[]
+  surveyTasks        SurveyTask[]
+}
+
+model PropertyMedia {
+  id         String    @id @default(uuid())
+  propertyId String
+  mediaType  String
+  s3Url      String
+  isPrimary  Boolean   @default(false)
+  isDeleted  Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id])
+}
+
+model Booking {
+  id         String        @id @default(uuid())
+  propertyId String
+  buyerId    String
+  surveyDate DateTime
+  timeSlot   String
+  status     String        @default("PENDING")
+  isDeleted  Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+
+  property    Property     @relation(fields: [propertyId], references: [id])
+  buyer       User         @relation(fields: [buyerId], references: [id])
+  commissions Commission[]
+}
+
+model VerificationAudit {
+  id         String             @id @default(uuid())
+  propertyId String
+  surveyorId String
+  action     String
+  notes      String?
+  createdAt  DateTime           @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id])
+  surveyor User     @relation(fields: [surveyorId], references: [id])
+}
+
+model Account {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  refreshToken      String?
+  accessToken       String?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  actorId    String
+  action     String
+  entityId   String
+  oldValues  String?
+  newValues  String?
+  ipAddress  String?
+  createdAt  DateTime    @default(now())
+
+  actor User @relation(fields: [actorId], references: [id])
+}
+
+model SavedProperty {
+  id         String   @id @default(uuid())
+  buyerId    String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  buyer    User     @relation(fields: [buyerId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@unique([buyerId, propertyId])
+}
+
+model PropertyViewLog {
+  id         String   @id @default(uuid())
+  propertyId String
+  viewerId   String?  // Nullable for anonymous guests
+  viewedAt   DateTime @default(now())
+  source     String   @default("DIRECT_LINK") // e.g. SEARCH_RESULT, DIRECT_LINK, RECOMMENDATION
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  // Optional: viewer User? @relation(fields: [viewerId], references: [id])
+}
+
+model Lead {
+  id              String   @id @default(uuid())
+  propertyId      String
+  buyerId         String
+  interactionType String   // e.g. BOOKMARK, CHAT_MESSAGE, DETAIL_VIEW
+  followUpStatus  String   @default("PENDING") // PENDING, CONTACTED, CLOSED
+  createdAt       DateTime @default(now())
+
+  property        Property @relation(fields: [propertyId], references: [id])
+  buyer           User     @relation(fields: [buyerId], references: [id])
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  articles  Article[]
+}
+
+model Article {
+  id         String   @id @default(uuid())
+  title      String
+  slug       String   @unique
+  content    String
+  status     String   @default("DRAFT") // DRAFT, PUBLISHED
+  categoryId String?
+  authorId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category Category? @relation(fields: [categoryId], references: [id])
+  author   User      @relation(fields: [authorId], references: [id])
+}
+
+model VerificationToken {
+  id         String   @id @default(uuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(uuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+
+  @@unique([identifier, token])
+}
+
+model SavedSearch {
+  id        String   @id @default(uuid())
+  userId    String
+  query     String
+  name      String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Offer {
+  id         String   @id @default(uuid())
+  propertyId String
+  buyerId    String
+  ownerId    String
+  amount     Decimal
+  status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COUNTERED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  buyer      User     @relation("OffersSent", fields: [buyerId], references: [id])
+  owner      User     @relation("OffersReceived", fields: [ownerId], references: [id])
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  propertyId String?
+  userId     String
+  title      String
+  fileUrl    String
+  documentType String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property   Property? @relation(fields: [propertyId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("MessagesSent", fields: [senderId], references: [id])
+  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+}
+
+model SurveyTask {
+  id         String   @id @default(uuid())
+  propertyId String
+  surveyorId String
+  status     String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  scheduledAt DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  surveyor   User     @relation("SurveyTasks", fields: [surveyorId], references: [id])
+  report     SurveyReport?
+}
+
+model SurveyReport {
+  id           String   @id @default(uuid())
+  surveyTaskId String   @unique
+  notes        String?
+  documentsUrl String[]
+  isApproved   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  surveyTask   SurveyTask @relation(fields: [surveyTaskId], references: [id])
+}
+
+// ─── MVP2 Models ─────────────────────────────────────────────────────────────
+
+model Commission {
+  id         String   @id @default(uuid())
+  bookingId  String
+  agentId    String
+  percentage Decimal
+  amount     Decimal
+  status     String   @default("PENDING") // PENDING | PAID
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  agent      User     @relation("AgentCommissions", fields: [agentId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  body      String
+  type      String   // e.g. SYSTEM, BOOKING, LEAD, BILLING
+  isRead    Boolean  @default(false)
+  relatedId String?  // Optional ID of related entity
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model NotificationTemplate {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  subject   String
+  bodyHtml  String
+  channel   String   // EMAIL | SMS | IN_APP
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  plan      String
+  status    String    @default("ACTIVE") // ACTIVE | INACTIVE | CANCELLED
+  startDate DateTime
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  invoices  Invoice[]
+}
+
+model Invoice {
+  id             String    @id @default(uuid())
+  userId         String
+  subscriptionId String?
+  amount         Decimal
+  status         String    @default("PENDING") // PENDING | PAID | CANCELLED
+  paidAt         DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User          @relation(fields: [userId], references: [id])
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  authorName  String
+  authorRole  String
+  content     String
+  rating      Int
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Banner {
+  id        String   @id @default(uuid())
+  title     String
+  imageUrl  String
+  linkUrl   String?
+  isActive  Boolean  @default(true)
+  position  String   // e.g. HOME_TOP, HOME_BOTTOM, SIDEBAR
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  url          String
+  fileType     String
+  altText      String?
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  uploadedBy   User     @relation("MediaUploader", fields: [uploadedById], references: [id])
+}
+
+model StaticPage {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  contentHtml     String
+  metaDescription String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  discount    Decimal  // percentage or fixed amount
+  type        String   @default("PERCENTAGE") // PERCENTAGE | FIXED
+  maxUses     Int?
+  usedCount   Int      @default(0)
+  validFrom   DateTime?
+  validUntil  DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
