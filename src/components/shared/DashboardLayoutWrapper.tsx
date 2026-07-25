@@ -41,18 +41,14 @@ export function DashboardLayoutWrapper({
     isOpen ? "translate-x-0" : "-translate-x-full"
   );
 
-  const Overlay = () => (
-    isOpen ? (
-      <div 
-        className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
-        onClick={() => setIsOpen(false)}
-      />
-    ) : null
-  );
-
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden w-full">
-      <Overlay />
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
       
       <aside className={sidebarClasses}>
         <div className={cn(
