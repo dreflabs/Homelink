@@ -1,15 +1,32 @@
 version: '3.8'
 services:
-  homelink-db:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: homelink-app
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@db:5432/homelink?schema=public}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-supersecret}
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
     image: pgvector/pgvector:pg16
     container_name: homelink-db
     restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: rootpassword
-      POSTGRES_DB: homelink2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: homelink
     ports:
-      - "5435:5432"
+      - "5432:5432"
     volumes:
       - homelink-db-data:/var/lib/postgresql/data
 
