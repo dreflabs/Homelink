@@ -17,7 +17,7 @@ import {
 import Link from "next/link"
 
 const registerSchema = z.object({
-  role: z.enum(["BUYER", "OWNER"], { required_error: "Peran harus dipilih" }),
+  role: z.enum(["BUYER", "OWNER"], { message: "Peran harus dipilih" }),
   fullName: z.string().min(2, "Nama lengkap harus minimal 2 karakter"),
   email: z.string().email("Format email tidak valid"),
   phoneNumber: z.string().min(10, "Nomor telepon minimal 10 karakter"),
