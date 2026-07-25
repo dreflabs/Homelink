@@ -9,8 +9,6 @@ datasource db {
   extensions = [vector]
 }
 
-
-
 enum Role {
   BUYER
   OWNER
@@ -33,97 +31,117 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  properties         Property[]
-  bookings           Booking[]
-  verificationAudits VerificationAudit[]
-  accounts           Account[]
-  auditLogs          AuditLog[]
-  savedProperties    SavedProperty[]
-  leads              Lead[]
-  articles           Article[]
-  savedSearches      SavedSearch[]
-  offersSent         Offer[]       @relation("OffersSent")
-  offersReceived     Offer[]       @relation("OffersReceived")
-  documents          Document[]
-  messagesSent       Message[]     @relation("MessagesSent")
-  messagesReceived   Message[]     @relation("MessagesReceived")
-  surveyTasks        SurveyTask[]  @relation("SurveyTasks")
-  commissions        Commission[]  @relation("AgentCommissions")
-  notifications      Notification[]
-  subscription       Subscription?
-  invoices           Invoice[]
-  mediaUploads       Media[]       @relation("MediaUploader")
+  properties             Property[]
+  bookings               Booking[]
+  verificationAudits     VerificationAudit[]
+  accounts               Account[]
+  auditLogs              AuditLog[]
+  savedProperties        SavedProperty[]
+  leads                  Lead[]
+  articles               Article[]
+  savedSearches          SavedSearch[]
+  offersSent             Offer[]                @relation("OffersSent")
+  offersReceived         Offer[]                @relation("OffersReceived")
+  documents              Document[]
+  messagesSent           Message[]              @relation("MessagesSent")
+  messagesReceived       Message[]              @relation("MessagesReceived")
+  surveyTasks            SurveyTask[]           @relation("SurveyTasks")
+  commissions            Commission[]           @relation("AgentCommissions")
+  notifications          Notification[]
+  subscription           Subscription?
+  invoices               Invoice[]
+  mediaUploads           Media[]                @relation("MediaUploader")
+  couponUsages           CouponUsage[]
+  tickets                Ticket[]
+  ownerVerification      OwnerVerification?
+  internalTasks          Task[]                 @relation("InternalTasks")
+  photographerTasks      PhotographerTask[]     @relation("PhotographerTasks")
+  photographerDeliveries PhotographerDelivery[] @relation("PhotographerDeliveries")
 }
 
 model Property {
-  id              String   @id @default(uuid())
-  ownerId         String
-  title           String
-  description     String
-  price           Decimal
-  propertyType    String
-  bedrooms        Int?
-  bathrooms       Int?
-  surfaceArea     Float?
-  buildingArea    Float?
-  status          String
-  address         String
-  latitude        Float
-  longitude       Float
-  embedding       Unsupported("vector(1536)")?
-  isDeleted       Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id           String                       @id @default(uuid())
+  ownerId      String
+  slug         String                       @unique
+  title        String
+  description  String
+  price        Decimal
+  propertyType String
+  bedrooms     Int?
+  bathrooms    Int?
+  surfaceArea  Float?
+  buildingArea Float?
+  status       String
+  address      String
+  latitude     Float
+  longitude    Float
+  embedding    Unsupported("vector(1536)")?
+  isDeleted    Boolean                      @default(false)
+  createdAt    DateTime                     @default(now())
+  updatedAt    DateTime                     @updatedAt
 
-  owner              User                @relation(fields: [ownerId], references: [id])
-  media              PropertyMedia[]
-  bookings           Booking[]
-  verificationAudits VerificationAudit[]
-  savedProperties    SavedProperty[]
-  viewLogs           PropertyViewLog[]
-  leads              Lead[]
-  offers             Offer[]
-  documents          Document[]
-  surveyTasks        SurveyTask[]
+  owner                  User                   @relation(fields: [ownerId], references: [id])
+  media                  PropertyMedia[]
+  bookings               Booking[]
+  verificationAudits     VerificationAudit[]
+  savedProperties        SavedProperty[]
+  viewLogs               PropertyViewLog[]
+  leads                  Lead[]
+  offers                 Offer[]
+  documents              Document[]
+  surveyTasks            SurveyTask[]
+  photographerTasks      PhotographerTask[]
+  photographerDeliveries PhotographerDelivery[]
+
+  @@index([ownerId])
+  @@index([status, price])
 }
 
 model PropertyMedia {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   propertyId String
   mediaType  String
   s3Url      String
-  isPrimary  Boolean   @default(false)
-  isDeleted  Boolean   @default(false)
-  createdAt  DateTime  @default(now())
+  isPrimary  Boolean  @default(false)
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   property Property @relation(fields: [propertyId], references: [id])
+
+  @@index([propertyId])
 }
 
 model Booking {
-  id         String        @id @default(uuid())
+  id         String   @id @default(uuid())
   propertyId String
   buyerId    String
   surveyDate DateTime
   timeSlot   String
-  status     String        @default("PENDING")
-  isDeleted  Boolean       @default(false)
-  createdAt  DateTime      @default(now())
+  status     String   @default("PENDING")
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   property    Property     @relation(fields: [propertyId], references: [id])
   buyer       User         @relation(fields: [buyerId], references: [id])
   commissions Commission[]
+
+  @@index([propertyId])
+  @@index([buyerId])
 }
 
 model VerificationAudit {
-  id         String             @id @default(uuid())
+  id         String   @id @default(uuid())
   propertyId String
   surveyorId String
   action     String
   notes      String?
-  createdAt  DateTime           @default(now())
+  createdAt  DateTime @default(now())
 
   property Property @relation(fields: [propertyId], references: [id])
   surveyor User     @relation(fields: [surveyorId], references: [id])
+
+  @@index([propertyId])
+  @@index([surveyorId])
 }
 
 model Account {
@@ -138,19 +156,24 @@ model Account {
   user User @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model AuditLog {
-  id         String      @id @default(uuid())
-  actorId    String
-  action     String
-  entityId   String
-  oldValues  String?
-  newValues  String?
-  ipAddress  String?
-  createdAt  DateTime    @default(now())
+  id        String   @id @default(uuid())
+  actorId   String
+  action    String
+  entityId  String
+  oldValues String?
+  newValues String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
 
   actor User @relation(fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([entityId])
 }
 
 model SavedProperty {
@@ -163,29 +186,37 @@ model SavedProperty {
   property Property @relation(fields: [propertyId], references: [id])
 
   @@unique([buyerId, propertyId])
+  @@index([buyerId])
+  @@index([propertyId])
 }
 
 model PropertyViewLog {
   id         String   @id @default(uuid())
   propertyId String
-  viewerId   String?  // Nullable for anonymous guests
+  viewerId   String? // Nullable for anonymous guests
   viewedAt   DateTime @default(now())
   source     String   @default("DIRECT_LINK") // e.g. SEARCH_RESULT, DIRECT_LINK, RECOMMENDATION
 
-  property   Property @relation(fields: [propertyId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
   // Optional: viewer User? @relation(fields: [viewerId], references: [id])
+
+  @@index([propertyId])
+  @@index([viewerId])
 }
 
 model Lead {
   id              String   @id @default(uuid())
   propertyId      String
   buyerId         String
-  interactionType String   // e.g. BOOKMARK, CHAT_MESSAGE, DETAIL_VIEW
+  interactionType String // e.g. BOOKMARK, CHAT_MESSAGE, DETAIL_VIEW
   followUpStatus  String   @default("PENDING") // PENDING, CONTACTED, CLOSED
   createdAt       DateTime @default(now())
 
-  property        Property @relation(fields: [propertyId], references: [id])
-  buyer           User     @relation(fields: [buyerId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+  buyer    User     @relation(fields: [buyerId], references: [id])
+
+  @@index([propertyId])
+  @@index([buyerId])
 }
 
 model Category {
@@ -209,6 +240,9 @@ model Article {
 
   category Category? @relation(fields: [categoryId], references: [id])
   author   User      @relation(fields: [authorId], references: [id])
+
+  @@index([categoryId])
+  @@index([authorId])
 }
 
 model VerificationToken {
@@ -219,6 +253,7 @@ model VerificationToken {
   createdAt  DateTime @default(now())
 
   @@unique([identifier, token])
+  @@index([identifier])
 }
 
 model PasswordResetToken {
@@ -229,6 +264,7 @@ model PasswordResetToken {
   createdAt  DateTime @default(now())
 
   @@unique([identifier, token])
+  @@index([identifier])
 }
 
 model SavedSearch {
@@ -238,7 +274,9 @@ model SavedSearch {
   name      String
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model Offer {
@@ -251,23 +289,30 @@ model Offer {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  property   Property @relation(fields: [propertyId], references: [id])
-  buyer      User     @relation("OffersSent", fields: [buyerId], references: [id])
-  owner      User     @relation("OffersReceived", fields: [ownerId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+  buyer    User     @relation("OffersSent", fields: [buyerId], references: [id])
+  owner    User     @relation("OffersReceived", fields: [ownerId], references: [id])
+
+  @@index([propertyId])
+  @@index([buyerId])
+  @@index([ownerId])
 }
 
 model Document {
-  id         String   @id @default(uuid())
-  propertyId String?
-  userId     String
-  title      String
-  fileUrl    String
+  id           String   @id @default(uuid())
+  propertyId   String?
+  userId       String
+  title        String
+  fileUrl      String
   documentType String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  property   Property? @relation(fields: [propertyId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  property Property? @relation(fields: [propertyId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+
+  @@index([propertyId])
+  @@index([userId])
 }
 
 model Message {
@@ -278,22 +323,28 @@ model Message {
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  sender     User     @relation("MessagesSent", fields: [senderId], references: [id])
-  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id])
+  sender   User @relation("MessagesSent", fields: [senderId], references: [id])
+  receiver User @relation("MessagesReceived", fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
 }
 
 model SurveyTask {
-  id         String   @id @default(uuid())
-  propertyId String
-  surveyorId String
-  status     String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  id          String    @id @default(uuid())
+  propertyId  String
+  surveyorId  String
+  status      String    @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
   scheduledAt DateTime?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  property   Property @relation(fields: [propertyId], references: [id])
-  surveyor   User     @relation("SurveyTasks", fields: [surveyorId], references: [id])
-  report     SurveyReport?
+  property Property      @relation(fields: [propertyId], references: [id])
+  surveyor User          @relation("SurveyTasks", fields: [surveyorId], references: [id])
+  report   SurveyReport?
+
+  @@index([propertyId])
+  @@index([surveyorId])
 }
 
 model SurveyReport {
@@ -305,7 +356,9 @@ model SurveyReport {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  surveyTask   SurveyTask @relation(fields: [surveyTaskId], references: [id])
+  surveyTask SurveyTask @relation(fields: [surveyTaskId], references: [id])
+
+  @@index([surveyTaskId])
 }
 
 // ─── MVP2 Models ─────────────────────────────────────────────────────────────
@@ -314,14 +367,20 @@ model Commission {
   id         String   @id @default(uuid())
   bookingId  String
   agentId    String
+  invoiceId  String?
   percentage Decimal
   amount     Decimal
   status     String   @default("PENDING") // PENDING | PAID
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  booking    Booking  @relation(fields: [bookingId], references: [id])
-  agent      User     @relation("AgentCommissions", fields: [agentId], references: [id])
+  booking Booking  @relation(fields: [bookingId], references: [id])
+  agent   User     @relation("AgentCommissions", fields: [agentId], references: [id])
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+
+  @@index([bookingId])
+  @@index([agentId])
+  @@index([invoiceId])
 }
 
 model Notification {
@@ -329,12 +388,14 @@ model Notification {
   userId    String
   title     String
   body      String
-  type      String   // e.g. SYSTEM, BOOKING, LEAD, BILLING
+  type      String // e.g. SYSTEM, BOOKING, LEAD, BILLING
   isRead    Boolean  @default(false)
-  relatedId String?  // Optional ID of related entity
+  relatedId String? // Optional ID of related entity
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model NotificationTemplate {
@@ -342,7 +403,7 @@ model NotificationTemplate {
   name      String   @unique
   subject   String
   bodyHtml  String
-  channel   String   // EMAIL | SMS | IN_APP
+  channel   String // EMAIL | SMS | IN_APP
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -357,22 +418,29 @@ model Subscription {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  user      User      @relation(fields: [userId], references: [id])
-  invoices  Invoice[]
+  user     User      @relation(fields: [userId], references: [id])
+  invoices Invoice[]
+
+  @@index([userId])
 }
 
 model Invoice {
-  id             String    @id @default(uuid())
+  id             String        @id @default(uuid())
   userId         String
   subscriptionId String?
+  couponUsages   CouponUsage[]
+  commissions    Commission[]
   amount         Decimal
-  status         String    @default("PENDING") // PENDING | PAID | CANCELLED
+  status         String        @default("PENDING") // PENDING | PAID | CANCELLED
   paidAt         DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
-  user           User          @relation(fields: [userId], references: [id])
-  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([userId])
+  @@index([subscriptionId])
 }
 
 model Testimonial {
@@ -391,7 +459,7 @@ model Banner {
   imageUrl  String
   linkUrl   String?
   isActive  Boolean  @default(true)
-  position  String   // e.g. HOME_TOP, HOME_BOTTOM, SIDEBAR
+  position  String // e.g. HOME_TOP, HOME_BOTTOM, SIDEBAR
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -404,7 +472,9 @@ model Media {
   uploadedById String
   createdAt    DateTime @default(now())
 
-  uploadedBy   User     @relation("MediaUploader", fields: [uploadedById], references: [id])
+  uploadedBy User @relation("MediaUploader", fields: [uploadedById], references: [id])
+
+  @@index([uploadedById])
 }
 
 model StaticPage {
@@ -428,15 +498,182 @@ model FAQ {
 }
 
 model Coupon {
+  id         String    @id @default(uuid())
+  code       String    @unique
+  discount   Decimal // percentage or fixed amount
+  type       String    @default("PERCENTAGE") // PERCENTAGE | FIXED
+  maxUses    Int?
+  usedCount  Int       @default(0)
+  validFrom  DateTime?
+  validUntil DateTime?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  usages CouponUsage[]
+}
+
+model CouponUsage {
+  id              String   @id @default(uuid())
+  couponId        String
+  userId          String
+  invoiceId       String?
+  discountApplied Decimal?
+  usedAt          DateTime @default(now())
+
+  coupon  Coupon   @relation(fields: [couponId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+
+  @@unique([couponId, userId])
+  @@index([couponId])
+  @@index([userId])
+  @@index([invoiceId])
+}
+
+// ─── Phase 4 Models ──────────────────────────────────────────────────────────
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TicketCategory {
+  PAYMENT
+  TECHNICAL
+  ACCOUNT
+  OTHER
+}
+
+model Ticket {
+  id          String         @id @default(uuid())
+  userId      String
+  subject     String
+  description String?
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(MEDIUM)
+  category    TicketCategory @default(OTHER)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum IdType {
+  KTP
+  PASPOR
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  APPROVED
+  REJECTED
+}
+
+model OwnerVerification {
+  id          String             @id @default(uuid())
+  userId      String             @unique
+  idType      IdType
+  idNumber    String             @unique
+  documentUrl String?
+  status      VerificationStatus @default(UNVERIFIED)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  OVERDUE
+}
+
+enum TaskType {
+  VERIFICATION
+  FINANCE
+  MODERATION
+  HR
+  SUPPORT
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  assigneeId  String
+  dueDate     DateTime?
+  status      TaskStatus @default(TODO)
+  type        TaskType   @default(SUPPORT)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  assignee User @relation("InternalTasks", fields: [assigneeId], references: [id])
+}
+
+enum PhotographerTaskStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model PhotographerTask {
+  id             String                 @id @default(uuid())
+  propertyId     String
+  photographerId String
+  status         PhotographerTaskStatus @default(PENDING)
+  scheduledAt    DateTime?
+  notes          String?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  property     Property @relation(fields: [propertyId], references: [id])
+  photographer User     @relation("PhotographerTasks", fields: [photographerId], references: [id])
+}
+
+enum DeliveryStatus {
+  PENDING
+  READY
+  DELIVERED
+}
+
+model PhotographerDelivery {
+  id             String         @id @default(uuid())
+  propertyId     String
+  photographerId String
+  status         DeliveryStatus @default(PENDING)
+  mediaCount     Int            @default(0)
+  shootDate      DateTime
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  property     Property @relation(fields: [propertyId], references: [id])
+  photographer User     @relation("PhotographerDeliveries", fields: [photographerId], references: [id])
+}
+
+model SystemConfig {
   id          String   @id @default(uuid())
-  code        String   @unique
-  discount    Decimal  // percentage or fixed amount
-  type        String   @default("PERCENTAGE") // PERCENTAGE | FIXED
-  maxUses     Int?
-  usedCount   Int      @default(0)
-  validFrom   DateTime?
-  validUntil  DateTime?
-  isActive    Boolean  @default(true)
+  key         String   @unique
+  value       String
+  description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model WebhookEvent {
+  id          String    @id @default(uuid())
+  eventType   String
+  payload     Json
+  status      String    @default("PENDING") // PENDING | PROCESSED | FAILED
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
 }

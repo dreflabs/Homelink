@@ -7,8 +7,8 @@ test.describe('Owner Insights E2E Tests', () => {
     // Check if the response is successful and not a server error
     expect(response?.status()).toBeLessThan(500);
 
-    // Check if the main element is rendered
-    await expect(page.getByText('Analytics', { exact: false }).first()).toBeVisible();
+    // Check if the main element is rendered (Indonesian heading)
+    await expect(page.getByText('Analitik Properti', { exact: false }).first()).toBeVisible();
   });
 
   test('should render the leads page correctly', async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe('Owner Insights E2E Tests', () => {
     // Check if the response is successful and not a server error
     expect(response?.status()).toBeLessThan(500);
 
-    // Check if the main element is rendered
-    await expect(page.getByText('Leads', { exact: false }).first()).toBeVisible();
+    // Check if the main element is rendered (Indonesian heading)
+    await expect(page.getByText('Manajemen Prospek', { exact: false }).first()).toBeVisible();
   });
 });

@@ -14,63 +14,45 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// Mock Data
-const mockFavorites = [
-  {
-    id: "1",
-    title: "The Minimalist Haven",
-    price: "Rp 4.500.000.000",
-    location: "Jakarta Selatan, DKI Jakarta",
-    beds: 3,
-    baths: 2,
-    area: 120,
-    imageUrl:
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "2",
-    title: "Urban Oasis Loft",
-    price: "Rp 2.850.000.000",
-    location: "Jakarta Pusat, DKI Jakarta",
-    beds: 2,
-    baths: 2,
-    area: 85,
-    imageUrl:
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "3",
-    title: "Suburban Family Home",
-    price: "Rp 3.200.000.000",
-    location: "Tangerang Selatan, Banten",
-    beds: 4,
-    baths: 3,
-    area: 200,
-    imageUrl:
-      "https://images.unsplash.com/photo-1600607687920-4e2a09be1587?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: "4",
-    title: "Modern Glass Villa",
-    price: "Rp 12.000.000.000",
-    location: "Canggu, Bali",
-    beds: 4,
-    baths: 4,
-    area: 350,
-    imageUrl:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
-  },
-];
+import { getBuyerFavorites } from "@/actions/dashboard";
+import { useEffect } from "react";
 
 export default function FavoritesPage() {
-  // Simulate fetching data, can set to [] to test EmptyState
-  const [favorites, setFavorites] = useState(mockFavorites);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    getBuyerFavorites()
+      .then((data) => {
+        if (isMounted) {
+          setFavorites(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch favorites:", err);
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const toggleFavorite = (id: string) => {
-    // In a real app, this would call an API and possibly remove it from the list
-    // if the user un-favorites it, or just toggle the visual state.
-    // Here we'll simulate removing it from favorites on click for demonstration.
     setFavorites((prev) => prev.filter((item) => item.id !== id));
+    // TODO: Connect toggleFavorite to backend action (e.g., delete SavedProperty)
+  };
+
+  const formatRupiah = (price: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(price);
   };
 
   if (favorites.length === 0) {
@@ -111,7 +93,7 @@ export default function FavoritesPage() {
             {/* Image Container */}
             <div className="relative aspect-[4/3] w-full overflow-hidden">
               <Image
-                src={property.imageUrl}
+                src={property.imageUrl || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800"}
                 alt={property.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -137,7 +119,7 @@ export default function FavoritesPage() {
             <CardContent className="flex flex-col flex-grow p-5">
               <div className="flex justify-between items-start mb-2">
                 <div className="font-semibold text-lg text-foreground line-clamp-1">
-                  {property.price}
+                  {formatRupiah(property.price)}
                 </div>
               </div>
               
@@ -147,21 +129,21 @@ export default function FavoritesPage() {
               
               <CardDescription className="flex items-center text-sm text-muted-foreground mb-4">
                 <MapPin className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
-                <span className="line-clamp-1">{property.location}</span>
+                <span className="line-clamp-1">{property.address}</span>
               </CardDescription>
 
               <div className="mt-auto grid grid-cols-3 gap-2 pt-4 border-t border-border/50">
                 <div className="flex items-center justify-center text-sm text-muted-foreground gap-1.5">
                   <Bed className="w-4 h-4" />
-                  <span>{property.beds}</span>
+                  <span>{property.bedrooms}</span>
                 </div>
                 <div className="flex items-center justify-center text-sm text-muted-foreground gap-1.5 border-x border-border/50">
                   <Bath className="w-4 h-4" />
-                  <span>{property.baths}</span>
+                  <span>{property.bathrooms}</span>
                 </div>
                 <div className="flex items-center justify-center text-sm text-muted-foreground gap-1.5">
                   <Square className="w-4 h-4" />
-                  <span>{property.area}m²</span>
+                  <span>{property.surfaceArea}m²</span>
                 </div>
               </div>
             </CardContent>

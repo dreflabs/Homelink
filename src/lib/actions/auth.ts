@@ -3,9 +3,9 @@
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
+
 
 const ROLE_REDIRECT: Record<string, string> = {
   ADMIN:        "/super-admin",

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import {
   Table,
   TableBody,
@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-const prisma = new PrismaClient();
+
+
+export const dynamic = 'force-dynamic';
 
 export default async function PaymentHistoryPage() {
   // Fetching all invoices for demonstration. In a real app, filter by the logged-in user.

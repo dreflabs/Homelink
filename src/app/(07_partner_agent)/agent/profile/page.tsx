@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { User, Mail, Shield, Save, Camera } from "lucide-react";
 import { toast } from "sonner";
+import { FadeIn } from "@/components/shared/FadeIn";
 
 export default function AgentProfilePage() {
   const [loading, setLoading] = useState(false);
@@ -31,14 +32,17 @@ export default function AgentProfilePage() {
   return (
     <div className="space-y-8 max-w-3xl">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Profil Saya</h1>
-        <p className="text-slate-500 mt-1 text-sm">
-          Kelola informasi akun dan data profil agen Anda.
-        </p>
-      </div>
+      <FadeIn delay={0.1}>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Profil Saya</h1>
+          <p className="text-slate-500 mt-1 text-sm">
+            Kelola informasi akun dan data profil agen Anda.
+          </p>
+        </div>
+      </FadeIn>
 
       {/* Avatar Section */}
+      <FadeIn delay={0.2}>
       <Card className="rounded-2xl shadow-sm border-slate-100 p-6">
         <div className="flex items-center gap-5">
           <div className="relative group cursor-pointer">
@@ -70,8 +74,10 @@ export default function AgentProfilePage() {
           </div>
         </div>
       </Card>
+      </FadeIn>
 
       {/* Edit Form */}
+      <FadeIn delay={0.3}>
       <Card className="rounded-2xl shadow-sm border-slate-100 p-6">
         <h3 className="font-semibold text-slate-900 mb-5">Informasi Akun</h3>
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -138,8 +144,10 @@ export default function AgentProfilePage() {
           </div>
         </form>
       </Card>
+      </FadeIn>
 
       {/* Danger Zone */}
+      <FadeIn delay={0.4}>
       <Card className="rounded-2xl shadow-sm border-red-100 bg-red-50/30 p-6">
         <h3 className="font-semibold text-red-700 mb-2">Zona Bahaya</h3>
         <p className="text-sm text-slate-500 mb-4">
@@ -152,6 +160,7 @@ export default function AgentProfilePage() {
           Nonaktifkan Akun
         </Button>
       </Card>
+      </FadeIn>
     </div>
   );
 }

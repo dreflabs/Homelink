@@ -1,5 +1,5 @@
 import React from "react"
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/lib/prisma";
 import {
   Table,
   TableBody,
@@ -20,8 +20,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { MoreHorizontal, Plus, Search, Filter } from "lucide-react"
-
-const prisma = new PrismaClient()
 
 export default async function UserManagementPage() {
   const users = await prisma.user.findMany({

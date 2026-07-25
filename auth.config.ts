@@ -5,6 +5,20 @@ export const authConfig = {
     signIn: '/login',
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role;
+        token.id = (user as any).id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).role = token.role;
+        (session.user as any).id = token.id;
+      }
+      return session;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const role = (auth?.user as any)?.role;
@@ -19,10 +33,12 @@ export const authConfig = {
         pathname.startsWith('/billing') ||
         pathname.startsWith('/notifications') ||
         pathname.startsWith('/ai') ||
-        pathname.startsWith('/surveyor');
+        pathname.startsWith('/surveyor') ||
+        pathname.startsWith('/agent') ||
+        pathname.startsWith('/photographer');
                                
       if (isProtectedRoute) {
-        if (!isLoggedIn) return false;
+        if (!isLoggedIn) return false; // Triggers redirect to /login?callbackUrl=...
         
         if (pathname.startsWith('/admin') && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
           return Response.redirect(new URL('/unauthorized', nextUrl));
@@ -39,11 +55,17 @@ export const authConfig = {
         if (pathname.startsWith('/internal') && role !== 'INTERNAL_AGENT' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
           return Response.redirect(new URL('/unauthorized', nextUrl));
         }
+        if (pathname.startsWith('/agent') && role !== 'PARTNER_AGENT' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
+          return Response.redirect(new URL('/unauthorized', nextUrl));
+        }
+        if (pathname.startsWith('/photographer') && role !== 'PHOTOGRAPHER' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
+          return Response.redirect(new URL('/unauthorized', nextUrl));
+        }
 
         return true;
       } else if (isLoggedIn) {
         if (pathname === '/login' || pathname === '/register') {
-          return Response.redirect(new URL('/', nextUrl));
+          return Response.redirect(new URL('/dashboard', nextUrl));
         }
       }
       return true;

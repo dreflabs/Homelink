@@ -1,4 +1,4 @@
-name: Deploy to Hostinger VPS
+name: Deploy
 
 on:
   push:
@@ -6,26 +6,44 @@ on:
       - main
 
 jobs:
-  deploy:
+  ci-cd:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/homelink
-            git pull origin main
-            
-            # Jika ada perubahan env atau docker compose, bisa dimuat ulang
-            docker compose build
-            docker compose up -d
-            
-            # Bersihkan cache docker agar disk server tidak penuh
-            docker system prune -f
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Typecheck
+        run: npx tsc --noEmit
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy via Rsync and PM2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.SERVER_HOST }}
+          USER: ${{ secrets.SERVER_USER }}
+          TARGET_DIR: ${{ secrets.SERVER_TARGET_DIR }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+          
+          rsync -avz --exclude='.git' --exclude='node_modules' ./ $USER@$HOST:$TARGET_DIR
+          
+          ssh $USER@$HOST "cd $TARGET_DIR && npm ci --production && pm2 reload homelink"

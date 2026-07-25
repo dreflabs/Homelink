@@ -1,11 +1,9 @@
 "use server";
 
+import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { PrismaClient } from "@prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-const prisma = new PrismaClient();
 
 const s3 = new S3Client({
   region: process.env.R2_REGION || "auto",
@@ -50,7 +48,7 @@ export async function submitSurveyReport(taskId: string, notes: string, document
 
   await prisma.property.update({
     where: { id: task.propertyId },
-    data: { status: "SURVEYED" }
+    data: { status: "PENDING_REVIEW" }
   });
 
   return report;
@@ -89,4 +87,22 @@ export async function getPresignedUrl(fileName: string, contentType: string) {
   const fileUrl = publicEndpoint ? `${publicEndpoint}/${fileName}` : `${process.env.R2_ENDPOINT}/${bucket}/${fileName}`;
 
   return { uploadUrl, fileUrl };
+}
+
+export async function getSurveyTasks() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  
+  const surveyorId = (session.user as any).id;
+  const userRole = (session.user as any).role;
+  
+  const tasks = await prisma.surveyTask.findMany({
+    where: userRole === "SURVEYOR" ? { surveyorId } : {},
+    include: {
+      property: true,
+    },
+    orderBy: { scheduledAt: 'asc' }
+  });
+  
+  return tasks;
 }

@@ -4,41 +4,26 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, CircleDollarSign, ArrowUpRight, ArrowDownRight, TrendingUp } from 'lucide-react';
+import { getCommissions } from '@/actions/internal';
+import { format } from 'date-fns';
 
-const mockCommissions = [
-  {
-    id: "TRX-8271",
-    date: "Oct 24, 2023",
-    agent: "Diana M.",
-    property: "Modern Loft in Sudirman",
-    type: "Rent",
-    amount: "Rp 150.000.000",
-    commission: "Rp 7.500.000",
-    status: "paid"
-  },
-  {
-    id: "TRX-8270",
-    date: "Oct 23, 2023",
-    agent: "Reza F.",
-    property: "Villa Kemang",
-    type: "Sale",
-    amount: "Rp 4.500.000.000",
-    commission: "Rp 90.000.000",
-    status: "pending"
-  },
-  {
-    id: "TRX-8269",
-    date: "Oct 22, 2023",
-    agent: "Diana M.",
-    property: "Studio Apartment Kuningan",
-    type: "Rent",
-    amount: "Rp 85.000.000",
-    commission: "Rp 4.250.000",
-    status: "paid"
-  }
-];
+function formatRupiah(amount: number | string) {
+  return `Rp ${Number(amount).toLocaleString("id-ID")}`;
+}
 
-export default function CommissionPage() {
+export default async function CommissionPage() {
+  const commissions = await getCommissions();
+
+  const totalCommissions = commissions
+    .filter(c => c.status === 'PAID')
+    .reduce((sum, c) => sum + Number(c.amount), 0);
+
+  const pendingCommissions = commissions
+    .filter(c => c.status === 'PENDING')
+    .reduce((sum, c) => sum + Number(c.amount), 0);
+
+  const pendingCount = commissions.filter(c => c.status === 'PENDING').length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -57,7 +42,7 @@ export default function CommissionPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Commissions (YTD)</p>
-                <h3 className="text-2xl font-bold mt-1">Rp 1.25B</h3>
+                <h3 className="text-2xl font-bold mt-1">{formatRupiah(totalCommissions)}</h3>
               </div>
               <div className="p-2 bg-green-50 rounded-lg">
                 <TrendingUp className="w-5 h-5 text-green-600" />
@@ -76,14 +61,14 @@ export default function CommissionPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">Pending Payouts</p>
-                <h3 className="text-2xl font-bold mt-1">Rp 245M</h3>
+                <h3 className="text-2xl font-bold mt-1">{formatRupiah(pendingCommissions)}</h3>
               </div>
               <div className="p-2 bg-yellow-50 rounded-lg">
                 <CircleDollarSign className="w-5 h-5 text-yellow-600" />
               </div>
             </div>
             <div className="mt-4 flex items-center text-sm">
-              <span className="text-gray-500">14 pending transactions</span>
+              <span className="text-gray-500">{pendingCount} pending transactions</span>
             </div>
           </CardContent>
         </Card>
@@ -136,32 +121,35 @@ export default function CommissionPage() {
                   <th className="px-4 py-3 font-medium">Date</th>
                   <th className="px-4 py-3 font-medium">Agent</th>
                   <th className="px-4 py-3 font-medium">Property</th>
-                  <th className="px-4 py-3 font-medium">Type</th>
-                  <th className="px-4 py-3 font-medium">Amount</th>
                   <th className="px-4 py-3 font-medium">Commission</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {mockCommissions.map((trx) => (
+                {commissions.map((trx) => (
                   <tr key={trx.id} className="hover:bg-gray-50/50">
-                    <td className="px-4 py-3 font-medium text-blue-600">{trx.id}</td>
-                    <td className="px-4 py-3 text-gray-500">{trx.date}</td>
-                    <td className="px-4 py-3 font-medium">{trx.agent}</td>
-                    <td className="px-4 py-3 text-gray-600 truncate max-w-[200px]">{trx.property}</td>
-                    <td className="px-4 py-3 text-gray-500">{trx.type}</td>
-                    <td className="px-4 py-3 font-medium">{trx.amount}</td>
-                    <td className="px-4 py-3 font-medium text-green-600">{trx.commission}</td>
+                    <td className="px-4 py-3 font-medium text-blue-600">{trx.id.substring(0, 8)}</td>
+                    <td className="px-4 py-3 text-gray-500">{format(new Date(trx.createdAt), 'MMM dd, yyyy')}</td>
+                    <td className="px-4 py-3 font-medium">{trx.agent?.name}</td>
+                    <td className="px-4 py-3 text-gray-600 truncate max-w-[200px]">{trx.booking?.property?.title || 'Unknown Property'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{formatRupiah(Number(trx.amount))}</td>
                     <td className="px-4 py-3">
                       <Badge variant="outline" className={
-                        trx.status === 'paid' ? 'border-green-200 text-green-700 bg-green-50' :
+                        trx.status === 'PAID' ? 'border-green-200 text-green-700 bg-green-50' :
                         'border-yellow-200 text-yellow-700 bg-yellow-50'
                       }>
-                        {trx.status.toUpperCase()}
+                        {trx.status}
                       </Badge>
                     </td>
                   </tr>
                 ))}
+                {commissions.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                      No transactions found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

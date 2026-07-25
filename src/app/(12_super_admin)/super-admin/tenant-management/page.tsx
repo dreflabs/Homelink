@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Building2, CheckCircle2, ChevronDown, MoreHorizontal, MoreVertical, Plus, Search, Shield, Users } from "lucide-react";
-import { toggleTenantStatus } from "@/actions/superAdmin";
+import { toggleTenantStatus } from "@/actions/super-admin";
 import { useState, useTransition } from "react";
 import {
   DropdownMenu,

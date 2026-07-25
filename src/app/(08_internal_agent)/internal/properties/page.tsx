@@ -5,9 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Check, X, FileText } from "lucide-react"
 
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import prisma from "@/lib/prisma";
 
 export default async function PropertyReviewPage() {
   const properties = await prisma.property.findMany({

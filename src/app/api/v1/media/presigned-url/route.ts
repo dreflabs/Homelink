@@ -1,32 +1,37 @@
-import { NextRequest, NextResponse } from "next/server";
-import { randomUUID } from "crypto";
+import { NextResponse } from "next/server";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    // We could extract file information from request if needed, like filename or contentType
-    // const body = await request.json();
-    
-    const dummyKey = `uploads/${randomUUID()}/dummy-image.jpg`;
-    
-    // Generate mock S3 presigned URL response
-    return NextResponse.json(
-      {
-        status: "success",
-        data: {
-          uploadUrl: `https://dummy-bucket.s3.ap-southeast-1.amazonaws.com/${dummyKey}?AWSAccessKeyId=MOCK_KEY&Signature=MOCK_SIGNATURE`,
-          key: dummyKey,
-        },
-        message: "Presigned URL berhasil di-generate.",
+    // Basic auth check placeholder (assuming some session/auth wrapper in production)
+    const body = await req.json();
+    const { filename, fileType } = body;
+
+    if (!filename || !fileType) {
+      return NextResponse.json({ error: "Filename and fileType are required" }, { status: 400 });
+    }
+
+    const s3Client = new S3Client({
+      region: "auto",
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
       },
-      { status: 201 } // or 200 OK
-    );
+    });
+
+    const command = new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: filename,
+      ContentType: fileType,
+    });
+
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+
+    return NextResponse.json({ url });
   } catch (error) {
-    return NextResponse.json(
-      {
-        status: "error",
-        message: "Internal server error",
-      },
-      { status: 500 }
-    );
+    console.error("Presigned URL generation error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

@@ -7,51 +7,45 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Calendar, MapPin, Clock, User, CheckCircle2 } from "lucide-react";
 
-// Mock data
-const mockBookings = [
-  {
-    id: "BKG-001",
-    propertyName: "Villa Modern Minimalis - Kemang",
-    location: "Kemang, Jakarta Selatan",
-    date: "2026-08-15",
-    time: "10:00 - 11:00 WIB",
-    status: "PENDING",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    agentName: "Budi Santoso",
-  },
-  {
-    id: "BKG-002",
-    propertyName: "Apartemen Sudirman Suites",
-    location: "Sudirman, Jakarta Pusat",
-    date: "2026-07-20",
-    time: "14:00 - 15:30 WIB",
-    status: "COMPLETED",
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    agentName: "Siti Rahma",
-  },
-  {
-    id: "BKG-003",
-    propertyName: "Rumah Nyaman Keluarga - BSD",
-    location: "BSD City, Tangerang Selatan",
-    date: "2026-07-10",
-    time: "09:00 - 10:00 WIB",
-    status: "CANCELLED",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    agentName: "Andi Wijaya",
-  }
-];
+import { getBuyerBookings } from "@/actions/dashboard";
+import { useEffect } from "react";
 
 export default function BookingsPage() {
-  const [bookings, setBookings] = useState(mockBookings);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+
+    getBuyerBookings()
+      .then((data) => {
+        if (isMounted) {
+          setBookings(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch bookings:", err);
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleCancel = (id: string) => {
     setBookings(bookings.map(b => b.id === id ? { ...b, status: "CANCELLED" } : b));
+    // TODO: Connect handleCancel to backend action
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "PENDING":
         return <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-200">Menunggu</Badge>;
+      case "CONFIRMED":
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 border-blue-200">Dikonfirmasi</Badge>;
       case "COMPLETED":
         return <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-emerald-200">Selesai</Badge>;
       case "CANCELLED":
@@ -64,14 +58,14 @@ export default function BookingsPage() {
   const pendingBookings = bookings.filter(b => b.status === "PENDING");
   const historyBookings = bookings.filter(b => b.status !== "PENDING");
 
-  const renderBookingCard = (booking: typeof mockBookings[0]) => (
+  const renderBookingCard = (booking: any) => (
     <Card key={booking.id} className="overflow-hidden mb-4 border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 rounded-2xl">
       <div className="flex flex-col md:flex-row">
         {/* Image Section */}
         <div className="w-full md:w-64 h-48 md:h-auto relative shrink-0">
           <img 
-            src={booking.image} 
-            alt={booking.propertyName} 
+            src={booking.imageUrl || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
+            alt={booking.title} 
             className="w-full h-full object-cover"
           />
           <div className="absolute top-3 left-3">
@@ -88,7 +82,7 @@ export default function BookingsPage() {
                   ID: {booking.id}
                 </p>
                 <h3 className="text-xl font-bold text-gray-900 leading-tight mb-1">
-                  {booking.propertyName}
+                  {booking.title}
                 </h3>
               </div>
             </div>
@@ -96,19 +90,19 @@ export default function BookingsPage() {
             <div className="space-y-2 mt-4">
               <div className="flex items-center text-gray-600 text-sm">
                 <MapPin className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
-                <span className="truncate">{booking.location}</span>
+                <span className="truncate">{booking.address}</span>
               </div>
               <div className="flex items-center text-gray-600 text-sm">
                 <Calendar className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
-                <span>{new Date(booking.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                <span>{new Date(booking.surveyDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
               <div className="flex items-center text-gray-600 text-sm">
                 <Clock className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
-                <span>{booking.time}</span>
+                <span>{booking.timeSlot}</span>
               </div>
               <div className="flex items-center text-gray-600 text-sm">
                 <User className="w-4 h-4 mr-2 text-gray-400 shrink-0" />
-                <span>Agen: <span className="font-medium text-gray-900">{booking.agentName}</span></span>
+                <span>Agen: <span className="font-medium text-gray-900">{booking.agentName || "Tim HomeLink"}</span></span>
               </div>
             </div>
           </div>

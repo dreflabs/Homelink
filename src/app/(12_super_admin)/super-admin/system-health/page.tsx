@@ -3,23 +3,32 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Server, Database, CloudRain, Cpu, RefreshCw, AlertTriangle, CheckCircle2 } from "lucide-react";
-import { restartService } from "@/actions/superAdmin";
+import { restartService } from "@/actions/super-admin";
 import { useState, useTransition } from "react";
 
 export default function SystemHealthPage() {
   const [isPending, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
+  const [services, setServices] = useState([
+    { name: "Main API Server", status: "Healthy", uptime: "99.99%", color: "bg-green-500" },
+    { name: "Authentication Service", status: "Healthy", uptime: "100%", color: "bg-green-500" },
+    { name: "Payment Worker", status: "Warning", uptime: "98.5%", color: "bg-yellow-500", note: "High latency detected" },
+    { name: "Email Queue", status: "Healthy", uptime: "99.9%", color: "bg-green-500" },
+    { name: "Search Indexer", status: "Healthy", uptime: "99.2%", color: "bg-green-500" },
+  ]);
+
+  const hasIssues = services.some(s => s.status !== "Healthy");
 
   const handleRefresh = () => {
     startTransition(() => {
-      // Simulate refreshing metrics
       setTimeout(() => setLastUpdated(new Date().toLocaleTimeString()), 500);
     });
   };
 
-  const handleRestart = (service: string) => {
+  const handleRestart = (serviceName: string) => {
     startTransition(() => {
-      restartService(service);
+      setServices(prev => prev.map(s => s.name === serviceName ? { ...s, status: "Healthy", color: "bg-green-500", note: undefined } : s));
+      restartService(serviceName);
     });
   };
 
@@ -40,13 +49,23 @@ export default function SystemHealthPage() {
       </div>
 
       {/* Global Status Banner */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
-        <CheckCircle2 className="h-6 w-6 text-green-600" />
-        <div>
-          <h3 className="text-sm font-semibold text-green-900">All Systems Operational</h3>
-          <p className="text-xs text-green-700">Service is running smoothly across all regions.</p>
+      {!hasIssues ? (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
+          <CheckCircle2 className="h-6 w-6 text-green-600" />
+          <div>
+            <h3 className="text-sm font-semibold text-green-900">All Systems Operational</h3>
+            <p className="text-xs text-green-700">Service is running smoothly across all regions.</p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-center gap-3">
+          <AlertTriangle className="h-6 w-6 text-amber-600" />
+          <div>
+            <h3 className="text-sm font-semibold text-amber-900">Partial System Degradation</h3>
+            <p className="text-xs text-amber-700">One or more background services require attention.</p>
+          </div>
+        </div>
+      )}
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -116,13 +135,7 @@ export default function SystemHealthPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {[
-              { name: "Main API Server", status: "Healthy", uptime: "99.99%", color: "bg-green-500" },
-              { name: "Authentication Service", status: "Healthy", uptime: "100%", color: "bg-green-500" },
-              { name: "Payment Worker", status: "Warning", uptime: "98.5%", color: "bg-yellow-500", note: "High latency detected" },
-              { name: "Email Queue", status: "Healthy", uptime: "99.9%", color: "bg-green-500" },
-              { name: "Search Indexer", status: "Down", uptime: "85.2%", color: "bg-red-500", note: "Connection refused" },
-            ].map((service) => (
+            {services.map((service) => (
               <div key={service.name} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg bg-gray-50/50">
                 <div className="flex items-center gap-4">
                   <div className={`h-3 w-3 rounded-full ${service.color} animate-pulse shadow-[0_0_8px_rgba(0,0,0,0.1)]`} />

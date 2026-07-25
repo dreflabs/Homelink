@@ -120,6 +120,7 @@ async function main() {
   await prisma.property.create({
     data: {
       ownerId: owner1.id,
+      slug: 'beautiful-apartment-in-city-center',
       title: 'Beautiful Apartment in City Center',
       description: 'A newly renovated apartment located in the heart of the city.',
       price: 1500000000,
@@ -134,6 +135,7 @@ async function main() {
   await prisma.property.create({
     data: {
       ownerId: owner1.id,
+      slug: 'spacious-villa-with-pool',
       title: 'Spacious Villa with Pool',
       description: 'Perfect for a weekend getaway or retirement.',
       price: 3500000000,

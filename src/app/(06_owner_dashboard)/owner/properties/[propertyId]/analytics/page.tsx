@@ -1,14 +1,25 @@
-"use client";
-
-import React, { use } from "react";
+import React from "react";
+import { getPropertyAnalytics } from "@/actions/dashboard";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Eye, CalendarCheck, TrendingUp, ArrowUpRight } from "lucide-react";
 
-export default function PropertyAnalyticsPage(props: {
+export default async function PropertyAnalyticsPage(props: {
   params: Promise<{ propertyId: string }> | { propertyId: string };
 }) {
-  const params = props.params as any;
-  const propertyId = params?.propertyId || "ID_PROPERTY";
+  const params = await props.params;
+  const propertyId = params.propertyId;
+
+  let analytics;
+  try {
+    analytics = await getPropertyAnalytics(propertyId);
+  } catch (err: any) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 md:p-8 text-center space-y-4">
+        <h1 className="text-2xl font-bold text-slate-900">Analitik Properti</h1>
+        <p className="text-red-500">{err.message || "Gagal memuat analitik properti."}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -16,7 +27,7 @@ export default function PropertyAnalyticsPage(props: {
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Analitik Properti</h1>
         <p className="text-slate-500 text-sm md:text-base">
-          Pantau performa, jumlah tayangan, dan pemesanan (bookings) untuk properti Anda.
+          Pantau performa, jumlah tayangan, dan pemesanan (bookings) untuk <span className="font-semibold text-slate-800">{analytics.propertyTitle}</span>.
         </p>
       </div>
 
@@ -30,10 +41,10 @@ export default function PropertyAnalyticsPage(props: {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-800">1,248</div>
+            <div className="text-3xl font-bold text-slate-800">{analytics.totalViews.toLocaleString()}</div>
             <div className="flex items-center text-xs text-emerald-600 mt-1">
               <ArrowUpRight className="w-3 h-3 mr-1" />
-              <span>+12.5% dibanding bulan lalu</span>
+              <span>Real-time traffic view logs</span>
             </div>
           </CardContent>
         </Card>
@@ -47,10 +58,10 @@ export default function PropertyAnalyticsPage(props: {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-800">18</div>
+            <div className="text-3xl font-bold text-slate-800">{analytics.totalBookings.toLocaleString()}</div>
             <div className="flex items-center text-xs text-emerald-600 mt-1">
               <ArrowUpRight className="w-3 h-3 mr-1" />
-              <span>+5.2% dibanding bulan lalu</span>
+              <span>Permintaan jadwal survei</span>
             </div>
           </CardContent>
         </Card>
@@ -64,35 +75,28 @@ export default function PropertyAnalyticsPage(props: {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-slate-800">1.44%</div>
+            <div className="text-3xl font-bold text-slate-800">{analytics.conversionRate}</div>
             <div className="flex items-center text-xs text-emerald-600 mt-1">
               <ArrowUpRight className="w-3 h-3 mr-1" />
-              <span>+0.2% dibanding bulan lalu</span>
+              <span>Rasio booking per tayangan</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Area Chart Section */}
+      {/* Traffic Harian */}
       <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-xl rounded-2xl">
         <CardHeader className="border-b border-slate-100 bg-slate-50/30 pb-5">
-          <CardTitle className="text-lg font-semibold text-slate-800">Traffic Harian</CardTitle>
+          <CardTitle className="text-lg font-semibold text-slate-800">Traffic & Engagement</CardTitle>
           <CardDescription className="text-slate-500">
-            Area chart sederhana menampilkan tren pengunjung harian selama 30 hari terakhir.
+            Statistik statistik interaksi langsung yang dicatat dari basis data.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="h-[300px] w-full rounded-xl bg-gradient-to-tr from-slate-50 to-slate-100/50 flex flex-col items-center justify-center text-slate-400 border border-slate-200/50 shadow-inner relative overflow-hidden group">
-            {/* Mock Area Chart Aesthetics */}
-            <div className="absolute inset-0 opacity-20">
-              <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                <path d="M0,100 L0,50 Q10,40 20,60 T40,50 T60,70 T80,30 T100,20 L100,100 Z" fill="currentColor" className="text-blue-500" />
-              </svg>
-            </div>
-            
+          <div className="h-[240px] w-full rounded-xl bg-gradient-to-tr from-slate-50 to-slate-100/50 flex flex-col items-center justify-center text-slate-400 border border-slate-200/50 shadow-inner relative overflow-hidden group">
             <TrendingUp className="w-8 h-8 mb-3 text-slate-300 group-hover:text-blue-400 transition-colors duration-500" />
             <span className="font-medium text-sm text-slate-500 z-10 bg-white/80 px-4 py-1.5 rounded-full backdrop-blur-md shadow-sm">
-              Area Chart Placeholder (Traffic Harian)
+              Aktif • {analytics.totalViews} tayangan terverifikasi
             </span>
           </div>
         </CardContent>

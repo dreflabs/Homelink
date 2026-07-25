@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from "@/lib/prisma";
 import { z } from 'zod';
+import { auth } from "@/lib/auth";
 
 const propertySchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters'),
@@ -13,14 +14,13 @@ const propertySchema = z.object({
   ownerId: z.string().uuid('Invalid owner ID')
 });
 
-const prisma = new PrismaClient();
+
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const skip = (page - 1) * limit;
+    const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 50);
+    const cursor = searchParams.get('cursor');
 
     const ownerId = searchParams.get('ownerId');
     const status = searchParams.get('status');
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
     };
 
     if (q) {
-      where.title = { contains: q };
+      where.title = { contains: q, mode: 'insensitive' };
     }
     if (minPrice || maxPrice) {
       where.price = {};
@@ -59,35 +59,35 @@ export async function GET(request: Request) {
       if (maxLng) where.longitude.lte = parseFloat(maxLng);
     }
 
-    const [properties, total] = await Promise.all([
-      prisma.property.findMany({
-        skip,
-        take: limit,
-        where,
-        include: {
-          owner: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            }
-          },
-          media: true,
-        }
-      }),
-      prisma.property.count({
-        where
-      })
-    ]);
+    const properties = await prisma.property.findMany({
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          }
+        },
+        media: true,
+      }
+    });
+
+    let nextCursor = null;
+    if (properties.length > limit) {
+      const nextItem = properties.pop();
+      nextCursor = nextItem?.id;
+    }
 
     return NextResponse.json({
       status: 'success',
       data: properties,
       meta: {
-        total,
-        page,
+        nextCursor,
         limit,
-        totalPages: Math.ceil(total / limit)
       }
     });
   } catch (error) {
@@ -101,6 +101,11 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const session = await auth();
+    if (!session || !session.user) {
+      return NextResponse.json({ status: 'fail', message: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = propertySchema.safeParse(body);
 
@@ -118,13 +123,14 @@ export async function POST(request: Request) {
     const property = await prisma.property.create({
       data: {
         title: validatedData.data.title,
+        slug: validatedData.data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7),
         description: validatedData.data.description,
         price: validatedData.data.price,
         propertyType: validatedData.data.propertyType,
         address: validatedData.data.address,
         latitude: validatedData.data.latitude,
         longitude: validatedData.data.longitude,
-        ownerId: validatedData.data.ownerId,
+        ownerId: session.user.id,
         status: 'PENDING'
       }
     });

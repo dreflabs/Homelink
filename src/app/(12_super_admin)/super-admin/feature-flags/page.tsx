@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { ToggleLeft, Plus, Zap } from "lucide-react";
-import { toggleFeatureFlag } from "@/actions/superAdmin";
+import { toggleFeatureFlag } from "@/actions/super-admin";
 import { useState, useTransition } from "react";
 
 const initialFlags = [

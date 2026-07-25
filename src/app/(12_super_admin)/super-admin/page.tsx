@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/lib/prisma";
 import { Users, Home } from "lucide-react"
 
 import {
@@ -9,8 +9,6 @@ import {
   CardTitle,
   CardAction,
 } from "@/components/ui/card"
-
-const prisma = new PrismaClient()
 
 export default async function SuperAdminDashboardPage() {
   const [userCount, propertyCount] = await Promise.all([

@@ -1,112 +1,104 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, User, Mail, Calendar, Shield } from "lucide-react";
 import { toast } from "sonner";
+import { getOwnerVerifications, updateOwnerVerificationStatus } from "@/actions/internal";
+import { format } from "date-fns";
+import { FadeIn } from "@/components/shared/FadeIn";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface OwnerRecord {
-  id: string;
-  name: string;
-  email: string;
-  registeredAt: string;
-  propertiesCount: number;
-  idType: string;
-  idNumber: string;
-  status: "UNVERIFIED" | "APPROVED";
-}
-
-const mockOwners: OwnerRecord[] = [
-  {
-    id: "u1",
-    name: "Hendra Wijaya",
-    email: "hendra.wijaya@email.com",
-    registeredAt: "15 Jun 2026",
-    propertiesCount: 2,
-    idType: "KTP",
-    idNumber: "3171 xxxx xxxx 0012",
-    status: "UNVERIFIED",
-  },
-  {
-    id: "u2",
-    name: "Sari Endah",
-    email: "sari.endah@email.com",
-    registeredAt: "20 Jun 2026",
-    propertiesCount: 1,
-    idType: "KTP",
-    idNumber: "3174 xxxx xxxx 0089",
-    status: "UNVERIFIED",
-  },
-  {
-    id: "u3",
-    name: "Rizal Ahmad",
-    email: "rizal.ahmad@email.com",
-    registeredAt: "10 Jul 2026",
-    propertiesCount: 3,
-    idType: "Paspor",
-    idNumber: "A9876543",
-    status: "UNVERIFIED",
-  },
-  {
-    id: "u4",
-    name: "Dewi Kusuma",
-    email: "dewi.kusuma@email.com",
-    registeredAt: "22 Jul 2026",
-    propertiesCount: 1,
-    idType: "KTP",
-    idNumber: "3175 xxxx xxxx 0201",
-    status: "UNVERIFIED",
-  },
-];
+type OwnerRecord = any; // type it loosely for now
 
 export default function OwnerVerificationPage() {
-  const [owners, setOwners] = useState(mockOwners);
+  const [owners, setOwners] = useState<OwnerRecord[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await getOwnerVerifications();
+        setOwners(data);
+      } catch (error) {
+        toast.error("Failed to load verifications");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
   async function handleApprove(id: string) {
     setLoadingId(id);
-    // Mock approve – in production would call a server action
-    await new Promise((r) => setTimeout(r, 800));
-    setOwners((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, status: "APPROVED" as const } : o))
-    );
-    toast.success("Identitas Owner berhasil diverifikasi!");
-    setLoadingId(null);
+    try {
+      await updateOwnerVerificationStatus(id, "APPROVED");
+      setOwners((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, status: "APPROVED" } : o))
+      );
+      toast.success("Identitas Owner berhasil diverifikasi!");
+    } catch (error) {
+      toast.error("Gagal memverifikasi identitas");
+    } finally {
+      setLoadingId(null);
+    }
   }
 
   const unverified = owners.filter((o) => o.status === "UNVERIFIED");
   const approved = owners.filter((o) => o.status === "APPROVED");
 
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-40 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Verifikasi Identitas Owner
-        </h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          Antrean verifikasi identitas pengguna dengan peran Owner yang belum terverifikasi.
-        </p>
-      </div>
+      <FadeIn delay={0.1}>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            Verifikasi Identitas Owner
+          </h1>
+          <p className="text-gray-500 mt-1 text-sm">
+            Antrean verifikasi identitas pengguna dengan peran Owner yang belum terverifikasi.
+          </p>
+        </div>
+      </FadeIn>
 
       {/* Stats */}
-      <div className="flex flex-wrap gap-3">
+      <FadeIn delay={0.2} className="flex flex-wrap gap-3">
         <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
           {unverified.length} Menunggu Verifikasi
         </span>
         <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
           {approved.length} Terverifikasi
         </span>
-      </div>
+      </FadeIn>
 
       {/* Owner Cards */}
+      <FadeIn delay={0.3}>
       {owners.length === 0 ? (
-        <Card className="rounded-xl shadow-sm border-gray-200/60 p-12 text-center">
-          <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
-          <p className="text-gray-600 font-medium">Tidak ada Owner yang perlu diverifikasi.</p>
-        </Card>
+        <EmptyState
+          icon={CheckCircle}
+          title="Semua Tuntas!"
+          description="Tidak ada Owner yang perlu diverifikasi saat ini."
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {owners.map((owner) => (
@@ -118,15 +110,15 @@ export default function OwnerVerificationPage() {
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-lg shrink-0">
-                  {owner.name.charAt(0)}
+                  {owner.user?.name?.charAt(0) || '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="font-semibold text-gray-900">{owner.name}</h3>
+                      <h3 className="font-semibold text-gray-900">{owner.user?.name || 'Unknown User'}</h3>
                       <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
                         <Mail className="w-3 h-3" />
-                        {owner.email}
+                        {owner.user?.email || 'N/A'}
                       </div>
                     </div>
                     <Badge
@@ -152,11 +144,11 @@ export default function OwnerVerificationPage() {
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <User className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-                      {owner.propertiesCount} properti terdaftar
+                      ID: {owner.id.substring(0, 8)}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <Calendar className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-                      Daftar: {owner.registeredAt}
+                      Daftar: {format(new Date(owner.createdAt), 'dd MMM yyyy')}
                     </div>
                   </div>
 
@@ -186,6 +178,7 @@ export default function OwnerVerificationPage() {
           ))}
         </div>
       )}
+      </FadeIn>
     </div>
   );
 }

@@ -1,15 +1,15 @@
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Home, BadgeCheck, Bed, Bath, Maximize } from 'lucide-react';
-import { PrismaClient } from '@prisma/client';
+import prisma from "@/lib/prisma";
 import { notFound } from 'next/navigation';
 import { GalleryLightbox } from './components/GalleryLightbox';
 import { FloorPlanViewer } from './components/FloorPlanViewer';
 import { InteractiveStickyBookingPanel } from './components/InteractiveStickyBookingPanel';
 
 export default async function PropertyDetailPage({ params }: { params: { slug: string } }) {
-  const prisma = new PrismaClient();
+  
   const property = await prisma.property.findUnique({
-    where: { id: params.slug },
+    where: { slug: params.slug },
     include: { media: true, owner: true }
   });
 
@@ -19,7 +19,7 @@ export default async function PropertyDetailPage({ params }: { params: { slug: s
 
   // Cari URL denah dari media jika ada, biasanya ada tag khusus atau dari nama file
   // Mock sementara kita pakai gambar pertama sebagai floor plan jika tidak ada yang spesifik
-  const floorPlanUrl = property.media.find(m => m.url?.includes('floorplan'))?.s3Url || property.media[0]?.s3Url;
+  const floorPlanUrl = property.media.find(m => m.s3Url?.includes('floorplan'))?.s3Url || property.media[0]?.s3Url;
 
   return (
     <div className="min-h-screen bg-white">

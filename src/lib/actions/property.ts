@@ -1,28 +1,26 @@
 "use server";
 
-import { auth } from '../auth';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { auth } from '@/lib/auth';
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-
-const prisma = new PrismaClient();
 
 export async function createProperty(formData: FormData) {
   const session = await auth();
   
   if (!session || !session.user) {
-    throw new Error("Unauthorized: Anda harus login.");
+    return { success: false, error: "Unauthorized: Anda harus login." };
   }
 
   const role = (session.user as any).role;
-  if (role && role !== "OWNER") {
-    throw new Error("Forbidden: Hanya Owner yang dapat membuat properti.");
+  if (role && role !== "OWNER" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
+    return { success: false, error: "Forbidden: Hanya Owner yang dapat membuat properti." };
   }
 
   // Obtain ownerId
   let ownerId = (session.user as any).id;
   
-  // Fallback if ID is not available in session but email is
   if (!ownerId && session.user.email) {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }
@@ -30,48 +28,47 @@ export async function createProperty(formData: FormData) {
     if (user) {
       ownerId = user.id;
     } else {
-      // Fallback for mock user in auth.ts
       ownerId = "1";
     }
   } else if (!ownerId) {
-     throw new Error("Unauthorized: Identitas pengguna tidak valid.");
+    return { success: false, error: "Unauthorized: Identitas pengguna tidak valid." };
   }
 
   const title = formData.get("title")?.toString();
-  const description = formData.get("description")?.toString();
+  const description = formData.get("description")?.toString() || "";
   const price = formData.get("price")?.toString();
-  const type = formData.get("type")?.toString();
+  const rawType = formData.get("propertyType")?.toString() || formData.get("type")?.toString() || "HOUSE";
   const address = formData.get("address")?.toString();
-  const lat = formData.get("lat")?.toString();
-  const lng = formData.get("lng")?.toString();
+  const latStr = formData.get("lat")?.toString() || "-6.2088";
+  const lngStr = formData.get("lng")?.toString() || "106.8456";
 
-  if (!title || !description || !price || !type || !address || !lat || !lng) {
-    throw new Error("Bad Request: Data properti tidak lengkap.");
+  if (!title || !price || !address) {
+    return { success: false, error: "Bad Request: Judul, harga, dan alamat wajib diisi." };
   }
 
   const parsedPrice = parseFloat(price);
   if (isNaN(parsedPrice)) {
-    throw new Error("Bad Request: Harga tidak valid.");
+    return { success: false, error: "Bad Request: Harga tidak valid." };
   }
 
-  const parsedLat = parseFloat(lat);
-  const parsedLng = parseFloat(lng);
-  
-  if (isNaN(parsedLat) || isNaN(parsedLng)) {
-    throw new Error("Bad Request: Koordinat (Latitude/Longitude) tidak valid.");
-  }
+  const parsedLat = parseFloat(latStr) || -6.2088;
+  const parsedLng = parseFloat(lngStr) || 106.8456;
+  const normalizedType = rawType.toUpperCase();
 
   try {
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+
     const property = await prisma.property.create({
       data: {
         title,
+        slug,
         description,
         price: parsedPrice,
-        propertyType: type,
+        propertyType: normalizedType,
         address,
         latitude: parsedLat,
         longitude: parsedLng,
-        status: 'PENDING',
+        status: 'PENDING_REVIEW',
         ownerId,
       },
     });
@@ -80,11 +77,12 @@ export async function createProperty(formData: FormData) {
 
     return {
       success: true,
-      property,
+      propertyId: property.id,
+      message: "Properti berhasil dibuat."
     };
   } catch (error: any) {
     console.error("Failed to create property:", error);
-    throw new Error("Internal Server Error: Gagal menyimpan data properti.");
+    return { success: false, error: error.message || "Internal Server Error: Gagal menyimpan data properti." };
   }
 }
 
@@ -116,7 +114,7 @@ export async function searchProperties(params: z.infer<typeof SearchPropertiesSc
           sin(radians(${lat})) * sin(radians(p.latitude)))) AS distance
         FROM "Property" p
         WHERE p."isDeleted" = false
-          AND p.status = 'PENDING'
+          AND p.status = 'PUBLISHED'
           ${type ? Prisma.sql`AND p."propertyType" = ${type}` : Prisma.empty}
           ${bedrooms !== undefined ? Prisma.sql`AND p.bedrooms >= ${bedrooms}` : Prisma.empty}
           ${minPrice !== undefined ? Prisma.sql`AND p.price >= ${minPrice}` : Prisma.empty}
@@ -132,7 +130,7 @@ export async function searchProperties(params: z.infer<typeof SearchPropertiesSc
     const properties = await prisma.property.findMany({
       where: {
         isDeleted: false,
-        status: 'PENDING',
+        status: 'PUBLISHED',
         ...(type && { propertyType: type }),
         ...(bedrooms !== undefined && { bedrooms: { gte: bedrooms } }),
         ...(minPrice !== undefined && { price: { gte: minPrice } }),

@@ -1,9 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import { SignJWT, jwtVerify } from "jose";
+import prisma from "@/lib/prisma";
 import { verifyPassword } from "@/lib/hash";
+import { authConfig } from "../../auth.config";
 
-const prisma = new PrismaClient();
+const ACCESS_TOKEN_TTL = 15 * 60; // 15 minutes
+const REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60; // 7 days
 
 export const {
   handlers,
@@ -11,6 +14,35 @@ export const {
   signOut,
   auth
 } = NextAuth({
+  ...authConfig,
+  session: {
+    strategy: "jwt",
+    maxAge: REFRESH_TOKEN_TTL, 
+  },
+  jwt: {
+    maxAge: ACCESS_TOKEN_TTL,
+    async encode({ secret, token, maxAge }) {
+      const encodedToken = await new SignJWT(token as any)
+        .setProtectedHeader({ alg: "HS512" })
+        .setIssuedAt()
+        .setExpirationTime(Math.floor(Date.now() / 1000) + (maxAge || ACCESS_TOKEN_TTL))
+        .sign(new TextEncoder().encode(secret as string));
+      return encodedToken;
+    },
+    async decode({ secret, token }) {
+      if (!token) return null;
+      try {
+        const { payload } = await jwtVerify(
+          token,
+          new TextEncoder().encode(secret as string),
+          { algorithms: ["HS512"] }
+        );
+        return payload as any as import("next-auth/jwt").JWT;
+      } catch (error) {
+        return null;
+      }
+    }
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -53,35 +85,6 @@ export const {
         }
       }
     })
-  ],
-  pages: {
-    signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = (user as { role: string }).role;
-        token.id = (user as { id: string }).id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        (session.user as { role?: string }).role = token.role as string;
-        (session.user as { id?: string }).id = token.id as string;
-      }
-      return session;
-    },
-    async redirect({ url, baseUrl }) {
-      // If the url is already absolute and on our domain, use it
-      if (url.startsWith(baseUrl)) return url;
-      // If relative, prepend baseUrl
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      return baseUrl;
-    },
-  }
+  ]
 });
 

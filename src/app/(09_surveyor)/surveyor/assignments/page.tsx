@@ -10,64 +10,34 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin, Calendar, Upload, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { getSurveyTasks } from "@/actions/surveyor"
 
 export const metadata = {
   title: "Daftar Penugasan Surveyor | HomeLink 2.0",
   description: "Kelola daftar penugasan properti surveyor",
 }
 
-const mockAssignments = [
-  {
-    id: "SRV-2026-001",
-    address: "Jl. Sudirman No. 45, Jakarta Pusat",
-    deadline: "2026-07-26",
-    status: "Pending",
-    propertyType: "Apartemen",
-  },
-  {
-    id: "SRV-2026-002",
-    address: "Kebayoran Baru, Blok M, Jakarta Selatan",
-    deadline: "2026-07-25",
-    status: "In Progress",
-    propertyType: "Rumah Tapak",
-  },
-  {
-    id: "SRV-2026-003",
-    address: "Pantai Indah Kapuk, Bukit Golf Mediterania",
-    deadline: "2026-07-24",
-    status: "Urgent",
-    propertyType: "Ruko",
-  },
-  {
-    id: "SRV-2026-004",
-    address: "Kemang Raya No. 12, Jakarta Selatan",
-    deadline: "2026-07-28",
-    status: "Completed",
-    propertyType: "Rumah Mewah",
-  }
-]
-
 const getStatusBadge = (status: string) => {
   switch (status) {
-    case "Pending":
+    case "PENDING":
       return (
         <Badge variant="secondary" className="flex items-center gap-1 w-fit">
           <Clock className="w-3 h-3" /> Pending
         </Badge>
       )
-    case "In Progress":
+    case "IN_PROGRESS":
       return (
         <Badge variant="default" className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 w-fit">
           <Clock className="w-3 h-3" /> In Progress
         </Badge>
       )
-    case "Urgent":
+    case "URGENT":
       return (
         <Badge variant="destructive" className="flex items-center gap-1 w-fit">
           <AlertCircle className="w-3 h-3" /> Urgent
         </Badge>
       )
-    case "Completed":
+    case "COMPLETED":
       return (
         <Badge variant="default" className="bg-green-600 hover:bg-green-700 flex items-center gap-1 w-fit">
           <CheckCircle2 className="w-3 h-3" /> Selesai
@@ -78,7 +48,9 @@ const getStatusBadge = (status: string) => {
   }
 }
 
-export default function SurveyorAssignmentsPage() {
+export default async function SurveyorAssignmentsPage() {
+  const assignments = await getSurveyTasks();
+  
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -92,7 +64,7 @@ export default function SurveyorAssignmentsPage() {
         <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 border-b">
           <CardTitle>Daftar Tugas Aktif</CardTitle>
           <CardDescription>
-            Menampilkan {mockAssignments.length} properti yang menunggu tindakan Anda.
+            Menampilkan {assignments.length} properti yang menunggu tindakan Anda.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -108,28 +80,28 @@ export default function SurveyorAssignmentsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockAssignments.map((assignment) => (
+                {assignments.map((assignment) => (
                   <TableRow key={assignment.id} className="group hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                     <TableCell className="font-medium text-slate-600 dark:text-slate-400">
-                      {assignment.id}
+                      {assignment.id.substring(0, 8)}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-slate-900 dark:text-slate-100">{assignment.propertyType}</span>
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">{assignment.property.title}</span>
                         <span className="flex items-center text-sm text-slate-500 dark:text-slate-400">
                           <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                          {assignment.address}
+                          {assignment.property.address}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center text-sm text-slate-600 dark:text-slate-300">
                         <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-                        {new Date(assignment.deadline).toLocaleDateString('id-ID', {
+                        {assignment.scheduledAt ? new Date(assignment.scheduledAt).toLocaleDateString('id-ID', {
                           day: 'numeric',
                           month: 'short',
                           year: 'numeric'
-                        })}
+                        }) : '-'}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -138,16 +110,23 @@ export default function SurveyorAssignmentsPage() {
                     <TableCell className="text-right">
                       <Button 
                         size="sm" 
-                        variant={assignment.status === "Completed" ? "secondary" : "default"}
-                        className={`shadow-sm transition-all ${assignment.status !== 'Completed' ? 'hover:scale-105 active:scale-95' : ''}`}
-                        disabled={assignment.status === "Completed"}
+                        variant={assignment.status === "COMPLETED" ? "secondary" : "default"}
+                        className={`shadow-sm transition-all ${assignment.status !== 'COMPLETED' ? 'hover:scale-105 active:scale-95' : ''}`}
+                        disabled={assignment.status === "COMPLETED"}
                       >
                         <Upload className="w-4 h-4 mr-2" />
-                        {assignment.status === "Completed" ? "Laporan Terkirim" : "Upload Laporan"}
+                        {assignment.status === "COMPLETED" ? "Laporan Terkirim" : "Upload Laporan"}
                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
+                {assignments.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                      Tidak ada penugasan aktif saat ini.
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>

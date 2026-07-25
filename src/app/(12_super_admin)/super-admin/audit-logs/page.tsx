@@ -7,86 +7,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { getAuditLogs } from "@/actions/super-admin";
 
-type AuditAction = "CREATE" | "UPDATE" | "DELETE" | "LOGIN";
-
-interface AuditLog {
-  id: string;
-  timestamp: string;
-  actor: {
-    name: string;
-    email: string;
-    role: string;
-  };
-  action: AuditAction;
-  module: string;
-  description: string;
-}
-
-const mockAuditLogs: AuditLog[] = [
-  {
-    id: "log-1",
-    timestamp: "2026-07-24T10:23:45Z",
-    actor: {
-      name: "Budi Santoso",
-      email: "budi.s@homelink.id",
-      role: "Super Admin",
-    },
-    action: "CREATE",
-    module: "Properties",
-    description: "Created new property listing: 'Villa Indah Bali'",
-  },
-  {
-    id: "log-2",
-    timestamp: "2026-07-24T09:12:30Z",
-    actor: {
-      name: "Siti Rahmawati",
-      email: "siti.r@homelink.id",
-      role: "Admin",
-    },
-    action: "UPDATE",
-    module: "User Management",
-    description: "Updated user roles for ID: USR-4509",
-  },
-  {
-    id: "log-3",
-    timestamp: "2026-07-23T16:45:11Z",
-    actor: {
-      name: "System",
-      email: "system@homelink.id",
-      role: "System",
-    },
-    action: "DELETE",
-    module: "Verification",
-    description: "Deleted expired verification document DOC-1029",
-  },
-  {
-    id: "log-4",
-    timestamp: "2026-07-23T14:30:00Z",
-    actor: {
-      name: "Budi Santoso",
-      email: "budi.s@homelink.id",
-      role: "Super Admin",
-    },
-    action: "LOGIN",
-    module: "Auth",
-    description: "Successful login from IP 114.120.34.5",
-  },
-  {
-    id: "log-5",
-    timestamp: "2026-07-22T11:05:22Z",
-    actor: {
-      name: "Andi Wijaya",
-      email: "andi.w@homelink.id",
-      role: "Admin",
-    },
-    action: "UPDATE",
-    module: "Settings",
-    description: "Changed global platform fee to 2.5%",
-  },
-];
-
-function getActionBadgeVariant(action: AuditAction) {
+function getActionBadgeVariant(action: string) {
   switch (action) {
     case "CREATE":
       return "verified";
@@ -101,7 +24,9 @@ function getActionBadgeVariant(action: AuditAction) {
   }
 }
 
-export default function AuditLogsPage() {
+export default async function AuditLogsPage() {
+  const auditLogs = await getAuditLogs();
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -125,10 +50,8 @@ export default function AuditLogsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mockAuditLogs.map((log) => {
-              const date = new Date(log.timestamp);
-              // Fallback to basic string manipulation if date-fns format fails in this environment
-              // Using native Intl.DateTimeFormat for safety if date-fns is not fully imported, but format is standard
+            {auditLogs.map((log) => {
+              const date = new Date(log.createdAt);
               const formattedDate = new Intl.DateTimeFormat("id-ID", {
                 day: "2-digit",
                 month: "short",
@@ -144,9 +67,9 @@ export default function AuditLogsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-medium">{log.actor.name}</span>
+                      <span className="font-medium">{log.actor?.name || 'System'}</span>
                       <span className="text-xs text-muted-foreground">
-                        {log.actor.email}
+                        {log.actor?.email || '-'}
                       </span>
                     </div>
                   </TableCell>
@@ -160,11 +83,11 @@ export default function AuditLogsPage() {
                   </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-600 ring-1 ring-inset ring-zinc-500/10">
-                      {log.module}
+                      {log.entityId || "System"}
                     </span>
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm truncate max-w-xs">
-                    {log.description}
+                    {log.newValues || log.oldValues || log.action}
                   </TableCell>
                 </TableRow>
               );

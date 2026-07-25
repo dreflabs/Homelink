@@ -1,6 +1,6 @@
 import React from "react"
 import { Plus } from "lucide-react"
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/lib/prisma";
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/table"
 
 export default async function ArticlesPage() {
-  const prisma = new PrismaClient()
   const articles = await prisma.article.findMany({
     include: { category: true, author: true },
     orderBy: { createdAt: "desc" }

@@ -1,41 +1,18 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, MessageSquare, Clock, AlertCircle } from 'lucide-react';
+import { getTickets } from '@/actions/internal';
+import { formatDistanceToNow } from 'date-fns';
 
-const mockTickets = [
-  {
-    id: "TKT-1049",
-    user: "Budi Santoso",
-    subject: "Issue with property deposit",
-    status: "open",
-    priority: "high",
-    lastUpdated: "10 mins ago",
-    category: "Payment"
-  },
-  {
-    id: "TKT-1048",
-    user: "Siti Rahma",
-    subject: "Cannot upload property photos",
-    status: "in-progress",
-    priority: "medium",
-    lastUpdated: "2 hours ago",
-    category: "Technical"
-  },
-  {
-    id: "TKT-1047",
-    user: "Andi Wijaya",
-    subject: "Change phone number",
-    status: "closed",
-    priority: "low",
-    lastUpdated: "1 day ago",
-    category: "Account"
-  }
-];
+export default async function CustomerSupportPage() {
+  const tickets = await getTickets();
 
-export default function CustomerSupportPage() {
+  const openCount = tickets.filter(t => t.status === 'OPEN').length;
+  const inProgressCount = tickets.filter(t => t.status === 'IN_PROGRESS').length;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -55,7 +32,7 @@ export default function CustomerSupportPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">Total Tickets</p>
-                <h3 className="text-2xl font-bold mt-1">1,248</h3>
+                <h3 className="text-2xl font-bold mt-1">{tickets.length}</h3>
               </div>
               <div className="p-2 bg-blue-50 rounded-lg">
                 <MessageSquare className="w-5 h-5 text-blue-600" />
@@ -68,7 +45,7 @@ export default function CustomerSupportPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">Open</p>
-                <h3 className="text-2xl font-bold mt-1">42</h3>
+                <h3 className="text-2xl font-bold mt-1">{openCount}</h3>
               </div>
               <div className="p-2 bg-yellow-50 rounded-lg">
                 <AlertCircle className="w-5 h-5 text-yellow-600" />
@@ -81,7 +58,7 @@ export default function CustomerSupportPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">In Progress</p>
-                <h3 className="text-2xl font-bold mt-1">18</h3>
+                <h3 className="text-2xl font-bold mt-1">{inProgressCount}</h3>
               </div>
               <div className="p-2 bg-purple-50 rounded-lg">
                 <Clock className="w-5 h-5 text-purple-600" />
@@ -94,7 +71,7 @@ export default function CustomerSupportPage() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-medium text-gray-500">Avg Response</p>
-                <h3 className="text-2xl font-bold mt-1">2h 15m</h3>
+                <h3 className="text-2xl font-bold mt-1">N/A</h3>
               </div>
               <div className="p-2 bg-green-50 rounded-lg">
                 <Clock className="w-5 h-5 text-green-600" />
@@ -139,34 +116,34 @@ export default function CustomerSupportPage() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {mockTickets.map((ticket) => (
+                {tickets.map((ticket) => (
                   <tr key={ticket.id} className="hover:bg-gray-50/50">
-                    <td className="px-4 py-3 font-medium text-blue-600">{ticket.id}</td>
-                    <td className="px-4 py-3">{ticket.user}</td>
+                    <td className="px-4 py-3 font-medium text-blue-600">{ticket.id.substring(0, 8)}</td>
+                    <td className="px-4 py-3">{ticket.user?.name || 'Unknown User'}</td>
                     <td className="px-4 py-3 font-medium text-gray-900">{ticket.subject}</td>
                     <td className="px-4 py-3 text-gray-500">{ticket.category}</td>
                     <td className="px-4 py-3">
                       <Badge variant={
-                        ticket.priority === 'high' ? 'destructive' :
-                        ticket.priority === 'medium' ? 'default' : 'secondary'
+                        ticket.priority === 'HIGH' ? 'destructive' :
+                        ticket.priority === 'MEDIUM' ? 'default' : 'secondary'
                       } className={
-                        ticket.priority === 'high' ? 'bg-red-100 text-red-700 hover:bg-red-100' :
-                        ticket.priority === 'medium' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' :
+                        ticket.priority === 'HIGH' ? 'bg-red-100 text-red-700 hover:bg-red-100' :
+                        ticket.priority === 'MEDIUM' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' :
                         'bg-gray-100 text-gray-700 hover:bg-gray-100'
                       }>
-                        {ticket.priority.toUpperCase()}
+                        {ticket.priority}
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant="outline" className={
-                        ticket.status === 'open' ? 'border-yellow-200 text-yellow-700 bg-yellow-50' :
-                        ticket.status === 'in-progress' ? 'border-blue-200 text-blue-700 bg-blue-50' :
+                        ticket.status === 'OPEN' ? 'border-yellow-200 text-yellow-700 bg-yellow-50' :
+                        ticket.status === 'IN_PROGRESS' ? 'border-blue-200 text-blue-700 bg-blue-50' :
                         'border-green-200 text-green-700 bg-green-50'
                       }>
-                        {ticket.status.replace('-', ' ').toUpperCase()}
+                        {ticket.status.replace('_', ' ')}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{ticket.lastUpdated}</td>
+                    <td className="px-4 py-3 text-gray-500">{formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</td>
                     <td className="px-4 py-3 text-right">
                       <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
                         View Details
@@ -174,6 +151,13 @@ export default function CustomerSupportPage() {
                     </td>
                   </tr>
                 ))}
+                {tickets.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
+                      No tickets found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

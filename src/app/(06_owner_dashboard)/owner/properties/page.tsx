@@ -11,8 +11,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-// Mock Data
-type PropertyStatus = "ALL" | "PENDING" | "REJECTED" | "PHYSICAL_VERIFIED" | "LEGAL_VERIFIED" | "FULLY_VERIFIED";
+import Link from "next/link";
+import { getOwnerProperties, deleteOwnerProperty } from "@/actions/dashboard";
+
+// Remove Mock Data types and data, but keep basic types since it might be needed for the state, or redefine them.
+type PropertyStatus = "ALL" | "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "REJECTED";
 type PropertyType = "ALL" | "HOUSE" | "APARTMENT" | "LAND";
 
 interface Property {
@@ -20,37 +23,10 @@ interface Property {
   title: string;
   price: number;
   address: string;
-  status: PropertyStatus;
-  propertyType: PropertyType;
-  imageUrl?: string;
+  status: PropertyStatus | string;
+  propertyType: PropertyType | string;
+  imageUrl?: string | null;
 }
-
-const mockProperties: Property[] = [
-  {
-    id: "prop-1",
-    title: "Rumah Mewah Pondok Indah",
-    price: 15000000000,
-    address: "Pondok Indah, Jakarta Selatan",
-    status: "FULLY_VERIFIED",
-    propertyType: "HOUSE",
-  },
-  {
-    id: "prop-2",
-    title: "Apartemen Sudirman Suites",
-    price: 3500000000,
-    address: "Sudirman, Jakarta Pusat",
-    status: "PENDING",
-    propertyType: "APARTMENT",
-  },
-  {
-    id: "prop-3",
-    title: "Tanah Kavling BSD",
-    price: 2000000000,
-    address: "BSD City, Tangerang",
-    status: "REJECTED",
-    propertyType: "LAND",
-  },
-];
 
 const formatRupiah = (price: number) => {
   return new Intl.NumberFormat("id-ID", {
@@ -60,16 +36,16 @@ const formatRupiah = (price: number) => {
   }).format(price);
 };
 
-const getStatusBadge = (status: PropertyStatus) => {
+const getStatusBadge = (status: PropertyStatus | string) => {
   switch (status) {
-    case "FULLY_VERIFIED":
-    case "PHYSICAL_VERIFIED":
-    case "LEGAL_VERIFIED":
-      return <Badge className="bg-green-500 hover:bg-green-600 absolute top-3 left-3">Terverifikasi</Badge>;
-    case "PENDING":
-      return <Badge className="bg-yellow-500 hover:bg-yellow-600 absolute top-3 left-3 text-black">Menunggu</Badge>;
+    case "PUBLISHED":
+      return <Badge className="bg-green-500 hover:bg-green-600 absolute top-3 left-3">Aktif (Live)</Badge>;
+    case "PENDING_REVIEW":
+      return <Badge className="bg-yellow-500 hover:bg-yellow-600 absolute top-3 left-3 text-black">Menunggu Review</Badge>;
     case "REJECTED":
       return <Badge className="bg-red-500 hover:bg-red-600 absolute top-3 left-3">Ditolak</Badge>;
+    case "DRAFT":
+      return <Badge className="bg-slate-500 hover:bg-slate-600 absolute top-3 left-3">Draf</Badge>;
     default:
       return null;
   }
@@ -85,28 +61,33 @@ function MyPropertiesContent() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate API Fetch
+  const fetchProperties = () => {
     setLoading(true);
-    setTimeout(() => {
-      let filtered = [...mockProperties];
-      
-      if (statusFilter !== "ALL") {
-        if (statusFilter === "FULLY_VERIFIED") {
-          filtered = filtered.filter((p) => ["FULLY_VERIFIED", "PHYSICAL_VERIFIED", "LEGAL_VERIFIED"].includes(p.status));
-        } else {
-          filtered = filtered.filter((p) => p.status === statusFilter);
-        }
-      }
-      
-      if (typeFilter !== "ALL") {
-        filtered = filtered.filter((p) => p.propertyType === typeFilter);
-      }
-      
-      setProperties(filtered);
-      setLoading(false);
-    }, 500);
+    getOwnerProperties(statusFilter, typeFilter)
+      .then((data) => {
+        setProperties(data as Property[]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch owner properties:", err);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchProperties();
   }, [statusFilter, typeFilter]);
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Apakah Anda yakin ingin menghapus properti ini?")) {
+      try {
+        await deleteOwnerProperty(id);
+        fetchProperties();
+      } catch (err) {
+        alert("Gagal menghapus properti.");
+      }
+    }
+  };
 
   const updateFilters = (key: string, value: string) => {
     const current = new URLSearchParams(Array.from(searchParams.entries()));
@@ -127,19 +108,22 @@ function MyPropertiesContent() {
           <h1 className="text-2xl font-bold text-gray-900">Listing Saya</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola dan pantau seluruh properti Anda di satu tempat.</p>
         </div>
-        <Button className="bg-[#4169E1] hover:bg-blue-700">Tambah Properti</Button>
+        <Button asChild className="bg-[#4169E1] hover:bg-blue-700">
+          <Link href="/owner/properties/new">Tambah Properti</Link>
+        </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50 p-4 rounded-xl border">
         <Tabs 
-          defaultValue={statusFilter === "ALL" ? "ALL" : statusFilter === "PENDING" ? "PENDING" : statusFilter === "REJECTED" ? "REJECTED" : "FULLY_VERIFIED"} 
+          defaultValue={statusFilter} 
           onValueChange={(val) => updateFilters("status", val)}
           className="w-full sm:w-auto"
         >
           <TabsList className="w-full sm:w-auto overflow-x-auto justify-start">
             <TabsTrigger value="ALL">Semua</TabsTrigger>
-            <TabsTrigger value="PENDING">Menunggu</TabsTrigger>
-            <TabsTrigger value="FULLY_VERIFIED">Terverifikasi</TabsTrigger>
+            <TabsTrigger value="PUBLISHED">Aktif (Live)</TabsTrigger>
+            <TabsTrigger value="PENDING_REVIEW">Menunggu Review</TabsTrigger>
+            <TabsTrigger value="DRAFT">Draf</TabsTrigger>
             <TabsTrigger value="REJECTED">Ditolak</TabsTrigger>
           </TabsList>
         </Tabs>
@@ -179,7 +163,9 @@ function MyPropertiesContent() {
             Tidak ada listing yang sesuai dengan filter Anda, atau Anda belum menambahkan properti.
           </p>
           <Button variant="outline" onClick={() => updateFilters("status", "ALL")} className="mr-2">Reset Filter</Button>
-          <Button className="bg-[#4169E1] hover:bg-blue-700">Tambah Sekarang</Button>
+          <Button asChild className="bg-[#4169E1] hover:bg-blue-700">
+            <Link href="/owner/properties/new">Tambah Sekarang</Link>
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -201,19 +187,19 @@ function MyPropertiesContent() {
                         <MoreVertical className="w-4 h-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push(`/owner/properties/${property.id}/edit`)}>
                         <Edit2 className="w-4 h-4 mr-2" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push('/owner/property-status')}>
                         <Activity className="w-4 h-4 mr-2" />
                         Lihat Status
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push(`/owner/properties/${property.id}/leads`)}>
                         <Users className="w-4 h-4 mr-2" />
                         Lihat Leads
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-red-500 focus:text-red-500 focus:bg-red-50">
+                      <DropdownMenuItem onClick={() => handleDelete(property.id)} className="text-red-500 focus:text-red-500 focus:bg-red-50">
                         <Trash2 className="w-4 h-4 mr-2" />
                         Hapus
                       </DropdownMenuItem>
@@ -223,7 +209,7 @@ function MyPropertiesContent() {
                 <p className="text-sm text-gray-500 line-clamp-1 mb-4">{property.address}</p>
                 <div className="flex justify-between items-end">
                   <p className="text-[#4169E1] font-bold text-lg">{formatRupiah(property.price)}</p>
-                  <Button variant="link" className="text-[#4169E1] p-0 h-auto font-medium">
+                  <Button variant="link" onClick={() => router.push(`/owner/properties/${property.id}/analytics`)} className="text-[#4169E1] p-0 h-auto font-medium">
                     Lihat Detail
                   </Button>
                 </div>

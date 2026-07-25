@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Blocks, ExternalLink, Settings, ShieldCheck, AlertCircle } from "lucide-react";
-import { toggleIntegration } from "@/actions/superAdmin";
+import { toggleIntegration } from "@/actions/super-admin";
 import { useState, useTransition } from "react";
 
 const initialIntegrations = [

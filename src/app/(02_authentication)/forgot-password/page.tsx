@@ -112,32 +112,23 @@ export default function ForgotPasswordPage() {
         </div>
 
         <Tabs defaultValue="email" onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-1 mb-6">
             <TabsTrigger value="email">Email</TabsTrigger>
-            <TabsTrigger value="phone">Nomor Telepon</TabsTrigger>
           </TabsList>
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="identifier">
-                {mode === "email" ? "Alamat Email" : "Nomor Telepon"}
+                Alamat Email
               </Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                  {mode === "email" ? (
-                    <Mail className="h-5 w-5" />
-                  ) : (
-                    <Phone className="h-5 w-5" />
-                  )}
+                  <Mail className="h-5 w-5" />
                 </div>
                 <Input
                   id="identifier"
-                  type={mode === "email" ? "email" : "tel"}
-                  placeholder={
-                    mode === "email"
-                      ? "nama@perusahaan.com"
-                      : "081234567890"
-                  }
+                  type="email"
+                  placeholder="nama@perusahaan.com"
                   className="pl-10"
                   {...register("identifier")}
                   aria-invalid={!!errors.identifier}

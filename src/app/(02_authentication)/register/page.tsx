@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select"
 import Link from "next/link"
 
+import { useRouter } from "next/navigation"
+
 const registerSchema = z.object({
   role: z.enum(["BUYER", "OWNER"], { message: "Peran harus dipilih" }),
   fullName: z.string().min(2, "Nama lengkap harus minimal 2 karakter"),
@@ -48,11 +50,33 @@ export default function RegisterPage() {
     },
   })
 
+  const router = useRouter();
+
   const onSubmit = async (data: RegisterFormValues) => {
-    console.log("Form submitted:", data)
-    // Simulasi proses registrasi
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    alert("Registrasi berhasil (Simulasi)")
+    try {
+      const response = await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          role: data.role,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(result.message || "Registrasi berhasil!");
+        router.push("/verify-email");
+      } else {
+        alert(result.message || "Gagal melakukan registrasi");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Terjadi kesalahan jaringan.");
+    }
   }
 
   return (

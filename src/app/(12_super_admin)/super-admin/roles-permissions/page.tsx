@@ -6,18 +6,27 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Plus, Info } from "lucide-react";
-import { updatePermission } from "@/actions/superAdmin";
+import { updatePermission } from "@/actions/super-admin";
 import { useState, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const roles = ["Super Admin", "Tenant Admin", "Manager", "User", "Guest"];
+const roles = [
+  "SUPER_ADMIN",
+  "ADMIN",
+  "INTERNAL_AGENT",
+  "SURVEYOR",
+  "PHOTOGRAPHER",
+  "PARTNER_AGENT",
+  "OWNER",
+  "BUYER"
+];
 const initialPermissions = [
-  { id: "p_1", module: "Users", action: "View Users", description: "Can view user list", roles: { "Super Admin": true, "Tenant Admin": true, "Manager": true, "User": true, "Guest": false } },
-  { id: "p_2", module: "Users", action: "Create Users", description: "Can create new users", roles: { "Super Admin": true, "Tenant Admin": true, "Manager": false, "User": false, "Guest": false } },
-  { id: "p_3", module: "Users", action: "Delete Users", description: "Can delete existing users", roles: { "Super Admin": true, "Tenant Admin": false, "Manager": false, "User": false, "Guest": false } },
-  { id: "p_4", module: "Billing", action: "View Invoices", description: "Can view billing invoices", roles: { "Super Admin": true, "Tenant Admin": true, "Manager": false, "User": false, "Guest": false } },
-  { id: "p_5", module: "Billing", action: "Manage Payment", description: "Can update payment methods", roles: { "Super Admin": true, "Tenant Admin": true, "Manager": false, "User": false, "Guest": false } },
-  { id: "p_6", module: "Settings", action: "System Config", description: "Can modify system configs", roles: { "Super Admin": true, "Tenant Admin": false, "Manager": false, "User": false, "Guest": false } },
+  { id: "p_1", module: "Users", action: "View Users", description: "Can view user list", roles: { SUPER_ADMIN: true, ADMIN: true, INTERNAL_AGENT: true, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: false, OWNER: false, BUYER: false } },
+  { id: "p_2", module: "Users", action: "Create Users", description: "Can create new users", roles: { SUPER_ADMIN: true, ADMIN: true, INTERNAL_AGENT: false, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: false, OWNER: false, BUYER: false } },
+  { id: "p_3", module: "Users", action: "Delete Users", description: "Can delete existing users", roles: { SUPER_ADMIN: true, ADMIN: false, INTERNAL_AGENT: false, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: false, OWNER: false, BUYER: false } },
+  { id: "p_4", module: "Billing", action: "View Invoices", description: "Can view billing invoices", roles: { SUPER_ADMIN: true, ADMIN: true, INTERNAL_AGENT: true, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: true, OWNER: true, BUYER: false } },
+  { id: "p_5", module: "Billing", action: "Manage Payment", description: "Can update payment methods", roles: { SUPER_ADMIN: true, ADMIN: true, INTERNAL_AGENT: false, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: false, OWNER: false, BUYER: false } },
+  { id: "p_6", module: "Settings", action: "System Config", description: "Can modify system configs", roles: { SUPER_ADMIN: true, ADMIN: false, INTERNAL_AGENT: false, SURVEYOR: false, PHOTOGRAPHER: false, PARTNER_AGENT: false, OWNER: false, BUYER: false } },
 ];
 
 export default function RolesPermissionsPage() {
@@ -105,7 +114,7 @@ export default function RolesPermissionsPage() {
                         </TableCell>
                         {roles.map(role => {
                           const isChecked = perm.roles[role as keyof typeof perm.roles];
-                          const isDisabled = role === "Super Admin"; // Cannot toggle Super Admin
+                          const isDisabled = role === "SUPER_ADMIN"; // Cannot toggle SUPER_ADMIN
                           return (
                             <TableCell key={`${perm.id}-${role}`} className="text-center">
                               <Switch

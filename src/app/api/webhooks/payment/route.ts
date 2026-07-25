@@ -1,41 +1,54 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import crypto from "crypto";
+import { eventBus } from "@/lib/eventBus";
 
-const prisma = new PrismaClient();
+// Import the service dynamically or rely on a centralized listener registration elsewhere
+// For simplicity in serverless, we attach it here. In a real long-running server, 
+// this would be registered at app initialization.
+import { processPaymentWebhook } from "@/services/webhook.service";
+eventBus.on("process-payment-webhook", async (eventId: string) => {
+  await processPaymentWebhook(eventId);
+});
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+    const signature = req.headers.get("x-webhook-signature");
+    const secret = process.env.PAYMENT_WEBHOOK_SECRET || "default_secret";
+
+    if (!signature) {
+      return NextResponse.json({ error: "Missing signature" }, { status: 401 });
+    }
+
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(rawBody)
+      .digest("hex");
+
+    if (signature !== expectedSignature) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    }
+
+    const body = JSON.parse(rawBody);
     const { invoiceId, status } = body;
 
     if (!invoiceId || !status) {
       return NextResponse.json({ error: "Invalid payload: invoiceId and status are required" }, { status: 400 });
     }
 
-    if (status === "PAID") {
-      const invoice = await prisma.invoice.update({
-        where: { id: invoiceId },
-        data: { 
-          status: "PAID",
-          paidAt: new Date()
-        },
-        include: { subscription: true }
-      });
-
-      if (invoice.subscriptionId) {
-        await prisma.subscription.update({
-          where: { id: invoice.subscriptionId },
-          data: { status: "ACTIVE" }
-        });
+    const event = await prisma.webhookEvent.create({
+      data: {
+        eventType: "PAYMENT_WEBHOOK",
+        payload: body,
+        status: "PENDING"
       }
-    } else if (status === "FAILED") {
-      await prisma.invoice.update({
-        where: { id: invoiceId },
-        data: { status: "CANCELLED" }
-      });
-    }
+    });
 
-    return NextResponse.json({ success: true, message: "Webhook processed successfully" });
+    // Emit event to background worker (Fast Acknowledgment)
+    eventBus.emit("process-payment-webhook", event.id);
+
+    return NextResponse.json({ success: true, message: "Webhook accepted and queued" });
   } catch (error: any) {
     console.error("Webhook error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { authenticate } from "@/lib/actions/auth";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
@@ -15,10 +16,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
-    // Simulasi proses login dengan Google
-    setTimeout(() => {
-      setIsGoogleLoading(false);
-    }, 1000);
+    signIn("google", { callbackUrl: "/dashboard" });
   };
 
   return (

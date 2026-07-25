@@ -1,11 +1,11 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import prisma from "@/lib/prisma";
 import { sendPasswordResetEmail, sendVerificationEmail } from '@/lib/email';
 import * as argon2 from 'argon2';
 import crypto from 'crypto';
 
-const prisma = new PrismaClient();
+
 
 export async function forgotPassword(email: string) {
   const user = await prisma.user.findUnique({

@@ -2,30 +2,42 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { approveProperty, rejectProperty } from './actions';
+import { approveProperty, rejectProperty } from '@/actions/admin';
 import { Check, X } from 'lucide-react';
 
-const mockQueue = [
-  { id: 'PROP-001', address: 'Jl. Sudirman No. 1', owner: 'John Doe', submittedAt: '2026-07-24' },
-  { id: 'PROP-002', address: 'Jl. Thamrin No. 2', owner: 'Jane Smith', submittedAt: '2026-07-25' },
-];
+type QueueItem = {
+  id: string;
+  address: string;
+  owner: { name: string; email: string } | null;
+  createdAt: Date;
+};
 
-export default function QueueList() {
-  const [queue, setQueue] = useState(mockQueue);
+export default function QueueList({ initialQueue }: { initialQueue: QueueItem[] }) {
+  const [queue, setQueue] = useState(initialQueue);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const handleApprove = async (id: string) => {
     setLoadingId(id);
-    await approveProperty(id);
-    setQueue(q => q.filter(item => item.id !== id));
-    setLoadingId(null);
+    try {
+      await approveProperty(id);
+      setQueue(q => q.filter(item => item.id !== id));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingId(null);
+    }
   };
 
   const handleReject = async (id: string) => {
     setLoadingId(id);
-    await rejectProperty(id, 'Incomplete documentation');
-    setQueue(q => q.filter(item => item.id !== id));
-    setLoadingId(null);
+    try {
+      await rejectProperty(id);
+      setQueue(q => q.filter(item => item.id !== id));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingId(null);
+    }
   };
 
   if (queue.length === 0) {
@@ -49,8 +61,8 @@ export default function QueueList() {
             <tr key={item.id} className="border-b last:border-0">
               <td className="p-3 font-medium">{item.id}</td>
               <td className="p-3">{item.address}</td>
-              <td className="p-3">{item.owner}</td>
-              <td className="p-3">{item.submittedAt}</td>
+              <td className="p-3">{item.owner?.name || item.owner?.email || 'Unknown'}</td>
+              <td className="p-3">{new Date(item.createdAt).toLocaleDateString()}</td>
               <td className="p-3 text-right space-x-2">
                 <Button 
                   size="sm" 

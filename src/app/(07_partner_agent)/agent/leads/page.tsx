@@ -9,7 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Users, TrendingUp, Clock, CheckCircle2 } from "lucide-react";
+import { Users, TrendingUp, Clock, CheckCircle2, Inbox } from "lucide-react";
+import { FadeIn } from "@/components/shared/FadeIn";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 function getStatusStyle(status: string) {
   switch (status) {
@@ -51,17 +53,19 @@ export default async function AgentLeadsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-          Manajemen Leads
-        </h1>
-        <p className="text-slate-500 mt-1 text-sm">
-          Semua leads yang di-assign ke Anda beserta status tindak lanjutnya.
-        </p>
-      </div>
+      <FadeIn delay={0.1}>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            Manajemen Leads
+          </h1>
+          <p className="text-slate-500 mt-1 text-sm">
+            Semua leads yang di-assign ke Anda beserta status tindak lanjutnya.
+          </p>
+        </div>
+      </FadeIn>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <FadeIn delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Total Leads", value: total, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
           { label: "Menunggu", value: pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
@@ -80,10 +84,11 @@ export default async function AgentLeadsPage() {
             </div>
           </Card>
         ))}
-      </div>
+      </FadeIn>
 
       {/* Table */}
-      <Card className="rounded-2xl shadow-sm border-slate-100 overflow-hidden">
+      <FadeIn delay={0.3}>
+        <Card className="rounded-2xl shadow-sm border-slate-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <h2 className="font-semibold text-slate-900">Daftar Leads</h2>
           <span className="text-xs text-slate-400 font-medium">{total} total</span>
@@ -92,13 +97,11 @@ export default async function AgentLeadsPage() {
         {error ? (
           <div className="p-8 text-center text-sm text-red-500">{error}</div>
         ) : leads.length === 0 ? (
-          <div className="p-12 text-center">
-            <Users className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-            <p className="text-slate-500 font-medium">Belum ada leads yang di-assign.</p>
-            <p className="text-slate-400 text-sm mt-1">
-              Leads akan muncul di sini setelah di-assign oleh admin.
-            </p>
-          </div>
+          <EmptyState
+            icon={Inbox}
+            title="Belum Ada Leads"
+            description="Leads akan muncul di sini setelah di-assign oleh admin kepada Anda."
+          />
         ) : (
           <Table>
             <TableHeader className="bg-slate-50/50">
@@ -164,6 +167,7 @@ export default async function AgentLeadsPage() {
           </Table>
         )}
       </Card>
+      </FadeIn>
     </div>
   );
 }

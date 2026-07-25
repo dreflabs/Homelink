@@ -2,6 +2,7 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { MapPin, BedDouble, Bath, Maximize2, CheckCircle2 } from "lucide-react"
+import { FavoriteButton } from "./FavoriteButton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -40,7 +41,7 @@ export function PropertyCard({
 }: PropertyCardProps) {
   return (
     <Link href={`/property/${id}`} className="block h-full">
-      <Card className="group flex flex-col overflow-hidden border-slate-100 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 bg-white h-full cursor-pointer">
+      <Card className="group flex flex-col overflow-hidden border-slate-100 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all duration-300 bg-white h-full cursor-pointer active:scale-[0.99]">
         <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
           <Image
             src={imageUrl}
@@ -49,7 +50,9 @@ export function PropertyCard({
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          <div className="absolute top-4 left-4 flex flex-col gap-2">
+          
+          {/* Top Badges */}
+          <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
             {isVerified ? (
               <Badge variant="secondary" className="bg-emerald-100/90 hover:bg-emerald-100/90 text-emerald-700 border-emerald-200 backdrop-blur-md shadow-sm gap-1.5 px-2.5 py-1 font-semibold rounded-full">
                 <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={2.5} />
@@ -61,14 +64,11 @@ export function PropertyCard({
               </Badge>
             )}
           </div>
-          {isFeatured && (
-            <div className="absolute top-4 right-4">
-              <Badge className="bg-slate-900/90 hover:bg-slate-900/90 text-white backdrop-blur-md shadow-sm px-2.5 py-1 font-medium rounded-full border-none">
-                Unggulan
-              </Badge>
-            </div>
-          )}
+
+          {/* Wishlist Heart Button */}
+          <FavoriteButton />
         </div>
+
         <CardHeader className="p-5 pb-0">
           <div className="flex items-start justify-between gap-4 mb-2">
             <h3 className="text-lg font-bold text-slate-900 leading-tight line-clamp-2 group-hover:text-blue-700 transition-colors">

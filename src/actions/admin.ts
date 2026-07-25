@@ -1,9 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED') {
   const session = await auth();
@@ -16,7 +14,7 @@ export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED'
 
   const property = await prisma.property.update({
     where: { id },
-    data: { status: status === 'APPROVED' ? 'LIVE' : 'REJECTED' }
+    data: { status: status === 'APPROVED' ? 'PUBLISHED' : 'REJECTED' }
   });
 
   return property;
@@ -33,9 +31,7 @@ export async function getVerificationQueue() {
 
   const queue = await prisma.property.findMany({
     where: {
-      status: {
-        in: ['PENDING', 'SURVEYED']
-      }
+      status: 'PENDING_REVIEW'
     },
     include: {
       owner: {
@@ -62,4 +58,27 @@ export async function approveProperty(id: string) {
 
 export async function rejectProperty(id: string) {
   return verifyProperty(id, 'REJECTED');
+}
+
+export async function getAllProperties() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  
+  const userRole = (session.user as any).role;
+  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
+    throw new Error("Forbidden: Admin role required");
+  }
+
+  const properties = await prisma.property.findMany({
+    include: {
+      owner: {
+        select: { name: true, email: true }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+
+  return properties;
 }

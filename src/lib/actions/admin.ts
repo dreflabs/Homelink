@@ -1,10 +1,10 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { auth } from "../auth";
 import { revalidatePath } from "next/cache";
 
-const prisma = new PrismaClient();
+
 
 export async function verifyProperty(propertyId: string, status: string, notes?: string) {
   const session = await auth();
