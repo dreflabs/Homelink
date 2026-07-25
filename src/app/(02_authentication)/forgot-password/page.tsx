@@ -58,8 +58,8 @@ export default function ForgotPasswordPage() {
         return;
       }
       const res = await forgotPassword(data.identifier);
-      if (res.error) {
-        setErrorMsg(res.error);
+      if (!res.success) {
+        setErrorMsg(res.message);
       } else {
         setSubmitted(true);
       }
