@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { Inbox, Mail, MessageSquare, BellRing } from "lucide-react";
 import { ReactNode } from "react";

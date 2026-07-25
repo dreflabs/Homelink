@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from "next/link";
 import { Bot, Home, LineChart, Sparkles } from "lucide-react";
 

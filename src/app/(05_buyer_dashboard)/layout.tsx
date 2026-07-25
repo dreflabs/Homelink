@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { ReactNode } from "react";
 import { User, Calendar, LayoutDashboard, FileText, MessageSquare, Settings, FileSearch, Heart } from "lucide-react";
 import { DashboardLayoutWrapper, SidebarLink } from "@/components/shared/DashboardLayoutWrapper";
