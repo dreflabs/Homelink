@@ -21,15 +21,18 @@ enum Role {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  email           String   @unique
+  id              String    @id @default(uuid())
+  email           String    @unique
+  phone           String?   @unique
   name            String
-  role            Role     @default(BUYER)
-  passwordHash    String
-  isEmailVerified Boolean  @default(false)
-  isDeleted       Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  role            Role      @default(BUYER)
+  passwordHash    String    @map("password_hash")
+  isEmailVerified Boolean   @default(false) @map("is_email_verified")
+  isDeleted       Boolean   @default(false) @map("is_deleted")
+  termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz()
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz()
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
 
   properties             Property[]
   bookings               Booking[]
@@ -57,6 +60,8 @@ model User {
   internalTasks          Task[]                 @relation("InternalTasks")
   photographerTasks      PhotographerTask[]     @relation("PhotographerTasks")
   photographerDeliveries PhotographerDelivery[] @relation("PhotographerDeliveries")
+
+  @@map("users")
 }
 
 model Property {
@@ -146,17 +151,18 @@ model VerificationAudit {
 
 model Account {
   id                String   @id @default(uuid())
-  userId            String
+  userId            String   @map("user_id")
   provider          String
-  providerAccountId String
-  refreshToken      String?
-  accessToken       String?
-  createdAt         DateTime @default(now())
+  providerAccountId String   @map("provider_account_id")
+  refreshToken      String?  @map("refresh_token")
+  accessToken       String?  @map("access_token")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
   user User @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+  @@map("accounts")
 }
 
 model AuditLog {
@@ -249,22 +255,24 @@ model VerificationToken {
   id         String   @id @default(uuid())
   identifier String
   token      String   @unique
-  expires    DateTime
-  createdAt  DateTime @default(now())
+  expires    DateTime @db.Timestamptz()
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
   @@unique([identifier, token])
   @@index([identifier])
+  @@map("verification_tokens")
 }
 
 model PasswordResetToken {
   id         String   @id @default(uuid())
   identifier String
   token      String   @unique
-  expires    DateTime
-  createdAt  DateTime @default(now())
+  expires    DateTime @db.Timestamptz()
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
   @@unique([identifier, token])
   @@index([identifier])
+  @@map("password_reset_tokens")
 }
 
 model SavedSearch {

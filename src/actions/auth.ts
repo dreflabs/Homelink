@@ -17,7 +17,8 @@ export async function forgotPassword(email: string) {
     return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
   }
 
-  const token = crypto.randomUUID();
+  const rawToken = crypto.randomUUID();
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
   const expires = new Date(Date.now() + 3600 * 1000); // 1 hour from now
 
   // Clear existing tokens for this user to ensure only latest is valid
@@ -28,19 +29,25 @@ export async function forgotPassword(email: string) {
   await prisma.passwordResetToken.create({
     data: {
       identifier: email,
-      token,
+      token: hashedToken,
       expires,
     },
   });
 
-  await sendPasswordResetEmail(user.email, token);
+  await sendPasswordResetEmail(user.email, rawToken);
 
   return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
 }
 
 export async function resetPassword(token: string, newPassword: string) {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  if (!passwordRegex.test(newPassword)) {
+    return { error: 'Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, and one number.' };
+  }
+
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   const existingToken = await prisma.passwordResetToken.findUnique({
-    where: { token },
+    where: { token: hashedToken },
   });
 
   if (!existingToken) {
@@ -76,8 +83,9 @@ export async function resetPassword(token: string, newPassword: string) {
 }
 
 export async function verifyEmail(token: string) {
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
   const existingToken = await prisma.verificationToken.findUnique({
-    where: { token },
+    where: { token: hashedToken },
   });
 
   if (!existingToken) {
@@ -115,28 +123,23 @@ export async function verifyEmail(token: string) {
 
 // Function to generate and send a verification email when user registers (optional helper)
 export async function generateVerificationToken(email: string) {
-  const token = crypto.randomUUID();
+  const rawToken = crypto.randomUUID();
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
   const expires = new Date(Date.now() + 3600 * 1000); // 1 hour
 
-  const existingToken = await prisma.verificationToken.findFirst({
+  await prisma.verificationToken.deleteMany({
     where: { identifier: email },
   });
-
-  if (existingToken) {
-    await prisma.verificationToken.delete({
-      where: { id: existingToken.id },
-    });
-  }
 
   const verificationToken = await prisma.verificationToken.create({
     data: {
       identifier: email,
-      token,
+      token: hashedToken,
       expires,
     },
   });
 
-  await sendVerificationEmail(email, token);
+  await sendVerificationEmail(email, rawToken);
 
   return verificationToken;
 }

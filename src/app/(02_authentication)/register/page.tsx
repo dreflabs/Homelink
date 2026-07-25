@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { z } from "zod"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,17 +14,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "sonner"
+import { Loader2, Eye, EyeOff, User, Mail, Phone, Lock } from "lucide-react"
 import Link from "next/link"
-
 import { useRouter } from "next/navigation"
 
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 const registerSchema = z.object({
-  role: z.enum(["BUYER", "OWNER"], { message: "Peran harus dipilih" }),
+  role: z.enum(["BUYER", "OWNER", "SURVEYOR"], { message: "Peran harus dipilih" }),
   fullName: z.string().min(2, "Nama lengkap harus minimal 2 karakter"),
   email: z.string().email("Format email tidak valid"),
-  phoneNumber: z.string().min(10, "Nomor telepon minimal 10 karakter"),
-  password: z.string().min(8, "Password minimal 8 karakter"),
+  phoneNumber: z.string().regex(/^(\+62|0)[0-9]{9,13}$/, "Nomor telepon tidak valid (Contoh: 0812... atau +62812...)"),
+  password: z.string().regex(passwordRegex, "Password minimal 8 karakter, 1 huruf besar, dan 1 angka"),
   confirmPassword: z.string(),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "Anda harus menyetujui Syarat dan Ketentuan",
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Password dan Konfirmasi Password tidak cocok",
   path: ["confirmPassword"],
@@ -33,12 +48,10 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormValues>({
+  const [showPassword, setShowPassword] = React.useState(false)
+  const router = useRouter()
+
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       role: "BUYER",
@@ -47,10 +60,11 @@ export default function RegisterPage() {
       phoneNumber: "",
       password: "",
       confirmPassword: "",
+      agreedToTerms: false,
     },
   })
 
-  const router = useRouter();
+  const { isSubmitting } = form.formState
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
@@ -60,22 +74,43 @@ export default function RegisterPage() {
         body: JSON.stringify({
           name: data.fullName,
           email: data.email,
+          phone: data.phoneNumber,
           role: data.role,
           password: data.password,
+          agreedToTerms: data.agreedToTerms,
         }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        alert(result.message || "Registrasi berhasil!");
+        toast.success("Registrasi berhasil!", {
+          description: result.message || "Silakan periksa email Anda untuk verifikasi.",
+        });
         router.push("/verify-email");
       } else {
-        alert(result.message || "Gagal melakukan registrasi");
+        // Handle server side validation errors mapping back to form
+        if (result.errors) {
+          Object.keys(result.errors).forEach((key) => {
+            if (key === 'email' || key === 'phone' || key === 'name' || key === 'password' || key === 'role') {
+              const formKey = key === 'name' ? 'fullName' : key === 'phone' ? 'phoneNumber' : key;
+              form.setError(formKey as any, { type: 'server', message: result.errors[key][0] });
+            }
+          });
+          toast.error("Gagal melakukan registrasi", {
+            description: "Silakan periksa kembali data yang Anda masukkan.",
+          });
+        } else {
+          toast.error("Gagal", {
+            description: result.message || "Terjadi kesalahan saat registrasi",
+          });
+        }
       }
     } catch (error) {
       console.error(error);
-      alert("Terjadi kesalahan jaringan.");
+      toast.error("Kesalahan Jaringan", {
+        description: "Tidak dapat terhubung ke server. Silakan coba lagi.",
+      });
     }
   }
 
@@ -89,65 +124,191 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Peran (Role)</label>
-              <Controller
-                control={control}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              
+              <FormField
+                control={form.control}
                 name="role"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-full h-10">
-                      <SelectValue placeholder="Pilih peran Anda" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="BUYER">Pembeli (Buyer)</SelectItem>
-                      <SelectItem value="OWNER">Pemilik (Owner)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormItem>
+                    <FormLabel>Peran (Role)</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Pilih peran Anda" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="BUYER">Pembeli (Buyer)</SelectItem>
+                        <SelectItem value="OWNER">Pemilik (Owner)</SelectItem>
+                        <SelectItem value="SURVEYOR">Surveyor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
-              {errors.role && <p className="text-xs text-destructive">{errors.role.message}</p>}
-            </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Nama Lengkap</label>
-              <Input className="h-10" placeholder="Masukkan nama lengkap Anda" {...register("fullName")} />
-              {errors.fullName && <p className="text-xs text-destructive">{errors.fullName.message}</p>}
-            </div>
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama Lengkap</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input className="h-10 pl-9" placeholder="Masukkan nama lengkap Anda" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Email</label>
-              <Input className="h-10" type="email" placeholder="nama@email.com" {...register("email")} />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-            </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input className="h-10 pl-9" type="email" placeholder="nama@email.com" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Nomor Telepon</label>
-              <Input className="h-10" type="tel" placeholder="+62..." {...register("phoneNumber")} />
-              {errors.phoneNumber && <p className="text-xs text-destructive">{errors.phoneNumber.message}</p>}
-            </div>
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nomor Telepon</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input className="h-10 pl-9" type="tel" placeholder="08123456789" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Password</label>
-              <Input className="h-10" type="password" placeholder="Minimal 8 karakter" {...register("password")} />
-              {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-            </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          className="h-10 pl-9 pr-10" 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="Minimal 8 karakter" 
+                          {...field} 
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground">Konfirmasi Password</label>
-              <Input className="h-10" type="password" placeholder="Masukkan ulang password Anda" {...register("confirmPassword")} />
-              {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}
-            </div>
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Konfirmasi Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input 
+                          className="h-10 pl-9 pr-10" 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="Masukkan ulang password Anda" 
+                          {...field} 
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button type="submit" className="w-full h-10 font-semibold mt-4" disabled={isSubmitting}>
-              {isSubmitting ? "Memproses..." : "Daftar Sekarang"}
+              <FormField
+                control={form.control}
+                name="agreedToTerms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="font-normal text-sm text-muted-foreground">
+                        Saya setuju dengan{" "}
+                        <Link href="/terms" className="text-primary hover:underline">Syarat & Ketentuan</Link>
+                        {" "}serta{" "}
+                        <Link href="/privacy" className="text-primary hover:underline">Kebijakan Privasi</Link>
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              {form.formState.errors.agreedToTerms && (
+                <p className="text-[0.8rem] font-medium text-destructive">{form.formState.errors.agreedToTerms.message}</p>
+              )}
+
+              <Button type="submit" className="w-full h-10 font-semibold mt-4 transition-all" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Memproses...
+                  </>
+                ) : (
+                  "Daftar Sekarang"
+                )}
+              </Button>
+            </form>
+          </Form>
+
+          <div className="mt-6 flex items-center">
+            <div className="flex-grow border-t border-muted"></div>
+            <span className="mx-2 text-xs text-muted-foreground uppercase bg-background px-2">atau</span>
+            <div className="flex-grow border-t border-muted"></div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <Button variant="outline" className="h-10 w-full" type="button">
+              Google
             </Button>
-          </form>
+            <Button variant="outline" className="h-10 w-full" type="button">
+              Apple
+            </Button>
+          </div>
         </CardContent>
-        <CardFooter className="flex justify-center border-t p-6 text-sm text-muted-foreground bg-muted/10">
+        <CardFooter className="flex justify-center border-t p-6 text-sm text-muted-foreground bg-muted/10 rounded-b-xl">
           Sudah punya akun?{" "}
-          <Link href="/login" className="ml-1 font-semibold text-primary hover:underline">
+          <Link href="/login" className="ml-1 font-semibold text-primary hover:underline transition-colors">
             Masuk di sini
           </Link>
         </CardFooter>

@@ -1,63 +1,63 @@
 import { NextResponse } from 'next/server';
-import { hashPassword } from '@/lib/hash';
-import prisma from '@/lib/prisma';
-import { generateVerificationToken } from '@/actions/auth';
 import { z } from 'zod';
+import { AuthService } from '@/services/auth.service';
+
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const RegisterSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  role: z.enum(['BUYER', 'OWNER']).default('BUYER'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  name: z.string().min(2, 'Nama harus minimal 2 karakter'),
+  email: z.string().email('Alamat email tidak valid'),
+  phone: z.string().regex(/^(\+62|0)[0-9]{9,13}$/, 'Nomor telepon tidak valid'),
+  role: z.enum(['BUYER', 'OWNER', 'SURVEYOR']),
+  password: z.string().regex(passwordRegex, 'Kata sandi minimal 8 karakter, 1 huruf besar, dan 1 angka'),
+  agreedToTerms: z.boolean().refine((val) => val === true, {
+    message: 'Anda harus menyetujui Syarat dan Ketentuan',
+  }),
 });
+
+// Simple in-memory rate limiter (in production, use Redis)
+const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 5;
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
     
+    // Rate Limiting Logic
+    const now = Date.now();
+    const limit = rateLimitMap.get(ip) || { count: 0, lastReset: now };
+    
+    if (now - limit.lastReset > RATE_LIMIT_WINDOW) {
+      limit.count = 0;
+      limit.lastReset = now;
+    }
+    
+    if (limit.count >= MAX_REQUESTS) {
+      return NextResponse.json(
+        { status: 'error', message: 'Terlalu banyak percobaan pendaftaran. Silakan coba lagi nanti.' },
+        { status: 429 }
+      );
+    }
+    
+    limit.count++;
+    rateLimitMap.set(ip, limit);
+
+    const body = await request.json();
     const validatedData = RegisterSchema.safeParse(body);
     
     if (!validatedData.success) {
       return NextResponse.json(
         {
           status: 'fail',
-          message: 'Invalid input data',
+          message: 'Data input tidak valid',
           errors: validatedData.error.flatten().fieldErrors,
         },
         { status: 400 }
       );
     }
 
-    const { name, email, role, password } = validatedData.data;
-
-    // Hashed with Argon2
-    const passwordHash = await hashPassword(password);
-
-    // Cek apakah email sudah terdaftar
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { status: 'fail', message: 'Email sudah terdaftar.' },
-        { status: 409 }
-      );
-    }
-
-    // Insert ke Database
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        role,
-        passwordHash,
-      },
-    });
-
-    // Generate dan kirim email verifikasi
-    // Kita jalankan di background agar respons cepat
-    generateVerificationToken(newUser.email).catch(console.error);
+    const newUser = await AuthService.registerUser(validatedData.data);
 
     return NextResponse.json(
       {
@@ -75,7 +75,20 @@ export async function POST(request: Request) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === 'Email sudah terdaftar.' || error.message === 'Nomor telepon sudah terdaftar.') {
+      return NextResponse.json(
+        {
+          status: 'fail',
+          message: error.message,
+          errors: {
+            [error.message.includes('Email') ? 'email' : 'phone']: [error.message],
+          },
+        },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       {
         status: 'error',
