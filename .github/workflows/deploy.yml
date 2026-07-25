@@ -44,6 +44,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
           
-          rsync -avz --exclude='.git' --exclude='node_modules' ./ $USER@$HOST:$TARGET_DIR
+          rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='.env' --exclude='.env.*' ./ $USER@$HOST:$TARGET_DIR
           
-          ssh $USER@$HOST "cd $TARGET_DIR && npm install --production && (pm2 describe homelink > /dev/null && pm2 restart homelink || pm2 start npm --name homelink -- start -- -p 3002)"
+          ssh $USER@$HOST "cd $TARGET_DIR && npm install && npx prisma generate && npm run build && (pm2 describe homelink > /dev/null && pm2 restart homelink || pm2 start npm --name homelink -- start -- -p 3002)"
