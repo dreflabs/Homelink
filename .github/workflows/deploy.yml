@@ -46,4 +46,4 @@ jobs:
           
           rsync -avz --exclude='.git' --exclude='node_modules' ./ $USER@$HOST:$TARGET_DIR
           
-          ssh $USER@$HOST "cd $TARGET_DIR && npm ci --production && pm2 reload homelink"
+          ssh $USER@$HOST "cd $TARGET_DIR && npm install --production && (pm2 describe homelink > /dev/null && pm2 restart homelink || pm2 start npm --name homelink -- start -- -p 3002)"
