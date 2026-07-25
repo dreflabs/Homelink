@@ -69,10 +69,7 @@ export default function SurveyorDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="flex flex-col items-center justify-center py-12 text-center h-[400px] border-2 border-dashed border-slate-200 rounded-xl">
-              <p className="text-slate-500 dark:text-slate-400 mt-2 max-w-sm">Pilih tugas survei dari daftar untuk melihat panduan rute.</p>
-            </div>
-              
+            <div className="flex flex-col items-center justify-center py-12 text-center h-[400px] border-2 border-dashed border-slate-200 rounded-xl relative overflow-hidden">
               <div className="relative z-10 flex flex-col items-center animate-in fade-in zoom-in duration-500">
                 <div className="h-16 w-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-4 shadow-inner">
                   <Map className="h-8 w-8 text-blue-600 dark:text-blue-400" />
