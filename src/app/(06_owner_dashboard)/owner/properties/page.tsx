@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Building2, SlidersHorizontal, MoreVertical, Trash2, Edit2, Activity, Users } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -75,7 +75,7 @@ const getStatusBadge = (status: PropertyStatus) => {
   }
 };
 
-export default function MyPropertiesPage() {
+function MyPropertiesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -233,5 +233,13 @@ export default function MyPropertiesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function MyPropertiesPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center text-gray-500">Memuat properti...</div>}>
+      <MyPropertiesContent />
+    </Suspense>
   );
 }

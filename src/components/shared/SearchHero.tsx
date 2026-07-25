@@ -35,9 +35,10 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
       timeout = setTimeout(() => setIsDeleting(true), 2000)
     } else if (isDeleting && displayText === "") {
       // Move to next string
-      setIsDeleting(false)
-      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length)
-      timeout = setTimeout(() => {}, 500)
+      timeout = setTimeout(() => {
+        setIsDeleting(false)
+        setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length)
+      }, 500)
     } else {
       // Typing or deleting
       const nextDelay = isDeleting ? 30 : 50
