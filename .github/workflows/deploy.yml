@@ -29,9 +29,6 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Build
-        run: npm run build
-
       - name: Deploy via Rsync and PM2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -43,7 +40,27 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-          
-          rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='.env' --exclude='.env.*' ./ $USER@$HOST:$TARGET_DIR
-          
-          ssh $USER@$HOST "cd $TARGET_DIR && npm install && npx prisma generate && npm run build && cp -a public .next/standalone/ && cp -a .next/static .next/standalone/.next/ && (pm2 delete homelink || true) && PORT=3002 pm2 start .next/standalone/server.js --name homelink"
+
+          # Sync source code only (no node_modules/.next/.env - those are managed on server)
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            ./ $USER@$HOST:$TARGET_DIR
+
+          # Build on the VPS server so native modules (argon2, Prisma) compile for Ubuntu 24.04
+          ssh $USER@$HOST "cd $TARGET_DIR \
+            && npm install \
+            && npm rebuild argon2 \
+            && npx prisma generate \
+            && npm run build \
+            && cp -a public .next/standalone/ \
+            && cp -a .next/static .next/standalone/.next/ \
+            && cp -a node_modules/argon2/build .next/standalone/node_modules/argon2/ \
+            && fuser -k 3002/tcp || true \
+            && (pm2 delete homelink || true) \
+            && cd .next/standalone \
+            && PORT=3002 pm2 start server.js --name homelink \
+            && pm2 save"
