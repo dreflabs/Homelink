@@ -25,7 +25,12 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
     formData.append('propertyId', propertyId);
     
     try {
-      const res = await submitBooking(formData);
+      const surveyDateString = formData.get('date') as string;
+      const res = await submitBooking({
+        propertyId,
+        surveyDate: surveyDateString ? new Date(surveyDateString) : new Date(),
+        timeSlot: "TBD",
+      });
       if (res.success) setSuccess('Jadwal survey berhasil diajukan!');
     } catch (error) {
       console.error(error);
@@ -39,11 +44,11 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
     setLoading(true);
     setSuccess('');
     
-    const formData = new FormData(e.currentTarget);
-    formData.append('propertyId', propertyId);
-    
     try {
-      const res = await submitLead(formData);
+      const res = await submitLead({
+        propertyId,
+        interactionType: "MESSAGE",
+      });
       if (res.success) setSuccess('Pesan berhasil dikirim. Agen akan segera menghubungi Anda.');
     } catch (error) {
       console.error(error);
