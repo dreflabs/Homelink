@@ -46,4 +46,4 @@ jobs:
           
           rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='.env' --exclude='.env.*' ./ $USER@$HOST:$TARGET_DIR
           
-          ssh $USER@$HOST "cd $TARGET_DIR && npm install && npx prisma generate && npm run build && (pm2 describe homelink > /dev/null && pm2 restart homelink || pm2 start npm --name homelink -- start -- -p 3002)"
+          ssh $USER@$HOST "cd $TARGET_DIR && npm install && npx prisma generate && npm run build && cp -a public .next/standalone/ && cp -a .next/static .next/standalone/.next/ && (pm2 delete homelink || true) && PORT=3002 pm2 start .next/standalone/server.js --name homelink"
