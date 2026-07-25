@@ -11,11 +11,17 @@ import { Badge } from "@/components/ui/badge";
 
 
 
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
 export const dynamic = 'force-dynamic';
 
 export default async function PaymentHistoryPage() {
-  // Fetching all invoices for demonstration. In a real app, filter by the logged-in user.
+  const session = await auth();
+  if (!session?.user?.id) redirect("/login");
+
   const invoices = await prisma.invoice.findMany({
+    where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
     take: 10,
     include: {

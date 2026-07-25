@@ -1,7 +1,14 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { LayoutDashboard, ClipboardList, FileText, CheckSquare, Camera, Video, Calendar } from "lucide-react";
 
-export default function SurveyorLayout({ children }: { children: React.ReactNode }) {
+export default async function SurveyorLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="Surveyor"

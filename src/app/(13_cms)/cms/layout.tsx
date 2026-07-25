@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import {
   LayoutDashboard,
@@ -12,7 +14,12 @@ import {
   LayoutTemplate
 } from "lucide-react";
 
-export default function CMSLayout({ children }: { children: React.ReactNode }) {
+export default async function CMSLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="CMS Admin"

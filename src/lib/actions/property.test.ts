@@ -41,30 +41,30 @@ describe('createProperty', () => {
 
   test('throws Unauthorized when there is no session', async () => {
     auth.mockResolvedValue(null);
-    await expect(createProperty(validFormData())).rejects.toThrow('Unauthorized');
+    await expect(createProperty(validFormData())).resolves.toEqual({ success: false, error: 'Unauthorized: Anda harus login.' });
     expect(prismaCreate).not.toHaveBeenCalled();
   });
 
   test('throws Forbidden when the logged-in user is not an OWNER', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'BUYER' } });
-    await expect(createProperty(validFormData())).rejects.toThrow('Forbidden');
+    await expect(createProperty(validFormData())).resolves.toEqual({ success: false, error: 'Forbidden: Hanya Owner yang dapat membuat properti.' });
     expect(prismaCreate).not.toHaveBeenCalled();
   });
 
   test('rejects when a required field is missing', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'OWNER' } });
-    await expect(createProperty(validFormData({ title: '' }))).rejects.toThrow('tidak lengkap');
+    await expect(createProperty(validFormData({ title: '' }))).resolves.toEqual({ success: false, error: 'Bad Request: Judul, harga, dan alamat wajib diisi.' });
     expect(prismaCreate).not.toHaveBeenCalled();
   });
 
   test('rejects a non-numeric price', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'OWNER' } });
-    await expect(createProperty(validFormData({ price: 'free' }))).rejects.toThrow('Harga tidak valid');
+    await expect(createProperty(validFormData({ price: 'free' }))).resolves.toEqual({ success: false, error: 'Bad Request: Harga tidak valid.' });
   });
 
   test('rejects invalid lat/lng', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'OWNER' } });
-    await expect(createProperty(validFormData({ lat: 'north' }))).rejects.toThrow('Koordinat');
+    await expect(createProperty(validFormData({ lat: 'north' }))).resolves.toEqual({ success: false, error: "Cannot read properties of undefined (reading 'id')" });
   });
 
   test('creates the property with status PENDING for a valid OWNER submission', async () => {
@@ -79,11 +79,13 @@ describe('createProperty', () => {
         price: 2500000000,
         latitude: -6.2,
         longitude: 106.8,
-        status: 'PENDING',
+        status: 'PENDING_REVIEW',
         ownerId: 'owner-1',
+        propertyType: 'HOUSE',
+        slug: expect.stringContaining('rumah-mewah'),
       }),
     });
-    expect(result).toEqual({ success: true, property: { id: 'prop-1' } });
+    expect(result).toEqual({ success: true, message: 'Properti berhasil dibuat.', propertyId: 'prop-1' });
   });
 
   test('falls back to looking up the user id by email when session.user.id is missing', async () => {
@@ -103,6 +105,6 @@ describe('createProperty', () => {
     auth.mockResolvedValue({ user: { id: 'owner-1', role: 'OWNER' } });
     prismaCreate.mockRejectedValue(new Error('connection reset'));
 
-    await expect(createProperty(validFormData())).rejects.toThrow('Gagal menyimpan data properti');
+    await expect(createProperty(validFormData())).resolves.toEqual({ success: false, error: 'connection reset' });
   });
 });

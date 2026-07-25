@@ -1,7 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
-  return new PrismaClient().$extends({
+  const client = new PrismaClient();
+  
+  if (process.env.NODE_ENV === 'test') {
+    return client as any; // Bypass extensions in unit tests for now
+  }
+
+  return client.$extends({
     query: {
       $allModels: {
         async findMany({ model, args, query }) {

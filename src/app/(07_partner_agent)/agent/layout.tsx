@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 import {
   LayoutDashboard,
@@ -26,11 +28,16 @@ const agentLinks: SidebarLink[] = [
   { href: "/agent/settings", label: "Pengaturan", icon: <Settings className="w-5 h-5" /> },
 ];
 
-export default function PartnerAgentLayout({
+export default async function PartnerAgentLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper title="Partner Portal" links={agentLinks} sidebarTheme="light">
       {children}

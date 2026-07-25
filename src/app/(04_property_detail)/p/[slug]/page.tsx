@@ -6,6 +6,49 @@ import { GalleryLightbox } from './components/GalleryLightbox';
 import { FloorPlanViewer } from './components/FloorPlanViewer';
 import { InteractiveStickyBookingPanel } from './components/InteractiveStickyBookingPanel';
 
+import { Metadata, ResolvingMetadata } from 'next';
+
+export const revalidate = 60; // ISR Caching: revalidate every 60 seconds
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const property = await prisma.property.findUnique({
+    where: { slug: params.slug },
+    include: { media: true },
+  });
+
+  if (!property) {
+    return { title: 'Property Not Found | HomeLink 2.0' };
+  }
+
+  const imageUrl = property.media[0]?.s3Url || '/og-image.jpg';
+
+  return {
+    title: `${property.title} | HomeLink 2.0`,
+    description: property.description.substring(0, 160),
+    openGraph: {
+      title: property.title,
+      description: property.description.substring(0, 160),
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: property.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: property.title,
+      description: property.description.substring(0, 160),
+      images: [imageUrl],
+    },
+  };
+}
+
 export default async function PropertyDetailPage({ params }: { params: { slug: string } }) {
   
   const property = await prisma.property.findUnique({

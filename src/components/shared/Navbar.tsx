@@ -35,7 +35,7 @@ export async function Navbar() {
           <Link href="/properties/search" className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
             Cari Properti
           </Link>
-          <Link href="/owner/properties/new" className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
+          <Link href={user ? "/owner/properties/new" : "/login?callbackUrl=/owner/properties/new"} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
             Pasang Iklan
           </Link>
           <div className="h-4 w-px bg-slate-200"></div>

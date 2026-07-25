@@ -1,8 +1,15 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import React from 'react';
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { LayoutDashboard, Users, Home, FileText, CheckSquare, BarChart, Settings } from "lucide-react";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="HomeLink Admin"

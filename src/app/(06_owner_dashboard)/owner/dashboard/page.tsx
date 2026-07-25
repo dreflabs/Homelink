@@ -16,7 +16,7 @@ export default async function OwnerDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="hover:shadow-md transition-shadow">
+        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Total Properti</CardTitle>
             <Building className="h-4 w-4 text-blue-500" />
@@ -27,7 +27,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="hover:shadow-md transition-shadow">
+        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Total Tayangan</CardTitle>
             <Eye className="h-4 w-4 text-emerald-500" />
@@ -40,7 +40,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="hover:shadow-md transition-shadow">
+        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">Pesan Masuk</CardTitle>
             <MessageSquare className="h-4 w-4 text-indigo-500" />
@@ -52,7 +52,7 @@ export default async function OwnerDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="h-full">
+        <Card className="h-full bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm">
           <CardHeader>
             <CardTitle>Aktivitas Terbaru</CardTitle>
             <CardDescription>Pembaruan terbaru dari properti Anda</CardDescription>
@@ -77,7 +77,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm">
           <CardHeader>
             <CardTitle>Performa Bulanan</CardTitle>
             <CardDescription>Tren tayangan properti Anda</CardDescription>

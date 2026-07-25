@@ -1,8 +1,15 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { LayoutDashboard, CalendarDays, Image as ImageIcon, ClipboardList } from "lucide-react";
 import { ReactNode } from "react";
 
-export default function PhotographerLayout({ children }: { children: ReactNode }) {
+export default async function PhotographerLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="HomeLink Studio"

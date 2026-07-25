@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import React from 'react';
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { 
@@ -18,11 +20,19 @@ import {
   Archive
 } from "lucide-react";
 
-export default function SuperAdminLayout({
+export default async function SuperAdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+  if (session.user.role !== "SUPER_ADMIN") {
+    redirect("/unauthorized");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="Super Admin"

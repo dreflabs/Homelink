@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import React from 'react';
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { 
@@ -14,11 +16,16 @@ import {
   CheckCircle2 
 } from 'lucide-react';
 
-export default function InternalLayout({
+export default async function InternalLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <DashboardLayoutWrapper
       title="Internal Agent"

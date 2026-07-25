@@ -57,7 +57,7 @@ export default function BillingLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 p-4 md:p-8 lg:p-12">
         <div className="max-w-4xl mx-auto">
           {/* Subtle page header area could go here, but we leave it to children pages */}
-          <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/60 overflow-hidden min-h-[600px] p-6 md:p-10 transition-all">
+          <div className="bg-white/50 backdrop-blur-xl rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/60 overflow-hidden min-h-[600px] p-6 md:p-10 transition-all">
             {children}
           </div>
         </div>

@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
-import { User, Calendar, LayoutDashboard, FileText, MessageSquare, Settings, FileSearch } from "lucide-react";
+import { User, Calendar, LayoutDashboard, FileText, MessageSquare, Settings, FileSearch, Heart } from "lucide-react";
 import { DashboardLayoutWrapper, SidebarLink } from "@/components/shared/DashboardLayoutWrapper";
 
 const buyerLinks: SidebarLink[] = [
   { href: "/dashboard", label: "Overview", icon: <LayoutDashboard className="w-5 h-5" /> },
+    { href: "/dashboard/favorites", label: "Favorit", icon: <Heart className="w-5 h-5" /> },
   { href: "/my-profile", label: "Profil", icon: <User className="w-5 h-5" /> },
   { href: "/schedule", label: "Jadwal Kunjungan", icon: <Calendar className="w-5 h-5" /> },
   { href: "/offers", label: "Penawaran", icon: <FileSearch className="w-5 h-5" /> },
