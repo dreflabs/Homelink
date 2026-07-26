@@ -4,10 +4,19 @@ import prisma from "@/lib/prisma";
 import { sendPasswordResetEmail, sendVerificationEmail } from '@/lib/email';
 import * as argon2 from 'argon2';
 import crypto from 'crypto';
+import { headers } from 'next/headers';
+import { isRateLimited } from '@/lib/rate-limit';
 
-
+const FORGOT_PASSWORD_RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const FORGOT_PASSWORD_MAX_ATTEMPTS = 5;
 
 export async function forgotPassword(email: string) {
+  const ip = (await headers()).get('x-forwarded-for') ?? 'unknown';
+  if (isRateLimited(`forgot-password:${ip}`, FORGOT_PASSWORD_MAX_ATTEMPTS, FORGOT_PASSWORD_RATE_LIMIT_WINDOW)) {
+    // Same generic message as the success path, so rate limiting doesn't leak account existence either
+    return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
   });
@@ -119,6 +128,30 @@ export async function verifyEmail(token: string) {
   });
 
   return { success: true, message: 'Email verified successfully!' };
+}
+
+export async function resendVerificationEmail(email: string) {
+  const ip = (await headers()).get('x-forwarded-for') ?? 'unknown';
+  if (isRateLimited(`resend-verification:${ip}`, FORGOT_PASSWORD_MAX_ATTEMPTS, FORGOT_PASSWORD_RATE_LIMIT_WINDOW)) {
+    return { success: true, message: 'Jika email tersebut terdaftar, kami telah mengirimkan tautan verifikasi baru.' };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    // For security reasons, don't reveal that the user does not exist
+    return { success: true, message: 'Jika email tersebut terdaftar, kami telah mengirimkan tautan verifikasi baru.' };
+  }
+
+  if (user.isEmailVerified) {
+    return { success: true, message: 'Email ini sudah terverifikasi. Silakan masuk ke akun Anda.' };
+  }
+
+  await generateVerificationToken(user.email);
+
+  return { success: true, message: 'Jika email tersebut terdaftar, kami telah mengirimkan tautan verifikasi baru.' };
 }
 
 // Function to generate and send a verification email when user registers (optional helper)

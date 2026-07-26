@@ -3,5 +3,6 @@ export {
   searchProperties, 
   submitLead, 
   submitBooking, 
-  saveSearch 
+  saveSearch,
+  getNearbyProperties
 } from '../lib/actions/property';

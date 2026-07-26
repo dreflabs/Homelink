@@ -58,7 +58,7 @@ export function AiSearchSection() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center border border-slate-200 rounded-3xl bg-white shadow-sm">
-              <MapPinOff className="w-10 h-10 text-slate-400 mb-4" />
+              <MapPinOff className="w-10 h-10  mb-4" />
               <h3 className="text-lg font-bold text-slate-900 mb-2">Tidak ada kecocokan</h3>
               <p className="text-slate-500 max-w-md">
                 Coba gunakan kata kunci yang berbeda.

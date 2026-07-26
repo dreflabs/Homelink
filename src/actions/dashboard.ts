@@ -2,11 +2,42 @@
 
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { z } from "zod";
+import { redirect } from "next/navigation";
+
+// --- Validations ---
+const UpdateProfileSchema = z.object({
+  name: z.string().min(2, "Nama minimal 2 karakter").optional(),
+  email: z.string().email("Format email tidak valid").optional(),
+});
+
+const UpdateBookingStatusSchema = z.object({
+  status: z.enum(["CONFIRMED", "REJECTED", "CANCELLED", "COMPLETED", "PENDING"]),
+});
+
+const UpdatePropertySchema = z.object({
+  title: z.string().min(5, "Judul terlalu pendek").optional(),
+  description: z.string().min(10, "Deskripsi terlalu pendek").optional(),
+  price: z.coerce.number().positive("Harga harus valid").optional(),
+  propertyType: z.string().optional(),
+  address: z.string().min(5, "Alamat terlalu pendek").optional(),
+});
+
+// --- Role Check Helpers ---
+function enforceRole(session: any, requiredRole: string) {
+  if (!session?.user) {
+    redirect("/login");
+  }
+  if ((session.user as any).role !== requiredRole) {
+    redirect("/unauthorized");
+  }
+  return (session.user as any).id;
+}
 
 export async function getUserProfile() {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
-  const userId = (session.user as { id: string }).id;
+  const userId = (session.user as any).id;
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -19,43 +50,55 @@ export async function getUserProfile() {
 export async function updateUserProfile(data: { name?: string; email?: string }) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
-  const userId = (session.user as { id: string }).id;
+  const userId = (session.user as any).id;
 
-  const updateData: { name?: string; email?: string } = {};
-  if (data.name) updateData.name = data.name;
-  if (data.email) updateData.email = data.email;
+  const parsed = UpdateProfileSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
+  
+  const updateData: { name?: string; email?: string; isEmailVerified?: boolean } = {};
+  if (parsed.data.name) updateData.name = parsed.data.name;
+  
+  const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  
+  if (parsed.data.email && parsed.data.email !== currentUser?.email) {
+    updateData.email = parsed.data.email;
+    updateData.isEmailVerified = false; // Reset verification if email changes
+  }
 
   return prisma.user.update({
     where: { id: userId },
     data: updateData,
-    select: { id: true, email: true, name: true, role: true },
+    select: { id: true, email: true, name: true, role: true, isEmailVerified: true },
   });
 }
 
+// ─── BUYER DASHBOARD ──────────────────
+
 export async function getBuyerDashboard() {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const buyerId = (session.user as { id: string }).id;
+  const buyerId = enforceRole(session, "BUYER");
 
   const user = await prisma.user.findUnique({
     where: { id: buyerId },
-    select: { id: true, name: true, email: true },
+    select: { id: true, name: true, email: true, image: true, phone: true, address: true },
   });
 
   const [totalBookings, totalLeads, totalSavedSearches, totalSavedProperties] = await Promise.all([
     prisma.booking.count({ where: { buyerId, status: { notIn: ["CANCELLED", "REJECTED"] } } }),
     prisma.lead.count({ where: { buyerId } }),
     prisma.savedSearch.count({ where: { userId: buyerId } }),
-    prisma.savedProperty.count({ where: { buyerId } }),
+    prisma.savedProperty.count({ where: { buyerId, property: { isDeleted: false } } }),
   ]);
 
   return {
     profile: {
       name: user?.name ?? "Pengguna",
       email: user?.email ?? "",
-      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name ?? "U")}`,
-      phone: "",
-      address: "",
+      avatar: user?.image ?? `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name ?? "U")}`,
+      phone: user?.phone ?? "",
+      address: user?.address ?? "",
     },
     stats: {
       totalBookings,
@@ -67,10 +110,129 @@ export async function getBuyerDashboard() {
   };
 }
 
+export async function getBuyerBookings(page: number = 1, limit: number = 10) {
+  const session = await auth();
+  const buyerId = enforceRole(session, "BUYER");
+
+  const skip = (page - 1) * limit;
+
+  const [bookings, total] = await Promise.all([
+    prisma.booking.findMany({
+      where: { buyerId },
+      include: {
+        property: {
+          select: {
+            id: true,
+            title: true,
+            address: true,
+            price: true,
+            media: {
+              where: { isPrimary: true },
+              take: 1,
+              select: { s3Url: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.booking.count({ where: { buyerId } })
+  ]);
+
+  const data = bookings.map((b) => ({
+    id: b.id,
+    propertyId: b.propertyId,
+    title: b.property.title,
+    address: b.property.address,
+    price: Number(b.property.price),
+    imageUrl: b.property.media?.[0]?.s3Url || null,
+    surveyDate: b.surveyDate.toISOString(),
+    timeSlot: b.timeSlot,
+    status: b.status,
+    createdAt: b.createdAt.toISOString(),
+  }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
+}
+
+export async function getBuyerFavorites(page: number = 1, limit: number = 12) {
+  const session = await auth();
+  const buyerId = enforceRole(session, "BUYER");
+
+  const skip = (page - 1) * limit;
+  const where = { buyerId, property: { isDeleted: false } };
+
+  const [favorites, total] = await Promise.all([
+    prisma.savedProperty.findMany({
+      where,
+      include: {
+        property: {
+          select: {
+            id: true,
+            title: true,
+            address: true,
+            price: true,
+            bedrooms: true,
+            bathrooms: true,
+            surfaceArea: true,
+            propertyType: true,
+            status: true,
+            media: {
+              where: { isPrimary: true },
+              take: 1,
+              select: { s3Url: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.savedProperty.count({ where })
+  ]);
+
+  const data = favorites.map((f) => ({
+    id: f.id,
+    propertyId: f.property.id,
+    title: f.property.title,
+    address: f.property.address,
+    price: Number(f.property.price),
+    bedrooms: f.property.bedrooms,
+    bathrooms: f.property.bathrooms,
+    surfaceArea: Number(f.property.surfaceArea),
+    propertyType: f.property.propertyType,
+    status: f.property.status,
+    imageUrl: f.property.media?.[0]?.s3Url || null,
+    addedAt: f.createdAt.toISOString(),
+  }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
+}
+
+// ─── OWNER DASHBOARD ──────────────────
+
 export async function getOwnerDashboard() {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
   const user = await prisma.user.findUnique({
     where: { id: ownerId },
@@ -78,14 +240,14 @@ export async function getOwnerDashboard() {
   });
 
   const [totalProperties, activeListings, totalLeads, totalViews] = await Promise.all([
-    prisma.property.count({ where: { ownerId } }),
-    prisma.property.count({ where: { ownerId, status: "PUBLISHED" } }),
-    prisma.lead.count({ where: { property: { ownerId } } }),
-    prisma.propertyViewLog.count({ where: { property: { ownerId } } }),
+    prisma.property.count({ where: { ownerId, isDeleted: false } }),
+    prisma.property.count({ where: { ownerId, status: "PUBLISHED", isDeleted: false } }),
+    prisma.lead.count({ where: { property: { ownerId, isDeleted: false } } }),
+    prisma.propertyViewLog.count({ where: { property: { ownerId, isDeleted: false } } }),
   ]);
 
   const recentBookings = await prisma.booking.findMany({
-    where: { property: { ownerId } },
+    where: { property: { ownerId, isDeleted: false } },
     take: 5,
     orderBy: { createdAt: "desc" },
     select: { id: true, createdAt: true, property: { select: { title: true } } },
@@ -114,28 +276,35 @@ export async function getOwnerDashboard() {
   };
 }
 
-export async function getOwnerProperties(statusFilter: string, typeFilter: string) {
+export async function getOwnerProperties(statusFilter: string, typeFilter: string, page: number = 1, limit: number = 10) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
-  const properties = await prisma.property.findMany({
-    where: {
-      ownerId,
-      isDeleted: false,
-      ...(statusFilter !== "ALL" && { status: statusFilter as any }),
-      ...(typeFilter !== "ALL" && { propertyType: typeFilter }),
-    },
-    include: {
-      media: {
-        where: { isPrimary: true },
-        take: 1,
+  const skip = (page - 1) * limit;
+  const where = {
+    ownerId,
+    isDeleted: false,
+    ...(statusFilter !== "ALL" && { status: statusFilter as any }),
+    ...(typeFilter !== "ALL" && { propertyType: typeFilter }),
+  };
+
+  const [properties, total] = await Promise.all([
+    prisma.property.findMany({
+      where,
+      include: {
+        media: {
+          where: { isPrimary: true },
+          take: 1,
+        },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.property.count({ where })
+  ]);
 
-  return properties.map((p) => ({
+  const data = properties.map((p) => ({
     id: p.id,
     title: p.title,
     price: Number(p.price),
@@ -144,109 +313,28 @@ export async function getOwnerProperties(statusFilter: string, typeFilter: strin
     propertyType: p.propertyType,
     imageUrl: p.media?.[0]?.s3Url || null,
   }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
 }
-
-export async function getBuyerBookings() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const buyerId = (session.user as { id: string }).id;
-
-  const bookings = await prisma.booking.findMany({
-    where: { buyerId },
-    include: {
-      property: {
-        select: {
-          id: true,
-          title: true,
-          address: true,
-          price: true,
-          media: {
-            where: { isPrimary: true },
-            take: 1,
-            select: { s3Url: true },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return bookings.map((b) => ({
-    id: b.id,
-    propertyId: b.propertyId,
-    title: b.property.title,
-    address: b.property.address,
-    price: Number(b.property.price),
-    imageUrl: b.property.media?.[0]?.s3Url || null,
-    surveyDate: b.surveyDate.toISOString(),
-    timeSlot: b.timeSlot,
-    status: b.status,
-    createdAt: b.createdAt.toISOString(),
-  }));
-}
-
-export async function getBuyerFavorites() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const buyerId = (session.user as { id: string }).id;
-
-  const favorites = await prisma.savedProperty.findMany({
-    where: { buyerId },
-    include: {
-      property: {
-        select: {
-          id: true,
-          title: true,
-          address: true,
-          price: true,
-          bedrooms: true,
-          bathrooms: true,
-          surfaceArea: true,
-          propertyType: true,
-          status: true,
-          media: {
-            where: { isPrimary: true },
-            take: 1,
-            select: { s3Url: true },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return favorites.map((f) => ({
-    id: f.id,
-    propertyId: f.property.id,
-    title: f.property.title,
-    address: f.property.address,
-    price: Number(f.property.price),
-    bedrooms: f.property.bedrooms,
-    bathrooms: f.property.bathrooms,
-    surfaceArea: Number(f.property.surfaceArea),
-    propertyType: f.property.propertyType,
-    status: f.property.status,
-    imageUrl: f.property.media?.[0]?.s3Url || null,
-    addedAt: f.createdAt.toISOString(),
-  }));
-}
-
-// ─── Owner Dashboard Real Actions & Ownership Verification ──────────────────
 
 export async function getPropertyAnalytics(propertyId: string) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
-  // Strict Ownership Check
   const property = await prisma.property.findFirst({
     where: { id: propertyId, ownerId, isDeleted: false },
     select: { id: true, title: true }
   });
 
-  if (!property) {
-    throw new Error("Properti tidak ditemukan atau Anda tidak memiliki akses.");
-  }
+  if (!property) throw new Error("Properti tidak ditemukan atau Anda tidak memiliki akses.");
 
   const [totalViews, totalBookings] = await Promise.all([
     prisma.propertyViewLog.count({ where: { propertyId } }),
@@ -263,57 +351,75 @@ export async function getPropertyAnalytics(propertyId: string) {
   };
 }
 
-export async function getPropertyLeads(propertyId: string) {
+export async function getPropertyLeads(propertyId: string, page: number = 1, limit: number = 10) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
-  // Strict Ownership Check
   const property = await prisma.property.findFirst({
     where: { id: propertyId, ownerId, isDeleted: false },
     select: { id: true, title: true }
   });
 
-  if (!property) {
-    throw new Error("Properti tidak ditemukan atau Anda tidak memiliki akses.");
-  }
+  if (!property) throw new Error("Properti tidak ditemukan atau Anda tidak memiliki akses.");
 
-  const leads = await prisma.lead.findMany({
-    where: { propertyId },
-    include: {
-      buyer: {
-        select: { name: true, email: true }
-      }
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  const skip = (page - 1) * limit;
 
-  return leads.map((l) => ({
+  const [leads, total] = await Promise.all([
+    prisma.lead.findMany({
+      where: { propertyId },
+      include: {
+        buyer: { select: { name: true, email: true } }
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.lead.count({ where: { propertyId } })
+  ]);
+
+  const data = leads.map((l) => ({
     id: l.id,
     namaProspek: l.buyer.name || "Calon Pembeli",
     email: l.buyer.email,
     interaksi: l.interactionType,
     statusFollowUp: l.followUpStatus === "PENDING" ? "Belum Dihubungi" : l.followUpStatus === "CONTACTED" ? "Dalam Proses" : "Sudah Dihubungi",
   }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
 }
 
-export async function getOwnerPropertyStatuses() {
+export async function getOwnerPropertyStatuses(page: number = 1, limit: number = 10) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
-  const properties = await prisma.property.findMany({
-    where: { ownerId, isDeleted: false },
-    include: {
-      media: { where: { isPrimary: true }, take: 1 },
-      _count: {
-        select: { viewLogs: true, leads: true, bookings: true }
-      }
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  const skip = (page - 1) * limit;
+  const where = { ownerId, isDeleted: false };
 
-  return properties.map((p) => ({
+  const [properties, total] = await Promise.all([
+    prisma.property.findMany({
+      where,
+      include: {
+        media: { where: { isPrimary: true }, take: 1 },
+        _count: {
+          select: { viewLogs: true, leads: true, bookings: true }
+        }
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.property.count({ where })
+  ]);
+
+  const data = properties.map((p) => ({
     id: p.id,
     name: p.title,
     status: p.status === "PUBLISHED" ? "Aktif" : p.status === "PENDING_REVIEW" ? "Menunggu Review" : p.status,
@@ -322,23 +428,40 @@ export async function getOwnerPropertyStatuses() {
     location: p.address,
     image: p.media[0]?.s3Url || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80"
   }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
 }
 
-export async function getOwnerSchedules() {
+export async function getOwnerSchedules(page: number = 1, limit: number = 10) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
-  const bookings = await prisma.booking.findMany({
-    where: { property: { ownerId } },
-    include: {
-      buyer: { select: { name: true, email: true } },
-      property: { select: { title: true } }
-    },
-    orderBy: { surveyDate: "asc" }
-  });
+  const skip = (page - 1) * limit;
+  const where = { property: { ownerId, isDeleted: false } };
 
-  return bookings.map((b) => ({
+  const [bookings, total] = await Promise.all([
+    prisma.booking.findMany({
+      where,
+      include: {
+        buyer: { select: { name: true, email: true } },
+        property: { select: { title: true } }
+      },
+      orderBy: { surveyDate: "asc" },
+      skip,
+      take: limit,
+    }),
+    prisma.booking.count({ where })
+  ]);
+
+  const data = bookings.map((b) => ({
     id: b.id,
     buyer: b.buyer.name || "Calon Pembeli",
     property: b.property.title,
@@ -346,12 +469,24 @@ export async function getOwnerSchedules() {
     time: b.timeSlot,
     status: b.status === "PENDING" ? "Menunggu Konfirmasi" : b.status === "CONFIRMED" ? "Disetujui" : b.status
   }));
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+  };
 }
 
 export async function updateBookingStatus(bookingId: string, status: string) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
+
+  const parsed = UpdateBookingStatusSchema.safeParse({ status });
+  if (!parsed.success) throw new Error(parsed.error.issues[0].message);
 
   const booking = await prisma.booking.findFirst({
     where: { id: bookingId, property: { ownerId } }
@@ -359,16 +494,18 @@ export async function updateBookingStatus(bookingId: string, status: string) {
 
   if (!booking) throw new Error("Booking tidak ditemukan atau unauthorized.");
 
+  // Here we simulate sending an email notification implicitly
+  // In a real scenario, we'd queue a background job: await sendEmailNotification(booking.buyerId, status);
+
   return prisma.booking.update({
     where: { id: bookingId },
-    data: { status }
+    data: { status: parsed.data.status as any }
   });
 }
 
 export async function getOwnerDocuments() {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const userId = (session.user as { id: string }).id;
+  const userId = enforceRole(session, "OWNER");
 
   const docs = await prisma.document.findMany({
     where: { userId },
@@ -385,8 +522,7 @@ export async function getOwnerDocuments() {
 
 export async function deleteOwnerProperty(propertyId: string) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
   const property = await prisma.property.findFirst({
     where: { id: propertyId, ownerId }
@@ -394,18 +530,26 @@ export async function deleteOwnerProperty(propertyId: string) {
 
   if (!property) throw new Error("Unauthorized atau properti tidak ditemukan.");
 
-  await prisma.property.update({
-    where: { id: propertyId },
-    data: { isDeleted: true }
-  });
+  await prisma.$transaction([
+    prisma.property.update({
+      where: { id: propertyId },
+      data: { isDeleted: true }
+    }),
+    prisma.booking.updateMany({
+      where: { 
+        propertyId: propertyId, 
+        status: { in: ["PENDING", "CONFIRMED"] } 
+      },
+      data: { status: "CANCELLED" }
+    })
+  ]);
 
-  return { success: true, message: "Properti berhasil dihapus." };
+  return { success: true, message: "Properti berhasil dihapus dan jadwal terkait dibatalkan." };
 }
 
 export async function getPropertyForEdit(propertyId: string) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
   const property = await prisma.property.findFirst({
     where: { id: propertyId, ownerId, isDeleted: false }
@@ -428,8 +572,7 @@ export async function getPropertyForEdit(propertyId: string) {
 
 export async function updateOwnerProperty(propertyId: string, formData: FormData) {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-  const ownerId = (session.user as { id: string }).id;
+  const ownerId = enforceRole(session, "OWNER");
 
   const property = await prisma.property.findFirst({
     where: { id: propertyId, ownerId, isDeleted: false }
@@ -437,23 +580,29 @@ export async function updateOwnerProperty(propertyId: string, formData: FormData
 
   if (!property) throw new Error("Unauthorized atau properti tidak ditemukan.");
 
-  const title = formData.get("title")?.toString() || property.title;
-  const description = formData.get("description")?.toString() || property.description;
-  const price = formData.get("price")?.toString();
-  const propertyType = formData.get("propertyType")?.toString() || property.propertyType;
-  const address = formData.get("address")?.toString() || property.address;
+  const payload = {
+    title: formData.get("title")?.toString(),
+    description: formData.get("description")?.toString(),
+    price: formData.get("price")?.toString(),
+    propertyType: formData.get("propertyType")?.toString(),
+    address: formData.get("address")?.toString(),
+  };
+
+  const parsed = UpdatePropertySchema.safeParse(payload);
+  if (!parsed.success) throw new Error(parsed.error.issues[0].message);
+
+  const { title, description, price, propertyType, address } = parsed.data;
 
   await prisma.property.update({
     where: { id: propertyId },
     data: {
-      title,
-      description,
-      price: price ? parseFloat(price) : property.price,
-      propertyType: propertyType.toUpperCase(),
-      address,
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(price && { price }),
+      ...(propertyType && { propertyType: propertyType.toUpperCase() as any }),
+      ...(address && { address }),
     }
   });
 
   return { success: true, message: "Properti berhasil diperbarui." };
 }
-

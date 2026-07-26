@@ -13,17 +13,12 @@ export class AuthService {
     const existingEmail = await prisma.user.findUnique({
       where: { email: data.email },
     });
-
-    if (existingEmail) {
-      throw new Error('Email sudah terdaftar.');
-    }
-
     const existingPhone = await prisma.user.findUnique({
       where: { phone: data.phone },
     });
 
-    if (existingPhone) {
-      throw new Error('Nomor telepon sudah terdaftar.');
+    if (existingEmail || existingPhone) {
+      throw new Error('Email atau nomor telepon sudah terdaftar.');
     }
 
     const passwordHash = await hashPassword(data.password);

@@ -8,8 +8,8 @@ export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED'
   if (!session?.user) throw new Error("Unauthorized");
   
   const userRole = (session.user as any).role;
-  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
-    throw new Error("Forbidden: Admin role required");
+  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN" && userRole !== "INTERNAL_AGENT") {
+    throw new Error("Forbidden: Admin or Internal Agent role required");
   }
 
   const property = await prisma.property.update({
@@ -25,8 +25,8 @@ export async function getVerificationQueue() {
   if (!session?.user) throw new Error("Unauthorized");
   
   const userRole = (session.user as any).role;
-  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
-    throw new Error("Forbidden: Admin role required");
+  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN" && userRole !== "INTERNAL_AGENT") {
+    throw new Error("Forbidden: Admin or Internal Agent role required");
   }
 
   const queue = await prisma.property.findMany({
@@ -65,8 +65,8 @@ export async function getAllProperties() {
   if (!session?.user) throw new Error("Unauthorized");
   
   const userRole = (session.user as any).role;
-  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
-    throw new Error("Forbidden: Admin role required");
+  if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN" && userRole !== "INTERNAL_AGENT") {
+    throw new Error("Forbidden: Admin or Internal Agent role required");
   }
 
   const properties = await prisma.property.findMany({

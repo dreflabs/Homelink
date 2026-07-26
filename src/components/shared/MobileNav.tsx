@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Building2, Search, PlusCircle, LayoutDashboard, LogOut, Sparkles } from "lucide-react";
+import { Menu, X, Search, PlusCircle, LayoutDashboard, LogOut, Sparkles } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader, SheetDescription } from "@/components/ui/sheet";
 
 interface MobileNavProps {
   session: any;
@@ -44,49 +44,24 @@ export function MobileNav({ session }: MobileNavProps) {
 
   // Portal Drawer Content (Rendered at document.body level)
   const drawerContent = (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] md:hidden">
-          {/* Backdrop Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
-            onClick={() => setIsOpen(false)}
-          />
-
-          {/* Solid White Mobile Drawer Panel */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed inset-y-0 right-0 w-full max-w-xs sm:max-w-sm bg-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto z-[101]"
-          >
-            <div>
-              {/* Drawer Header */}
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-                <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                  <div className="bg-blue-700 p-1.5 rounded-lg">
-                    <Building2 className="h-5 w-5 text-white" />
-                  </div>
-                  <span className="font-bold text-xl tracking-tight text-slate-900">
-                    HomeLink<span className="text-blue-700">.</span>
-                  </span>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsOpen(false)}
-                  className="text-slate-500 hover:text-slate-800 rounded-full"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-
-              {/* User Profile Card (if logged in) */}
+    <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm bg-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-slate-100 z-[101]">
+      <SheetHeader className="sr-only">
+        <SheetTitle>Mobile Navigation</SheetTitle>
+        <SheetDescription>Main navigation menu for mobile devices.</SheetDescription>
+      </SheetHeader>
+      <div>
+        {/* Drawer Header */}
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+          <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+            <Image
+              src="/LOGO_UTAMA_HOMELINK.png"
+              alt="HomeLink Logo"
+              width={120}
+              height={36}
+              className="h-8 w-auto object-contain"
+            />
+          </Link>
+        </div>
               {user && (
                 <div className="mb-6 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
                   <Avatar className="h-10 w-10 border border-slate-200">
@@ -105,10 +80,10 @@ export function MobileNav({ session }: MobileNavProps) {
               {/* Navigation Links */}
               <nav className="space-y-1.5">
                 <Link
-                  href="/properties/search"
+                  href="/search-result"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-medium hover:bg-blue-50 hover:text-blue-700 transition-colors text-sm"
                 >
-                  <Search className="h-4 w-4 text-slate-400" />
+                  <Search className="h-5 w-5 " />
                   <span>Cari Properti</span>
                 </Link>
 
@@ -146,7 +121,7 @@ export function MobileNav({ session }: MobileNavProps) {
                     href="/ai/valuation"
                     className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-blue-700 text-sm font-semibold hover:bg-blue-50 transition-colors"
                   >
-                    <Sparkles className="h-4 w-4 text-amber-500" />
+                    <Sparkles className="h-5 w-5 " />
                     <span>AI Valuation</span>
                   </Link>
                 </div>
@@ -161,7 +136,7 @@ export function MobileNav({ session }: MobileNavProps) {
                     href="/dashboard"
                     className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100 transition-colors text-sm"
                   >
-                    <LayoutDashboard className="h-4 w-4" />
+                    <LayoutDashboard className="h-5 w-5" />
                     <span>Buka Dashboard</span>
                   </Link>
                   <button
@@ -188,27 +163,20 @@ export function MobileNav({ session }: MobileNavProps) {
                 </div>
               )}
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+    </SheetContent>
   );
 
   return (
     <div className="md:hidden">
-      {/* Hamburger Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(true)}
-        className="text-slate-700 hover:text-blue-700 focus:outline-none rounded-full"
-        aria-label="Buka Menu Navigasi"
-      >
-        <Menu className="h-6 w-6" />
-      </Button>
-
-      {/* Render Drawer into document.body using React Portal */}
-      {mounted ? createPortal(drawerContent, document.body) : null}
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger
+          className="inline-flex shrink-0 items-center justify-center rounded-full text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-colors focus:outline-none p-2"
+          aria-label="Buka Menu Navigasi"
+        >
+          <Menu className="h-6 w-6" />
+        </SheetTrigger>
+        {drawerContent}
+      </Sheet>
     </div>
   );
 }

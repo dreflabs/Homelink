@@ -14,7 +14,7 @@ export async function createProperty(formData: FormData) {
   }
 
   const role = (session.user as any).role;
-  if (role && role !== "OWNER" && role !== "ADMIN" && role !== "SUPER_ADMIN") {
+  if (!role || (role !== "OWNER" && role !== "ADMIN" && role !== "SUPER_ADMIN")) {
     return { success: false, error: "Forbidden: Hanya Owner yang dapat membuat properti." };
   }
 
@@ -28,7 +28,7 @@ export async function createProperty(formData: FormData) {
     if (user) {
       ownerId = user.id;
     } else {
-      ownerId = "1";
+      return { success: false, error: "Unauthorized: User not found in database." };
     }
   } else if (!ownerId) {
     return { success: false, error: "Unauthorized: Identitas pengguna tidak valid." };
@@ -227,4 +227,37 @@ export async function saveSearch(params: z.infer<typeof SaveSearchSchema>) {
   });
 
   return { success: true, savedSearch };
+}
+
+export async function getNearbyProperties(lat: number, lng: number, radiusKm: number = 5) {
+  // Skeleton API call to fetch nearby properties
+  // In a real application, you would use PostGIS or a similar geospatial DB extension to query by distance.
+  // For now, we will just return mock data so the frontend logic is complete.
+  return {
+    success: true,
+    data: [
+      {
+        id: "prop-1-db",
+        title: "Rumah Mewah Minimalis (DB)",
+        price: 15000000000,
+        address: "0.5 km dari lokasi Anda",
+        bedrooms: 4,
+        bathrooms: 3,
+        buildingArea: 350,
+        media: [{ s3Url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" }],
+        status: "ACTIVE",
+      },
+      {
+        id: "prop-2-db",
+        title: "Apartemen Strategis (DB)",
+        price: 3500000000,
+        address: "1.2 km dari lokasi Anda",
+        bedrooms: 2,
+        bathrooms: 1,
+        buildingArea: 85,
+        media: [{ s3Url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" }],
+        status: "ACTIVE",
+      }
+    ]
+  };
 }

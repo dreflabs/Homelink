@@ -25,6 +25,8 @@ model User {
   email           String    @unique
   phone           String?   @unique
   name            String
+  image           String?
+  address         String?
   role            Role      @default(BUYER)
   passwordHash    String    @map("password_hash")
   isEmailVerified Boolean   @default(false) @map("is_email_verified")

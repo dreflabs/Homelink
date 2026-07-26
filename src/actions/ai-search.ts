@@ -10,8 +10,17 @@ export async function generatePropertyEmbedding(text: string): Promise<number[]>
 }
 
 export async function semanticSearch(query: string) {
-  // Mock semantic search
-  // Simulate delay
+  // STUB: Real RAG Integration goes here.
+  // Example flow:
+  // 1. const queryEmbedding = await generatePropertyEmbedding(query);
+  // 2. const dbResults = await prisma.$queryRaw`
+  //      SELECT id, title, price, address, image_url, status
+  //      FROM "Property" 
+  //      ORDER BY embedding <-> ${queryEmbedding}::vector LIMIT 5
+  //    `;
+  // 3. return dbResults;
+
+  // Mock semantic search simulate delay
   await new Promise(resolve => setTimeout(resolve, 1000));
 
   // Dummy data returning property list based on semantic "magic"

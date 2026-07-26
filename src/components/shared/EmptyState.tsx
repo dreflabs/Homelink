@@ -25,7 +25,7 @@ export function EmptyState({
       )}
     >
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm mb-4">
-        <Icon className="h-8 w-8 text-gray-400" strokeWidth={1.5} />
+        <Icon className="h-8 w-8 text-gray-400"  />
       </div>
       <h3 className="text-lg font-semibold text-gray-900 mb-1">{title}</h3>
       <p className="text-sm text-gray-500 max-w-sm mx-auto mb-6">

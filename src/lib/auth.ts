@@ -19,30 +19,6 @@ export const {
     strategy: "jwt",
     maxAge: REFRESH_TOKEN_TTL, 
   },
-  jwt: {
-    maxAge: ACCESS_TOKEN_TTL,
-    async encode({ secret, token, maxAge }) {
-      const encodedToken = await new SignJWT(token as any)
-        .setProtectedHeader({ alg: "HS512" })
-        .setIssuedAt()
-        .setExpirationTime(Math.floor(Date.now() / 1000) + (maxAge || ACCESS_TOKEN_TTL))
-        .sign(new TextEncoder().encode(secret as string));
-      return encodedToken;
-    },
-    async decode({ secret, token }) {
-      if (!token) return null;
-      try {
-        const { payload } = await jwtVerify(
-          token,
-          new TextEncoder().encode(secret as string),
-          { algorithms: ["HS512"] }
-        );
-        return payload as any as import("next-auth/jwt").JWT;
-      } catch (error) {
-        return null;
-      }
-    }
-  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,13 +39,17 @@ export const {
             where: { email },
           });
 
-          if (!user || !user.passwordHash) {
+          if (!user || !user.passwordHash || user.isDeleted) {
             return null;
           }
 
           const passwordsMatch = await verifyPassword(user.passwordHash, password);
 
           if (!passwordsMatch) {
+            return null;
+          }
+
+          if (!user.isEmailVerified) {
             return null;
           }
 

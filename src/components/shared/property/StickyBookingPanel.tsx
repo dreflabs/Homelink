@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck } from "lucide-react";
 
 export function StickyBookingPanel({ price }: { price: number }) {
   // Format price
@@ -10,7 +10,7 @@ export function StickyBookingPanel({ price }: { price: number }) {
   }).format(price);
 
   return (
-    <div className="sticky top-24 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 flex flex-col gap-6">
+    <div className="sticky top-24 bg-white rounded-2xl shadow-card border border-slate-100 p-6 flex flex-col gap-6">
       <div>
         <p className="text-slate-500 text-sm font-medium mb-1">Harga Mulai</p>
         <h3 className="text-3xl font-bold text-slate-900">{formattedPrice}</h3>

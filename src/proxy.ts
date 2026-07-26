@@ -1,22 +1,14 @@
-import NextAuth from "next-auth";
-import { authConfig } from "../auth.config";
-import { jsendFail } from "@/lib/jsend";
+import NextAuth from 'next-auth';
+import { authConfig } from '../auth.config';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
 
-const { auth } = NextAuth(authConfig);
+const intlMiddleware = createMiddleware(routing);
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-
-  if (nextUrl.pathname.startsWith("/api/")) {
-    if (!isLoggedIn) {
-      return Response.json({ status: "fail", data: { message: "Unauthorized" } }, { status: 401 });
-    }
-  }
+export default NextAuth(authConfig).auth((req) => {
+  return intlMiddleware(req);
 });
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
 };

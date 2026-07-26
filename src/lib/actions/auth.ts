@@ -3,7 +3,12 @@
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
+import { isRateLimited } from "@/lib/rate-limit";
+
+const LOGIN_RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const LOGIN_MAX_ATTEMPTS = 10;
 
 
 
@@ -20,6 +25,11 @@ export async function authenticate(
   formData: FormData,
 ) {
   const email = formData.get("email") as string;
+
+  const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
+  if (isRateLimited(`login:${ip}:${email}`, LOGIN_MAX_ATTEMPTS, LOGIN_RATE_LIMIT_WINDOW)) {
+    return "Terlalu banyak percobaan login. Silakan coba lagi dalam beberapa saat.";
+  }
 
   try {
     await signIn("credentials", {

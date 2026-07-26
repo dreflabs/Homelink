@@ -76,19 +76,17 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error: any) {
-    if (error.message === 'Email sudah terdaftar.' || error.message === 'Nomor telepon sudah terdaftar.') {
+    if (error.message === 'Email atau nomor telepon sudah terdaftar.') {
       return NextResponse.json(
         {
           status: 'fail',
           message: error.message,
-          errors: {
-            [error.message.includes('Email') ? 'email' : 'phone']: [error.message],
-          },
         },
         { status: 409 }
       );
     }
 
+    console.error('[REGISTER_ERROR]', error);
     return NextResponse.json(
       {
         status: 'error',

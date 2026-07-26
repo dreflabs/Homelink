@@ -68,7 +68,7 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
           <Search 
             className={`absolute left-4 w-5 h-5 transition-colors ${isFocused ? "text-blue-700" : "text-muted-foreground"}`} 
             aria-hidden="true" 
-            strokeWidth={1.5}
+            
           />
           <input
             type="text"
@@ -88,12 +88,12 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
   return (
     <div className="w-full relative z-10 px-4 md:px-0">
       <form onSubmit={handleSubmit} className="relative max-w-4xl mx-auto">
-        <div className="relative flex items-center w-full rounded-full bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-2">
+        <div className="relative flex items-center w-full rounded-full bg-white shadow-card p-2">
           <div className="relative flex-1 flex items-center h-14 md:h-16 pl-4 md:pl-6">
             <Search 
               className={`w-5 h-5 md:w-6 md:h-6 transition-colors ${isFocused ? "text-blue-700" : "text-muted-foreground"}`} 
               aria-hidden="true" 
-              strokeWidth={1.5}
+              
             />
             <div className="relative w-full h-full flex items-center ml-3">
               <input
@@ -116,7 +116,7 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
           </div>
           <Button 
             type="submit" 
-            className="h-12 md:h-14 px-8 rounded-full bg-blue-700 hover:bg-blue-800 text-white font-semibold text-base md:text-lg transition-colors flex-shrink-0"
+            className="h-12 md:h-14 px-8 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold text-base md:text-lg transition-colors flex-shrink-0"
           >
             Cari
           </Button>

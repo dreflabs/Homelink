@@ -17,7 +17,8 @@ export function FavoriteButton({ initialLiked = false }: { initialLiked?: boolea
     <button
       type="button"
       onClick={toggleWishlist}
-      aria-label="Tambah ke Favorit"
+      aria-label={isLiked ? "Hapus dari Favorit" : "Tambah ke Favorit"}
+      aria-pressed={isLiked}
       className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-white/80 hover:bg-white text-slate-700 hover:text-red-500 backdrop-blur-md transition-all shadow-sm active:scale-90"
     >
       <Heart className={`w-4 h-4 transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-slate-600"}`} />

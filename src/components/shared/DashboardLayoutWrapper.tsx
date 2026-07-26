@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 export interface SidebarLink {
@@ -88,6 +89,24 @@ export function DashboardLayoutWrapper({
             );
           })}
         </nav>
+
+        <div className={cn(
+          "p-4 border-t shrink-0",
+          isDark ? "border-slate-800" : "border-gray-100"
+        )}>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium",
+              isDark 
+                ? "text-red-400 hover:bg-slate-800 hover:text-red-300" 
+                : "text-red-600 hover:bg-red-50 hover:text-red-700"
+            )}
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Keluar</span>
+          </button>
+        </div>
       </aside>
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative h-full">

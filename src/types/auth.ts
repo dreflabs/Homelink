@@ -18,6 +18,9 @@ export const registerSchema = z.object({
     .regex(/[0-9]/, "Harus mengandung minimal 1 angka.")
     .refine(pw => !["password123", "12345678"].includes(pw.toLowerCase()), "Password terlalu umum, gunakan kombinasi yang lebih unik."),
   confirmPassword: z.string(),
+  agreedToTerms: z.boolean().refine(val => val === true, {
+    message: "Anda harus menyetujui Syarat & Ketentuan",
+  }),
 }).refine(d => d.password === d.confirmPassword, {
   message: "Konfirmasi password tidak cocok.",
   path: ["confirmPassword"],

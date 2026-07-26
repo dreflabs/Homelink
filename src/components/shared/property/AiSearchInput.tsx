@@ -27,7 +27,7 @@ export function AiSearchInput({ onSearch, isLoading }: AiSearchInputProps) {
         className="relative flex items-center bg-white p-2 rounded-3xl shadow-lg border border-slate-200 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent transition-all"
       >
         <div className="flex items-center pl-4 pr-2">
-          <Sparkles className="w-6 h-6 text-indigo-500" />
+          <Sparkles className="w-6 h-6 " />
         </div>
         <input
           type="text"

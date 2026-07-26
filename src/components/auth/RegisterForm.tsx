@@ -6,9 +6,11 @@ import { registerSchema, RegisterFormData } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OAuthButtons } from "@/components/shared/OAuthButtons";
-import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import { UserRound, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -39,9 +41,41 @@ export function RegisterForm() {
     else if (score === 3) setPasswordStrength("strong");
   }, [passwordValue]);
 
+  const router = useRouter();
+
   const onSubmit = async (data: RegisterFormData) => {
-    // TODO: implement register logic
-    console.log(data);
+    try {
+      const response = await fetch("/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          role: data.role,
+          password: data.password,
+          agreedToTerms: data.agreedToTerms,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Registrasi berhasil!", {
+          description: result.message || "Silakan periksa email Anda untuk verifikasi.",
+        });
+        router.push("/verify-email");
+      } else {
+        toast.error("Gagal melakukan registrasi", {
+          description: result.message || "Silakan periksa kembali data yang Anda masukkan.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Kesalahan Jaringan", {
+        description: "Tidak dapat terhubung ke server. Silakan coba lagi.",
+      });
+    }
   };
 
   return (
@@ -65,7 +99,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1 relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" aria-hidden="true" />
+          <UserRound className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 " aria-hidden="true" />
           <Input 
             {...register("name")}
             type="text" 
@@ -76,7 +110,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1 relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" aria-hidden="true" />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 " aria-hidden="true" />
           <Input 
             {...register("email")}
             type="email" 
@@ -87,7 +121,7 @@ export function RegisterForm() {
         </div>
 
         <div className="space-y-1 relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" aria-hidden="true" />
+          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 " aria-hidden="true" />
           <Input 
             {...register("phone")}
             type="tel" 
@@ -143,16 +177,19 @@ export function RegisterForm() {
           {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
         </div>
 
-        <div className="flex items-start space-x-2 pt-2">
-          <input 
-            type="checkbox" 
-            id="terms" 
-            required
-            className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-700"
-          />
-          <label htmlFor="terms" className="text-sm text-slate-600">
-            Saya menyetujui <Link href="/terms" className="text-blue-700 hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="text-blue-700 hover:underline">Kebijakan Privasi</Link> HomeLink.
-          </label>
+        <div className="flex flex-col space-y-1 pt-2">
+          <div className="flex items-start space-x-2">
+            <input 
+              type="checkbox" 
+              id="terms" 
+              {...register("agreedToTerms")}
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-700"
+            />
+            <label htmlFor="terms" className="text-sm text-slate-600">
+              Saya menyetujui <Link href="/terms" className="text-blue-700 hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="text-blue-700 hover:underline">Kebijakan Privasi</Link> HomeLink.
+            </label>
+          </div>
+          {errors.agreedToTerms && <p className="text-red-500 text-sm">{errors.agreedToTerms.message}</p>}
         </div>
 
         <Button type="submit" disabled={isSubmitting} className="w-full h-12 bg-blue-700 hover:bg-blue-800 text-white rounded-xl font-semibold mt-4">

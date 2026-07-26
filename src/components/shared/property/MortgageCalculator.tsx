@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TrendingUp, Percent, Calculator } from "lucide-react";
+import { ChartCandlestick, Percent, Calculator } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice?: number }) {
@@ -72,9 +72,9 @@ export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice
           </DialogHeader>
 
           {/* Result Card */}
-          <div className="bg-blue-700 rounded-2xl p-6 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <div className="bg-primary rounded-2xl p-6 text-white shadow-card">
             <div className="flex items-center gap-2 mb-2 text-blue-100">
-              <TrendingUp className="h-5 w-5" aria-hidden="true" />
+              <ChartCandlestick className="h-5 w-5" aria-hidden="true" />
               <span className="font-medium">Estimasi Cicilan Bulanan</span>
             </div>
             <div className="text-3xl md:text-4xl font-bold tracking-tight mb-6 transition-all duration-300">

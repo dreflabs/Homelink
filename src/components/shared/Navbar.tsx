@@ -1,38 +1,37 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Building2, Search, LayoutDashboard, LogOut } from "lucide-react";
+import { Search, LayoutDashboard, LogOut } from "lucide-react";
+import Image from "next/image";
 import { auth, signOut } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { UserNav } from "@/components/shared/UserNav";
 import { MobileNav } from "@/components/shared/MobileNav";
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { getTranslations } from 'next-intl/server';
 
 export async function Navbar() {
   const session = await auth();
   const user = session?.user;
+  const t = await getTranslations('Navbar');
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-blue-700 p-1.5 rounded-lg">
-            <Building2 className="h-5 w-5 text-white" />
-          </div>
-          <span className="font-bold text-xl tracking-tight text-slate-900">
-            HomeLink<span className="text-blue-700">.</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/LOGO_UTAMA_HOMELINK.png"
+            alt="HomeLink Logo"
+            width={140}
+            height={40}
+            className="h-9 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/properties/search" className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
+          <Link href="/search-result" className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
             Cari Properti
           </Link>
           <Link href={user ? "/owner/properties/new" : "/login?callbackUrl=/owner/properties/new"} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors">
@@ -40,51 +39,14 @@ export async function Navbar() {
           </Link>
           <div className="h-4 w-px bg-slate-200"></div>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                  <Avatar className="h-10 w-10 border border-slate-200">
-                    <AvatarImage src={user.image || ""} alt={user.name || "User"} />
-                    <AvatarFallback className="bg-blue-100 text-blue-700 font-bold">
-                      {user.name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link href="/dashboard" className="cursor-pointer">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <form action={async () => {
-                      "use server";
-                      await signOut();
-                    }}>
-                      <button className="flex w-full cursor-pointer items-center text-red-600">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </button>
-                    </form>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <UserNav user={{ name: user.name, email: user.email, image: user.image }} />
             ) : (
               <>
                 <Link href="/login">
                   <Button variant="ghost" className="text-slate-600 hover:text-blue-700 font-semibold">
-                    Masuk
+                    {t('login')}
                   </Button>
                 </Link>
                 <Link href="/register">

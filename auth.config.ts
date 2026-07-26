@@ -21,8 +21,9 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const role = (auth?.user as any)?.role;
       const pathname = nextUrl.pathname;
+      console.log(`[DEBUG_AUTH_CONFIG] Path: ${pathname}, LoggedIn: ${isLoggedIn}`);
+      const role = (auth?.user as any)?.role;
       
       const isProtectedRoute = 
         pathname.startsWith('/dashboard') || 
@@ -59,6 +60,12 @@ export const authConfig = {
           return Response.redirect(new URL('/unauthorized', nextUrl));
         }
         if (pathname.startsWith('/photographer') && role !== 'PHOTOGRAPHER' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
+          return Response.redirect(new URL('/unauthorized', nextUrl));
+        }
+        if (pathname.startsWith('/billing') && role !== 'OWNER' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
+          return Response.redirect(new URL('/unauthorized', nextUrl));
+        }
+        if (pathname.startsWith('/ai') && role !== 'OWNER' && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
           return Response.redirect(new URL('/unauthorized', nextUrl));
         }
 

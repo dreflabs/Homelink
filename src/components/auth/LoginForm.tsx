@@ -9,6 +9,9 @@ import { OAuthButtons } from "@/components/shared/OAuthButtons";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,9 +19,37 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  const router = useRouter();
+  const [globalError, setGlobalError] = useState<string | null>(null);
+
   const onSubmit = async (data: LoginFormData) => {
-    // TODO: implement login logic
-    console.log(data);
+    setGlobalError(null);
+    try {
+      const response = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (response?.error) {
+        setGlobalError("Email atau password yang Anda masukkan salah.");
+        toast.error("Gagal Masuk", {
+          description: "Silakan periksa kembali email dan password Anda.",
+        });
+      } else if (response?.ok) {
+        toast.success("Berhasil Masuk!", {
+          description: "Selamat datang kembali di HomeLink.",
+        });
+        // We can force a router refresh and push, or push and refresh
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (error) {
+      setGlobalError("Terjadi kesalahan jaringan. Silakan coba lagi.");
+      toast.error("Kesalahan Sistem", {
+        description: "Tidak dapat terhubung ke server.",
+      });
+    }
   };
 
   return (
@@ -29,8 +60,14 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {globalError && (
+          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-xl border border-red-100">
+            {globalError}
+          </div>
+        )}
+
         <div className="space-y-1 relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" aria-hidden="true" />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 " aria-hidden="true" />
           <Input 
             {...register("email")}
             type="email" 
