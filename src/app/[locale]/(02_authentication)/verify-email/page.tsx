@@ -190,10 +190,8 @@ function VerifyEmailContent() {
 
       {/* Right Showcase Area */}
       <AuthShowcase 
-        quote="Akses eksklusif Anda ke properti terkurasi dimulai dari sini. Setiap detail diperhatikan dengan seksama."
-        author="HomeLink Concierge"
-        role="Client Services"
-        imageSrc="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+        quote="Keamanan data dan privasi Anda adalah prioritas utama kami."
+        author="HomeLink Security"
       />
     </div>
   );

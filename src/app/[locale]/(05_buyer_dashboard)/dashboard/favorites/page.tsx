@@ -66,7 +66,7 @@ export default async function FavoritesPage() {
             {/* Image Container */}
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
               <Image
-                src={property.imageUrl || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800"}
+                src={property.imageUrl || "/property_1.jpg"}
                 alt={property.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"

@@ -91,10 +91,8 @@ function ResetPasswordForm() {
     <div className="flex min-h-screen bg-white">
       {/* Right Showcase Area (Swapped position to keep layout dynamic) */}
       <AuthShowcase 
-        quote="HomeLink menetapkan standar baru dalam pengalaman kepemilikan dan pengelolaan properti mewah."
-        author="Amanda Wijaya"
-        role="Property Developer"
-        imageSrc="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+        quote="Keamanan data dan privasi Anda adalah prioritas utama kami."
+        author="HomeLink Security"
       />
 
       {/* Left Form Area */}

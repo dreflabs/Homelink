@@ -106,7 +106,7 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
                         bath: property.bathrooms || 0,
                         area: property.buildingArea || 0
                       }}
-                      imageUrl={property.media?.[0]?.s3Url || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"}
+                      imageUrl={property.media?.[0]?.s3Url || "/property_1.jpg"}
                       isVerified={property.status === "ACTIVE"}
                     />
                 ))}

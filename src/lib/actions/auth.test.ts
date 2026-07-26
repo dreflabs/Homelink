@@ -19,6 +19,11 @@ vi.mock('@/lib/auth', () => ({ signIn }));
 const { redirect } = vi.hoisted(() => ({ redirect: vi.fn() }));
 vi.mock('next/navigation', () => ({ redirect }));
 
+const { headersGet } = vi.hoisted(() => ({ headersGet: vi.fn().mockReturnValue(null) }));
+vi.mock('next/headers', () => ({
+  headers: vi.fn().mockResolvedValue({ get: headersGet }),
+}));
+
 const { prismaFindUnique } = vi.hoisted(() => ({ prismaFindUnique: vi.fn() }));
 vi.mock('@prisma/client', () => ({
   PrismaClient: vi.fn().mockImplementation(() => ({

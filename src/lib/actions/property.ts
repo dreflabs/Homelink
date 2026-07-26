@@ -244,7 +244,7 @@ export async function getNearbyProperties(lat: number, lng: number, radiusKm: nu
         bedrooms: 4,
         bathrooms: 3,
         buildingArea: 350,
-        media: [{ s3Url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" }],
+        media: [{ s3Url: "/property_1.jpg" }],
         status: "ACTIVE",
       },
       {
@@ -255,7 +255,7 @@ export async function getNearbyProperties(lat: number, lng: number, radiusKm: nu
         bedrooms: 2,
         bathrooms: 1,
         buildingArea: 85,
-        media: [{ s3Url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80" }],
+        media: [{ s3Url: "/property_2.jpg" }],
         status: "ACTIVE",
       }
     ]

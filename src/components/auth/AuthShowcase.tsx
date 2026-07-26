@@ -5,6 +5,7 @@ interface AuthShowcaseProps {
   quote?: string;
   author?: string;
   role?: string;
+  imageSrc?: string;
 }
 
 const STATS = [
@@ -23,12 +24,13 @@ export function AuthShowcase({
   quote = "Menemukan rumah impian adalah sebuah seni. Di HomeLink, kami membuatnya tanpa cela.",
   author = "Sophia Chen",
   role = "Verified Client",
+  imageSrc = "/auth-showcase.jpg",
 }: AuthShowcaseProps) {
   return (
     <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900">
       {/* AI-Generated Property Image */}
       <Image
-        src="/auth-showcase.jpg"
+        src={imageSrc}
         alt="Luxury Property by HomeLink"
         fill
         className="object-cover"

@@ -426,7 +426,7 @@ export async function getOwnerPropertyStatuses(page: number = 1, limit: number =
     views: p._count.viewLogs,
     inquiries: p._count.leads + p._count.bookings,
     location: p.address,
-    image: p.media[0]?.s3Url || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80"
+    image: p.media[0]?.s3Url || "/property_1.jpg"
   }));
 
   return {

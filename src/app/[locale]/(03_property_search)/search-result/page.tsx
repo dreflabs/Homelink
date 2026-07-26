@@ -97,7 +97,7 @@ export default async function SearchResultPage({ searchParams }: SearchResultPag
                       bath: prop.bathrooms || 0,
                       area: prop.buildingArea || 0
                     }}
-                    imageUrl={prop.media?.[0]?.s3Url || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"}
+                    imageUrl={prop.media?.[0]?.s3Url || "/property_1.jpg"}
                     isVerified={prop.status === "ACTIVE"}
                   />
                 ))}

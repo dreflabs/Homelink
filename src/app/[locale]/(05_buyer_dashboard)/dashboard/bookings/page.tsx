@@ -66,7 +66,7 @@ export default function BookingsPage() {
         {/* Image Section */}
         <div className="w-full md:w-64 h-48 md:h-auto relative shrink-0">
           <img 
-            src={booking.imageUrl || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
+            src={booking.imageUrl || "/property_1.jpg"} 
             alt={booking.title} 
             className="w-full h-full object-cover"
           />
