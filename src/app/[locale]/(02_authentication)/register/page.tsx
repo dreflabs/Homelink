@@ -190,7 +190,7 @@ export default function RegisterPage() {
               <div className="text-xs font-bold tracking-widest uppercase text-slate-400">
                 Langkah {currentStep} dari 3
               </div>
-              <div className="w-9" /> // spacer
+              <div className="w-9" />
             </div>
 
             <div className="mb-6 lg:mb-8 text-center">
