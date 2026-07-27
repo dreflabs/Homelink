@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 
     const where: any = {
       isDeleted: false,
-      ...(status ? { status } : { status: 'FULLY_VERIFIED' }),
+      ...(status ? { status } : { status: 'PUBLISHED' }),
       ...(ownerId ? { ownerId } : {}),
       ...(propertyType ? { propertyType } : {})
     };

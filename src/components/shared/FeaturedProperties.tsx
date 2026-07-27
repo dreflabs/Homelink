@@ -35,8 +35,8 @@ export async function FeaturedPropertiesGrid({ filter = "terbaru" }: { filter?: 
   // In a full implementation, you might filter by tags or specific locations
   
   const featuredProperties = await prisma.property.findMany({
-    where: { 
-      status: { in: ["FULLY_VERIFIED", "PHYSICAL_VERIFIED"] } 
+    where: {
+      status: 'PUBLISHED'
     },
     take: 8,
     orderBy,
@@ -73,7 +73,7 @@ export async function FeaturedPropertiesGrid({ filter = "terbaru" }: { filter?: 
               area: (prop as any).buildingArea ?? (prop as any).landArea ?? 0 
             }}
             imageUrl={prop.media?.[0]?.s3Url || "/property_1.jpg"}
-            isVerified={prop.status === 'FULLY_VERIFIED'}
+            isVerified={prop.status === 'PUBLISHED'}
             isFeatured={true}
           />
         </FadeIn>
