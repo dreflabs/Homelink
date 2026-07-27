@@ -72,8 +72,19 @@ const addPropertySchema = z.object({
 - **Size:** 20px, `text-green-600`.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Layout:** Mobile — satu langkah terlihat penuh layar dengan tombol Lanjut sticky di bawah; Desktop — sidebar stepper vertikal di kiri (semua 4 langkah terlihat sekaligus) + panel form di kanan.
 - **Background:** `White` dengan card form `rounded-2xl`, padding lega.
 - **Dropzone:** Border dashed `slate-300`, berubah `blue-700` + background `blue-50` saat drag-over.
 - **Warna Aksi:** Tombol "Lanjut"/"Ajukan Properti" — `Royal Blue` solid; tombol "Kembali" — outline `slate-300`.
 - **Feedback Upload:** Progress bar Royal Blue tipis (4px) di bawah setiap thumbnail file.
+
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

@@ -56,3 +56,11 @@ app/(01_public_website)/about-us/page.tsx
 Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow": background dominan putih, warna aksi `Royal Blue` (`blue-700`), teks `Dark Navy` (`slate-900`, bukan hitam pekat), surface sekunder `slate-50`, card dengan *diffused soft shadow*, border radius besar (`16-24px`), dan fotografi hangat.
 
 **Spesifik halaman ini:** Layout naratif satu kolom (max-width ~720px) untuk keterbacaan teks panjang seperti storytelling perusahaan, dengan grid foto tim (3-4 kolom desktop) sebagai elemen visual pemecah teks.
+
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

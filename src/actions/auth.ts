@@ -14,16 +14,16 @@ export async function forgotPassword(email: string) {
   const ip = (await headers()).get('x-forwarded-for') ?? 'unknown';
   if (isRateLimited(`forgot-password:${ip}`, FORGOT_PASSWORD_MAX_ATTEMPTS, FORGOT_PASSWORD_RATE_LIMIT_WINDOW)) {
     // Same generic message as the success path, so rate limiting doesn't leak account existence either
-    return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
+    return { success: true, message: 'Jika alamat email tersebut terdaftar dalam database kami, kami akan mengirimkan email untuk mengatur ulang kata sandi Anda.' };
   }
 
   const user = await prisma.user.findUnique({
     where: { email },
   });
 
-  if (!user) {
-    // For security reasons, don't reveal that the user does not exist
-    return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
+  if (!user || user.isDeleted) {
+    // For security reasons, don't reveal that the user does not exist or is deleted
+    return { success: true, message: 'Jika alamat email tersebut terdaftar dalam database kami, kami akan mengirimkan email untuk mengatur ulang kata sandi Anda.' };
   }
 
   const rawToken = crypto.randomUUID();
@@ -45,13 +45,13 @@ export async function forgotPassword(email: string) {
 
   await sendPasswordResetEmail(user.email, rawToken);
 
-  return { success: true, message: 'If that email address is in our database, we will send you an email to reset your password.' };
+  return { success: true, message: 'Jika alamat email tersebut terdaftar dalam database kami, kami akan mengirimkan email untuk mengatur ulang kata sandi Anda.' };
 }
 
 export async function resetPassword(token: string, newPassword: string) {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
   if (!passwordRegex.test(newPassword)) {
-    return { error: 'Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, and one number.' };
+    return { error: 'Kata sandi harus minimal 8 karakter, mengandung setidaknya satu huruf besar, satu huruf kecil, dan satu angka.' };
   }
 
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -60,21 +60,21 @@ export async function resetPassword(token: string, newPassword: string) {
   });
 
   if (!existingToken) {
-    return { error: 'Invalid token!' };
+    return { error: 'Token tidak valid!' };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Token has expired!' };
+    return { error: 'Token telah kedaluwarsa!' };
   }
 
   const user = await prisma.user.findUnique({
     where: { email: existingToken.identifier },
   });
 
-  if (!user) {
-    return { error: 'User does not exist!' };
+  if (!user || user.isDeleted) {
+    return { error: 'Pengguna tidak ditemukan atau akun telah dinonaktifkan!' };
   }
 
   const passwordHash = await argon2.hash(newPassword);
@@ -88,7 +88,7 @@ export async function resetPassword(token: string, newPassword: string) {
     where: { id: existingToken.id },
   });
 
-  return { success: true, message: 'Password updated successfully!' };
+  return { success: true, message: 'Kata sandi berhasil diperbarui!' };
 }
 
 export async function verifyEmail(token: string) {
@@ -98,21 +98,21 @@ export async function verifyEmail(token: string) {
   });
 
   if (!existingToken) {
-    return { error: 'Token does not exist!' };
+    return { error: 'Token tidak ditemukan!' };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Token has expired!' };
+    return { error: 'Token telah kedaluwarsa!' };
   }
 
   const user = await prisma.user.findUnique({
     where: { email: existingToken.identifier },
   });
 
-  if (!user) {
-    return { error: 'User does not exist!' };
+  if (!user || user.isDeleted) {
+    return { error: 'Pengguna tidak ditemukan atau akun telah dinonaktifkan!' };
   }
 
   await prisma.user.update({
@@ -127,7 +127,7 @@ export async function verifyEmail(token: string) {
     where: { id: existingToken.id },
   });
 
-  return { success: true, message: 'Email verified successfully!' };
+  return { success: true, message: 'Email berhasil diverifikasi!' };
 }
 
 export async function resendVerificationEmail(email: string) {
@@ -140,8 +140,8 @@ export async function resendVerificationEmail(email: string) {
     where: { email },
   });
 
-  if (!user) {
-    // For security reasons, don't reveal that the user does not exist
+  if (!user || user.isDeleted) {
+    // For security reasons, don't reveal that the user does not exist or is deleted
     return { success: true, message: 'Jika email tersebut terdaftar, kami telah mengirimkan tautan verifikasi baru.' };
   }
 

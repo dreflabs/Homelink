@@ -4,69 +4,48 @@
 ## 1. Title & Purpose
 **Page Name:** Home
 **Module:** 01 PUBLIC WEBSITE
-**Purpose:** Menjadi halaman pendaratan (landing page) utama HomeLink yang menampilkan hero search untuk pencarian properti, daftar properti unggulan (`isFeatured`), dan ringkasan proposisi nilai platform (verifikasi properti, booking survei) untuk mengonversi pengunjung anonim menjadi Buyer atau Owner terdaftar.
+**Purpose:** Menjadi panggung utama (showcase) naratif HomeLink 2.0. Halaman ini bukan sekadar alat pencarian, melainkan sebuah **"Perjalanan Naratif Properti Premium" (Narrative Journey)** yang membuktikan nilai "Trust & Verified Property" dari ujung ke ujung untuk meyakinkan pembeli dan pemilik.
 
 ## 2. Next.js Routing Path
 ```text
 app/(01_public_website)/home/page.tsx
 ```
 
-## 3. Required UI Components (Shadcn/ui)
-- `SearchHero` (prop `onSearchSubmit`, animated typing placeholder — komponen kustom di atas Shadcn Input)
-- `PropertyCard` (grid properti unggulan — props `title, price, address, specs{bed,bath,area}, imageUrl, isVerified, isFeatured`)
-- `Badge` (variant `verified` pada kartu properti yang sudah `FULLY_VERIFIED`)
-- `Button` (variant `default` untuk CTA "Jual Properti Anda", variant `outline` untuk "Lihat Semua Properti")
-- `Skeleton` (loading state grid kartu properti saat fetch awal)
-- `Carousel` (opsional, untuk highlight properti unggulan di layar mobile)
+## 3. Narrative Architecture (The 9 Sections)
+Halaman ini dibagi secara ketat menjadi 9 seksi berurutan:
 
-## 4. Data & State Management
-- **Server State (RSC):** Halaman ini melakukan fetch awal ke `GET /api/v1/properties?limit=8&sort=featured` di server component untuk menampilkan properti unggulan tanpa *client-side waterfall*. Field yang ditarik dari entity `PROPERTY`: `id, title, price, propertyType, status, address, latitude, longitude` beserta thumbnail dari `PROPERTY_MEDIA`.
-- **Local State:** Query pencarian sementara (`searchTerm`, `selectedCity`) sebelum navigasi ke halaman hasil pencarian; tidak disimpan di server.
-- **Form Handling:** Search hero bukan form transaksional — cukup validasi ringan client-side (non-empty string) sebelum redirect ke `/properties?q=...`, tidak memerlukan skema Zod penuh.
-- **Filtering:** Hanya properti dengan `status = FULLY_VERIFIED` atau `PHYSICAL_VERIFIED` yang ditampilkan sebagai unggulan ke Guest; `PENDING`/`REJECTED` disembunyikan dari publik.
+1. **Hero (The Gateway)**: Layar penuh (`min-h-[90vh]`) dengan latar belakang foto properti mewah yang imersif dan efek gradient ke atas dari `slate-950`. Wajib memanggil komponen `<Logo />`. Fokus utama adalah Search Bar dan *Verified Badge*.
+2. **Featured Verified Property (The Crown Jewel)**: Kartu raksasa yang menyoroti satu properti terbaik secara mendalam, alih-alih daftar grid biasa.
+3. **How HomeLink Verify (The Proof)**: Visualisasi langkah-demi-langkah (Timeline/Checklist) yang membuktikan bagaimana HomeLink memeriksa legalitas dan fisik properti.
+4. **Property Category (The Exploration)**: Eksplorasi properti bergaya Airbnb (misal: "Penthouse", "Beachfront", "City Center") yang interaktif.
+5. **AI Instant Valuation (The Technology)**: Demonstrasi langsung (Live Demo) AI dengan elemen visual nyata: Foto properti, Mini Chart, Estimasi Harga, dan AI Confidence Score.
+6. **Exclusive Collection (The Gallery)**: Grid koleksi properti premium dengan animasi hover zoom, peta interaktif, dan agen terverifikasi.
+7. **Property Insight (The Authority)**: Wawasan pasar ringkas (grafik, tren yield sewa) yang membangun kredibilitas sebagai pakar properti.
+8. **Become Owner CTA (The Conversion)**: Penutup yang emosional dengan foto kota dari udara (drone view) atau rumah mewah, mengajak pemilik mendaftarkan asetnya.
+9. **Footer (Brand Story)**: Bukan sekadar kumpulan tautan, melainkan penguatan manifesto merek, logo elegan, dan sertifikasi keamanan.
 
-## 5. API Endpoints Referenced
-- `GET /api/v1/properties` — mengambil daftar properti unggulan/terbaru untuk grid beranda (cursor pagination `{data:[...], meta:{nextCursor,hasNextPage}}`).
+## 4. Required UI Components
+- `SearchHero` — Mengambang di atas foto hero dengan efek "Ultra-Glassmorphism" dan shadow level `float`.
+- `PropertyCard` — Grid properti premium dengan interaksi *hover* skala besar.
+- `Badge` — Penanda "Verified" yang harus muncul berulang kali di seluruh perjalanan naratif.
+- `Button` — Menggunakan radius penuh (`rounded-full`) dan *drop-shadow* lembut.
+
+## 5. Data & State Management
+- **Server State (RSC):** Halaman memanggil API (contoh: `GET /api/v1/properties/featured`) secara internal di Server Component.
+- **Client State:** Animasi (Intersection Observer/Framer Motion jika digunakan), tab kategori interaktif, dan demo AI dijalankan secara klien.
 
 ## 6. Acceptance Criteria (DoD)
-- [ ] Hero search dan grid properti unggulan dirender tanpa *hydration error*.
-- [ ] Loading state: skeleton grid tampil selama fetch `GET /api/v1/properties`, digantikan data asli tanpa layout shift (CLS rendah).
-- [ ] Empty state: jika tidak ada properti berstatus verified, tampilkan pesan "Belum ada properti unggulan saat ini" alih-alih grid kosong.
-- [ ] Error state: jika API gagal (`INTERNAL_ERROR`/`DATABASE_TIMEOUT`), tampilkan pesan ramah dan tombol "Coba lagi", bukan halaman kosong.
-- [ ] Submit search hero mengarahkan ke halaman hasil pencarian dengan query string yang benar.
-- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90; hero memiliki heading `<h1>` tunggal.
-- [ ] Mobile: hero search dan kartu properti bertumpuk vertikal, touch target tombol minimal 44x44px.
+- [ ] **Bilingual Support (i18n):** Seluruh elemen teks statis pada *Hero*, *Search*, *Navbar*, *Footer*, dan *Featured Collections* wajib menggunakan metode injeksi terjemahan `next-intl` (via `useTranslations` atau `getTranslations`) secara utuh, sesuai dengan `40_I18N_ARCHITECTURE.md`. Tidak boleh ada satu pun teks antar-muka (*hardcoded*) dalam Bahasa Indonesia.
+- [ ] 9 Seksi terangkai tanpa kesan "terputus" (transisi warna latar atau overlap wajar antar seksi).
+- [ ] Halaman didominasi oleh *fotografi properti berkualitas tinggi*, bukan ilustrasi vektor SaaS.
+- [ ] Brand DNA "Verified" muncul secara konsisten (badge, teks, ikonografi) di berbagai titik seksi.
+- [ ] Performa animasi (parallax/zoom hover) tidak menyebabkan JANK/Lag (harus 60fps).
 
-## 7. Iconography Specification
-**Library:** Lucide React ONLY.
-
-#### Icon: `Search`
-- **Purpose & Business Meaning:** Memicu aksi pencarian properti di dalam `SearchHero`.
-- **Size:** `20px` (Desktop), `24px` (Mobile). **Stroke Width:** `1.5`.
-- **Color:** `text-muted-foreground` default, berubah `text-blue-700` saat input fokus.
-- **Accessibility:** `aria-hidden="true"` karena berdampingan dengan label "Cari properti".
-
-#### Icon: `ShieldCheck`
-- **Purpose & Business Meaning:** Menandakan properti berstatus `FULLY_VERIFIED` pada `PropertyCard`.
-- **Size:** `20px`. **Stroke Width:** `1.5`. **Color:** hijau (selaras dengan `Badge variant="verified"`).
-- **Accessibility:** `aria-hidden="true"`, teks "Terverifikasi" tetap ada sebagai label.
-
-#### Icon: `ArrowRight`
-- **Purpose & Business Meaning:** CTA "Jual Properti Anda" dan "Lihat Semua Properti".
-- **Size:** `20px`. **Stroke Width:** `1.5`. **Hover:** translate-x 2px, transisi 150-200ms ease-out.
-
-## 8. UI/UX Aesthetic Rules (Mockup Reference)
-
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`/`#F7F9FC`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*, `shadow-[0_8px_30px_rgb(0,0,0,0.04)]`).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px`.
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
-
-**Spesifik halaman ini:**
-- Hero section menggunakan layout **full-bleed** (lebar penuh viewport) dengan search bar mengambang (floating) di atas gambar hero, mengikuti pola Airbnb.
-- `PropertyCard` pada hover men-scale gambar 1.05x disertai `shadow-xl`, transisi medium (300-400ms spring), dan dinonaktifkan pada perangkat sentuh (`@media (hover:none)`).
+## 7. UI/UX Aesthetic Rules
+Mengikuti pedoman **"The Exclusive Welcome"** (Apple × Airbnb × Zillow Showcase):
+- **Emotion & Realism:** Gunakan foto properti sungguhan (misal via Unsplash/Pexels *mock*) untuk semua latar belakang dan kartu. JANGAN gunakan area kosong putih yang ekstensif tanpa makna.
+- **Glassmorphism:** Gunakan `bg-white/80 backdrop-blur-xl` untuk elemen (seperti Search atau AI Demo) yang melayang di atas foto properti.
+- **Micro-animations:** Transisi 300-500ms `ease-in-out` untuk setiap interaksi *hover* dan *scroll*.
+- **Warna Utama:** Hitam/Dark Slate untuk kemewahan, dengan aksen *Royal Blue/Emerald* untuk *trust*.
+- **Vertical Rhythm:** Jarak vertikal antar section wajib menggunakan padding yang lega, yaitu antara `py-24` sampai `py-32`.
+- **Typography:** Skala tipografi untuk heading wajib menggunakan `tracking-tighter` dan `leading-[1.05]`.

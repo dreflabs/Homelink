@@ -52,7 +52,7 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
       </div>
 
       {/* LIST SECTION - 40% (Desktop) / 100% (Mobile) */}
-      <div className="w-full lg:w-[40%] flex flex-col bg-[#F7F9FC]">
+      <div className="w-full lg:w-[40%] flex flex-col bg-slate-50">
         {/* Header / Mobile Controls */}
         <div className="flex items-center justify-between p-4 bg-white border-b border-slate-200 shrink-0">
           <div>
@@ -69,7 +69,7 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
             {/* View Toggle */}
             <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
               <button 
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md bg-white shadow-sm text-blue-700"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md bg-white shadow-sm text-primary"
                 aria-pressed="true"
               >
                 <List className="w-4 h-4" />

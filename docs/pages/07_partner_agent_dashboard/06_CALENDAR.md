@@ -1,12 +1,46 @@
-# CALENDAR PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Calendar\n**Module:** 07 PARTNER AGENT DASHBOARD\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Calendar.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/07_partner_agent_dashboard/calendar/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# CALENDAR PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Calendar (Agenda)
+**Module:** 07 PARTNER AGENT DASHBOARD
+**Role:** Partner Agent
+**Purpose:** Menampilkan agenda gabungan Partner Agent — jadwal survei properti kelolaan (dari `BOOKING`, entity yang sudah ada) dan pertemuan klien non-survei (mis. presentasi penawaran), dalam satu tampilan kalender.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/partner-agent/calendar/page.tsx
+```
+Sidebar label: "Kalender".
+
+## 3. Required UI Components (Shadcn/ui)
+- `DatePicker`/kalender grid (`17_COMPONENT_LIBRARY.md` §8.5) — tampilan bulan/minggu.
+- Timeline Card — daftar agenda hari terpilih.
+- `Badge` — jenis agenda (Survei vs Pertemuan Klien).
+- `EmptyState` — hari tanpa agenda.
+
+## 4. Data & State Management
+- **Sebagian sudah bisa diimplementasikan:** jadwal survei properti kelolaan dapat diambil dari `BOOKING` (entity yang sudah ada di `40_ERD.md`, fields `surveyDate`/`timeSlot`) — setelah relasi Agent↔Property tersedia (`02_PROPERTY_MANAGEMENT.md` §4).
+- **Gap skema:** pertemuan klien non-survei (mis. "presentasi penawaran ke calon pembeli") tidak punya entity — `BOOKING` di ERD spesifik untuk survei properti (buyer-owner-surveyor), bukan agenda generik. Diusulkan entity `AgentMeeting { id, agentId, leadId?, title, scheduledAt, location }` sebagai perluasan kecil, bukan menumpangkan pada `BOOKING`.
+- Sampai skema pertemuan tersedia, kalender hanya menampilkan agenda survei (dari `BOOKING`) dan merender slot kosong untuk hari tanpa survei — tidak memalsukan data pertemuan.
+
+## 5. API Endpoints Referenced
+- `GET /api/v1/bookings` — sudah ada, dipakai untuk agenda survei (setelah relasi Agent↔Property tersedia).
+- Belum ada endpoint untuk `AgentMeeting` — diusulkan, dicatat sebagai gap.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Agenda survei dan pertemuan klien dibedakan dengan Badge warna berbeda, tidak disamakan secara visual.
+- [ ] Selama `AgentMeeting` belum ada, halaman tidak menyembunyikan seluruh kalender — tetap menampilkan agenda survei yang sudah bisa diambil dari `BOOKING`.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `CalendarClock` | Header halaman | 20px |
+| `MapPin` | Agenda survei (lokasi properti) | 16px |
+| `Handshake` | Agenda pertemuan klien | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.4 Partner Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

@@ -51,7 +51,10 @@ app/(dashboard)/11_admin/agent-management/page.tsx
 - **Purpose:** Ikon pada banner peringatan "Fitur Fase 2".
 - **Size:** 20px. **Color:** `text-amber-600`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Karena halaman ini dalam status placeholder terstruktur, tata letak tetap mengikuti pola tabel data-dense modul Admin lainnya (agar transisi ke Fase 2 mulus secara visual), namun seluruh interaksi non-navigasi berada dalam status disabled dengan penjelasan tooltip, bukan disembunyikan total — supaya stakeholder dapat melihat rencana desain di awal.

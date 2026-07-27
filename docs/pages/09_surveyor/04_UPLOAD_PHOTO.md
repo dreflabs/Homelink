@@ -45,7 +45,10 @@ Diakses sebagai modal/sub-halaman dari `03_SURVEY_FORM.md` melalui `PhotoAttachm
 - **`UploadCloud`** — pada `UploadProgressBar`, menandakan proses kirim ke R2 sedang berlangsung.
 - **`XCircle`** — tombol hapus thumbnail pada `PhotoThumbnailGrid`, `text-slate-500`, disertai `aria-label="Hapus foto"`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Ini halaman paling "mobile-first" dari seluruh modul: `CameraCaptureButton` harus menjadi elemen dominan di layar (bukan tombol kecil di sudut), berukuran besar dan berkontras tinggi agar tetap mudah ditemukan dan ditekan meski Surveyor mengenakan sarung tangan atau berada di bawah silau matahari. `GPSMissingBlockerModal` harus menggunakan warna peringatan (`amber`/`red`) yang tegas, bukan sekadar teks abu-abu, karena kegagalan menangkap sinyal ini berdampak langsung pada validitas anti-fraud sistem.

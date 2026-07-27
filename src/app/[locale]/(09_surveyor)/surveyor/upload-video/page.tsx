@@ -6,35 +6,56 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UploadCloud, ShieldCheck, Video } from 'lucide-react';
+import { getPresignedUrl } from '@/actions/surveyor';
 
 export default function UploadVideoPage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
       setUploaded(false);
       setProgress(0);
+      setError(null);
     }
   };
 
   const handleUpload = async () => {
     if (!file) return;
     setUploading(true);
-    // Mock fetching presigned URL
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Mock uploading to S3 with progress
-    for (let i = 10; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setProgress(i);
+    setError(null);
+
+    try {
+      const { uploadUrl } = await getPresignedUrl(file.name, file.type);
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", uploadUrl, true);
+        xhr.setRequestHeader("Content-Type", file.type);
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            setProgress(Math.round((event.loaded / event.total) * 100));
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve();
+          else reject(new Error(`Upload failed with status ${xhr.status}`));
+        };
+        xhr.onerror = () => reject(new Error("Upload failed"));
+        xhr.send(file);
+      });
+
+      setUploaded(true);
+    } catch (err) {
+      console.error("Error uploading video:", err);
+      setError("Gagal mengunggah video. Silakan coba lagi.");
+    } finally {
+      setUploading(false);
     }
-    
-    setUploading(false);
-    setUploaded(true);
   };
 
   return (
@@ -61,15 +82,19 @@ export default function UploadVideoPage() {
 
             {uploading && (
               <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
-                <div 
-                  className="bg-primary h-full transition-all duration-300 ease-in-out" 
+                <div
+                  className="bg-primary h-full transition-all duration-300 ease-in-out"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             )}
 
-            <Button 
-              onClick={handleUpload} 
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
+            )}
+
+            <Button
+              onClick={handleUpload}
               disabled={!file || uploading || uploaded}
               className="w-full sm:w-auto"
             >

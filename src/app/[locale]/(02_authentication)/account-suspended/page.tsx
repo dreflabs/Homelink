@@ -48,7 +48,7 @@ export default function AccountSuspendedPage() {
 
         <div className="space-y-3 pt-4">
           <Button 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+            className="w-full bg-primary hover:bg-primary text-white" 
             onClick={handleSupportClick}
           >
             <LifeBuoy className="mr-2 h-4 w-4" />

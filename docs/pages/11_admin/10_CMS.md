@@ -46,7 +46,10 @@ app/(dashboard)/11_admin/cms/page.tsx
 #### Icon: `Lock`
 - **Purpose:** Ikon pada Card ringkasan status konten yang masih placeholder ("Belum Tersedia"). **Size:** 20px. **Color:** `text-slate-400`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Karena scope halaman ini sengaja sempit (hanya akses-kontrol), layout jauh lebih ringan dibanding halaman moderasi lain — satu tabel akses + satu banner info, tanpa filter/bulk-action kompleks. Ini disengaja agar tidak menciptakan ekspektasi visual bahwa halaman ini adalah editor konten penuh.

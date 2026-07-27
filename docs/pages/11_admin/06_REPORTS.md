@@ -52,7 +52,10 @@ app/(dashboard)/11_admin/reports/page.tsx
 #### Icon: `Download`
 - **Purpose:** Ikon tombol "Ekspor CSV". **Size:** 16px. **Color:** `text-blue-700`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Kartu ringkasan angka ditempatkan di baris atas (grid 3-4 kolom), tabel rinci di bawahnya dengan baris kompak. Karena ini laporan (bukan dashboard real-time), tidak diperlukan auto-refresh — cukup tombol refresh manual dan timestamp "Terakhir diperbarui" untuk transparansi kepada Admin.

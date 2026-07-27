@@ -21,29 +21,29 @@ export default function RefundPolicyPage() {
               <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">
                 {t('toc')}
               </h3>
-              <a href="#gambaran-umum" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#gambaran-umum" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('overview')}</span>
               </a>
-              <a href="#pembatalan-langganan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <RefreshCw className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#pembatalan-langganan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <RefreshCw className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('cancel')}</span>
               </a>
-              <a href="#syarat-refund" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#syarat-refund" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <ShieldCheck className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('eligibility')}</span>
               </a>
-              <a href="#prosedur-pengajuan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#prosedur-pengajuan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <CreditCard className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('procedure')}</span>
               </a>
-              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Mail className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('contact')}</span>
               </a>
             </nav>
             <div className="mt-8 border-t border-slate-200 pt-6 space-y-2">
-              <Link href="/legal/terms" className="block text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/terms" className="block text-sm font-medium text-primary hover:text-primary">
                 {t('terms_link')}
               </Link>
             </div>
@@ -68,7 +68,7 @@ export default function RefundPolicyPage() {
                   </p>
                 </div>
 
-                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-blue-600 space-y-8">
+                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-primary space-y-8">
                   
                   <section id="gambaran-umum" className="scroll-mt-24">
                     <h2 className="text-2xl font-semibold text-slate-900 mb-4">1. {t('overview')}</h2>

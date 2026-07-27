@@ -43,7 +43,10 @@ app/(dashboard)/surveyor/reports/page.tsx
 - **`CalendarRange`** — trigger `DateRangeFilter`.
 - **`Hourglass`** — status "Menunggu Admin" pada entri yang belum final, `text-amber-600`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Karena halaman ini sering dibuka untuk referensi cepat (bukan input aktif), prioritaskan kepadatan informasi yang tetap mudah dipindai (scannable) — gunakan card ringkas dengan status Badge sebagai anchor visual utama, dan sediakan drawer detail alih-alih navigasi ke halaman terpisah agar Surveyor dapat kembali ke daftar dengan cepat saat masih di lapangan dengan koneksi terbatas.

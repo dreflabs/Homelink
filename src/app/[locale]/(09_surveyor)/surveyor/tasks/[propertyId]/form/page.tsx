@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter, useParams } from 'next/navigation';
 import { ShieldCheck, FileCheck, Activity, Droplets, Zap, Save } from "lucide-react";
+import { submitSurveyReport } from "@/actions/surveyor";
 
 type SurveyFormValues = {
   atap: 'Baik' | 'Cukup' | 'Perlu Perbaikan';
@@ -26,7 +27,9 @@ const PARAMETERS = [
 export default function SurveyorFormPage() {
   const router = useRouter();
   const params = useParams();
-  const propertyId = params?.propertyId as string;
+  // Route segment is named [propertyId] but the value passed in is the SurveyTask id.
+  const taskId = params?.propertyId as string;
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SurveyFormValues>({
     defaultValues: {
@@ -39,12 +42,21 @@ export default function SurveyorFormPage() {
   });
 
   const onSubmit = async (data: SurveyFormValues) => {
-    // Simulasi pemanggilan API
-    console.log('Submitting survey report for property:', propertyId, data);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    alert('Laporan Survei Fisik berhasil disubmit!');
-    // Mengarahkan kembali ke daftar task setelah selesai
-    // router.push('/surveyor/tasks'); 
+    setSubmitError(null);
+    const notes = [
+      `Atap: ${data.atap}`,
+      `Dinding: ${data.dinding}`,
+      `Listrik: ${data.listrik}`,
+      `Sanitasi: ${data.sanitasi}`,
+      data.catatan ? `Catatan: ${data.catatan}` : null,
+    ].filter(Boolean).join('\n');
+
+    try {
+      await submitSurveyReport(taskId, notes, []);
+      router.push('/surveyor/assignments');
+    } catch (error: any) {
+      setSubmitError(error?.message || 'Gagal mengirim laporan. Silakan coba lagi.');
+    }
   };
 
   return (
@@ -53,9 +65,9 @@ export default function SurveyorFormPage() {
       <div className="bg-white px-5 py-6 shadow-sm sticky top-0 z-10 flex items-center justify-between border-b border-gray-200">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Survei Fisik</h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">ID Properti: {propertyId || 'TBD'}</p>
+          <p className="text-sm text-gray-500 mt-1 font-medium">ID Tugas: {taskId || 'TBD'}</p>
         </div>
-        <div className="h-12 w-12 bg-blue-50 rounded-full flex items-center justify-center">
+        <div className="h-12 w-12 bg-slate-50 rounded-full flex items-center justify-center">
           <FileCheck className=" w-6 h-6" />
         </div>
       </div>
@@ -126,6 +138,12 @@ export default function SurveyorFormPage() {
           })}
         </div>
 
+        {submitError && (
+          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-sm font-medium">
+            {submitError}
+          </div>
+        )}
+
         {/* Catatan Tambahan */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
           <h2 className="text-lg font-bold text-gray-800 mb-4">Catatan Tambahan (Opsional)</h2>
@@ -136,7 +154,7 @@ export default function SurveyorFormPage() {
               <textarea
                 {...field}
                 rows={4}
-                className="w-full border-2 border-gray-200 rounded-xl p-4 text-base focus:ring-0 focus:border-blue-500 transition-all outline-none resize-none"
+                className="w-full border-2 border-gray-200 rounded-xl p-4 text-base focus:ring-0 focus:border-primary transition-all outline-none resize-none"
                 placeholder="Tuliskan detail temuan spesifik atau kendala di lapangan..."
               />
             )}
@@ -148,7 +166,7 @@ export default function SurveyorFormPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-blue-600/30 transition-all text-xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            className="w-full bg-primary hover:bg-primary active:bg-primary text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-blue-600/30 transition-all text-xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3"
           >
             {isSubmitting ? (
               <>

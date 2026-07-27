@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getStaticPages, deleteStaticPage } from "@/actions/cms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,8 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 export default async function StaticPagesPage() {
+  const tTable = await getTranslations('Common.table');
+
   const pages = await getStaticPages();
 
   return (
@@ -23,10 +26,10 @@ export default async function StaticPagesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
+                <TableHead>{tTable('title')}</TableHead>
                 <TableHead>Slug</TableHead>
                 <TableHead>Last Updated</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -34,7 +37,7 @@ export default async function StaticPagesPage() {
                 <TableRow key={page.id}>
                   <TableCell className="font-medium">{page.title}</TableCell>
                   <TableCell>
-                    <Link href={`/${page.slug}`} className="text-blue-600 hover:underline" target="_blank">
+                    <Link href={`/${page.slug}`} className="text-primary hover:underline" target="_blank">
                       /{page.slug}
                     </Link>
                   </TableCell>

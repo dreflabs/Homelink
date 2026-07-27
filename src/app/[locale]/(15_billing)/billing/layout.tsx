@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 const navItems = [
-  { name: 'Subscription', href: '/billing', icon: WalletCards },
+  { name: 'Subscription', href: '/billing/subscriptions', icon: WalletCards },
   { name: 'Upgrade Plan', href: '/billing/upgrade', icon: CreditCard },
   { name: 'Payment History', href: '/billing/payment-history', icon: Wallet },
   { name: 'Invoices', href: '/billing/invoices', icon: Wallet },
@@ -25,7 +25,7 @@ export default async function BillingLayout({ children }: { children: ReactNode 
   }
 
   return (
-    <div className="min-h-screen bg-[#f6f9fc] text-slate-900 font-sans flex flex-col md:flex-row selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row selection:bg-indigo-100 selection:text-indigo-900">
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-white/60 backdrop-blur-md border-r border-slate-200/60 px-5 py-8 flex-shrink-0 hidden md:block">
         <div className="mb-8 px-3">

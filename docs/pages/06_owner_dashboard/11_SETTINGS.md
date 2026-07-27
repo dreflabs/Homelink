@@ -73,6 +73,9 @@ const changePasswordSchema = z.object({
 - **Size:** 18px.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Layout:** Sidebar tab vertikal di kiri (desktop) menampilkan 3 sub-bagian; horizontal `Tabs` di atas konten (mobile).
 - **Background:** `White` dengan card per section `rounded-2xl`, dipisah oleh whitespace lega antar section.
 - **Warna Aksi:** Tombol simpan `Royal Blue` solid; tombol destruktif (jika ada, mis. hapus akun) menggunakan `red-500` dan selalu memerlukan `AlertDialog` konfirmasi.

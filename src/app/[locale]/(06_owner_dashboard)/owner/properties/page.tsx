@@ -70,7 +70,7 @@ async function OwnerPropertiesPageInner({
           <h1 className="text-2xl font-bold text-gray-900">{t("my_listings")}</h1>
           <p className="text-gray-500 text-sm mt-1">{t("manage_desc")}</p>
         </div>
-        <Button asChild className="bg-[#4169E1] hover:bg-blue-700">
+        <Button asChild className="bg-primary hover:bg-primary">
           <Link href="/owner/properties/new">{t("add_property")}</Link>
         </Button>
       </div>
@@ -79,7 +79,7 @@ async function OwnerPropertiesPageInner({
         <Tabs defaultValue={statusFilter} className="w-full sm:w-auto">
           <TabsList className="w-full sm:w-auto overflow-x-auto justify-start">
             {(["ALL", "PUBLISHED", "PENDING_REVIEW", "DRAFT", "REJECTED"] as const).map((s) => (
-              <TabsTrigger key={s} value={s} render={
+              <TabsTrigger key={s} value={s} nativeButton={false} render={
                 <Link href={buildUrl("status", s)} />
               }>
                 {s === "ALL" ? t("filter_all") : s === "PUBLISHED" ? t("filter_published") : s === "PENDING_REVIEW" ? t("filter_pending") : s === "DRAFT" ? t("filter_draft") : t("filter_rejected")}

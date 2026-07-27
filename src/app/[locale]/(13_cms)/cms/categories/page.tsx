@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getCategories } from "@/actions/cms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -5,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 export default async function CategoriesPage() {
+  const tTable = await getTranslations('Common.table');
+
   const categories = await getCategories();
 
   return (
@@ -22,10 +25,10 @@ export default async function CategoriesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
+                <TableHead>{tTable('name')}</TableHead>
                 <TableHead>Slug</TableHead>
                 <TableHead>Articles Count</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

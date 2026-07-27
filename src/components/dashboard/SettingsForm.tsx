@@ -6,9 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { updateNotificationPreferences } from "@/actions/settings";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck, KeyRound } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function SettingsForm() {
+  const t = useTranslations("BuyerDashboard.settingsForm");
   const [isPending, startTransition] = useTransition();
   const [success, setSuccess] = useState(false);
 
@@ -46,17 +48,18 @@ export function SettingsForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Notifikasi Email</CardTitle>
-          <CardDescription>Pilih jenis notifikasi yang ingin Anda terima via email.</CardDescription>
+    <form onSubmit={onSubmit} className="space-y-8">
+      {/* Notifications Section */}
+      <Card className="shadow-sm border-gray-200">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl">{t("notifications.title")}</CardTitle>
+          <CardDescription className="text-sm">{t("notifications.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="savedProperties" className="text-base cursor-pointer">Properti Tersimpan</Label>
-              <p className="text-sm text-gray-500">Pemberitahuan perubahan harga atau status pada properti favorit Anda.</p>
+          <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 border border-transparent hover:border-gray-100 transition-colors">
+            <div className="space-y-1 mr-4">
+              <Label htmlFor="savedProperties" className="text-base font-semibold cursor-pointer text-gray-900">{t("notifications.savedProperties")}</Label>
+              <p className="text-sm text-gray-500 leading-relaxed">{t("notifications.savedPropertiesDesc")}</p>
             </div>
             <Switch
               id="savedProperties"
@@ -65,10 +68,10 @@ export function SettingsForm() {
               disabled={isPending}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="newMessages" className="text-base cursor-pointer">Pesan Baru</Label>
-              <p className="text-sm text-gray-500">Pemberitahuan saat pemilik properti membalas pesan Anda.</p>
+          <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 border border-transparent hover:border-gray-100 transition-colors">
+            <div className="space-y-1 mr-4">
+              <Label htmlFor="newMessages" className="text-base font-semibold cursor-pointer text-gray-900">{t("notifications.newMessages")}</Label>
+              <p className="text-sm text-gray-500 leading-relaxed">{t("notifications.newMessagesDesc")}</p>
             </div>
             <Switch
               id="newMessages"
@@ -77,10 +80,10 @@ export function SettingsForm() {
               disabled={isPending}
             />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="recommendations" className="text-base cursor-pointer">Rekomendasi Properti</Label>
-              <p className="text-sm text-gray-500">Menerima rekomendasi properti mingguan sesuai kriteria Anda.</p>
+          <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50/50 border border-transparent hover:border-gray-100 transition-colors">
+            <div className="space-y-1 mr-4">
+              <Label htmlFor="recommendations" className="text-base font-semibold cursor-pointer text-gray-900">{t("notifications.recommendations")}</Label>
+              <p className="text-sm text-gray-500 leading-relaxed">{t("notifications.recommendationsDesc")}</p>
             </div>
             <Switch
               id="recommendations"
@@ -92,21 +95,37 @@ export function SettingsForm() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end items-center gap-4">
+      {/* Account Security Section (Placeholder for Future) */}
+      <Card className="shadow-sm border-gray-200">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-2">
+            <KeyRound className="w-5 h-5 text-gray-500" />
+            <CardTitle className="text-xl">{t("accountSecurity.title")}</CardTitle>
+          </div>
+          <CardDescription className="text-sm">{t("accountSecurity.subtitle")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant="outline" type="button" className="w-full sm:w-auto">
+            {t("accountSecurity.title")}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end items-center gap-4 pt-2">
         {success && (
           <span className="text-sm text-emerald-600 font-medium flex items-center animate-in fade-in slide-in-from-right-2">
             <ShieldCheck className="w-5 h-5 mr-1.5" />
-            Tersimpan
+            {t("actions.saved")}
           </span>
         )}
-        <Button type="submit" disabled={isPending} className="min-w-[150px]">
+        <Button type="submit" disabled={isPending} className="min-w-[150px] shadow-sm">
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Menyimpan...
+              {t("actions.saving")}
             </>
           ) : (
-            "Simpan Pengaturan"
+            t("actions.save")
           )}
         </Button>
       </div>

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import React, { useState, useTransition } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Loader2 } from "lucide-react";
 import { markInvoiceAsPaid } from "@/actions/billing";
+import { toast } from "sonner";
+import { TableEmptyState } from "@/components/shared/TableEmptyState";
 
 type Invoice = {
   id: string;
@@ -19,20 +23,24 @@ type Invoice = {
 };
 
 export default function InvoiceClient({ initialInvoices }: { initialInvoices: Invoice[] }) {
+  const tTable = useTranslations('Common.table');
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [isPending, startTransition] = useTransition();
 
   const handleMarkAsPaid = async (id: string) => {
-    if (confirm("Are you sure you want to mark this invoice as PAID? This action cannot be undone.")) {
-      startTransition(async () => {
+    startTransition(async () => {
+      try {
         const res = await markInvoiceAsPaid(id);
         if (res.success) {
           setInvoices(invoices.map(inv => inv.id === id ? { ...inv, status: "PAID", paidAt: new Date() } : inv));
+          toast.success("Faktur berhasil ditandai lunas!");
         } else {
-          alert("Failed to mark invoice as paid");
+          toast.error("Gagal memperbarui status faktur. Silakan coba kembali.");
         }
-      });
-    }
+      } catch (error) {
+        toast.error("Gagal memperbarui status faktur. Silakan coba kembali.");
+      }
+    });
   };
 
   const formatCurrency = (amount: any) => {
@@ -64,11 +72,9 @@ export default function InvoiceClient({ initialInvoices }: { initialInvoices: In
         </CardHeader>
         <CardContent>
           {invoices.length === 0 ? (
-            <div className="text-center py-10 text-muted-foreground">
-              No invoices found.
-            </div>
+            <TableEmptyState title="Belum Ada Faktur" description="Belum ada catatan tagihan atau faktur pembayaran aktif di akun Anda." />
           ) : (
-            <div className="rounded-md border">
+            <div className="w-full overflow-x-auto pb-2 rounded-xl border border-border/60 shadow-sm">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -76,7 +82,7 @@ export default function InvoiceClient({ initialInvoices }: { initialInvoices: In
                     <TableHead>Customer</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Date Issued</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>{tTable('status')}</TableHead>
                     <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>

@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getBackupSnapshots } from "@/actions/super-admin";
 import { BackupClient } from "./BackupClient";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Download, HardDrive, ShieldCheck } from "lucide-react";
 
 export default async function BackupPage() {
+  const tTable = await getTranslations('Common.table');
+
   const snapshots = await getBackupSnapshots();
 
   return (
@@ -25,7 +28,7 @@ export default async function BackupPage() {
                   <TableHead className="font-semibold text-gray-600">Snapshot File</TableHead>
                   <TableHead className="font-semibold text-gray-600">Size</TableHead>
                   <TableHead className="font-semibold text-gray-600">Created At</TableHead>
-                  <TableHead className="font-semibold text-gray-600">Status</TableHead>
+                  <TableHead className="font-semibold text-gray-600">{tTable('status')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

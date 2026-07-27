@@ -8,11 +8,16 @@ export const resend = apiKey && apiKey !== 'dummy' && apiKey.startsWith('re_')
   ? new Resend(apiKey)
   : null;
 
-export const sendVerificationEmail = async (email: string, token: string) => {
-  const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${routing.defaultLocale}/verify-email?token=${token}`;
+export const sendVerificationEmail = async (email: string, token: string, locale: string = routing.defaultLocale) => {
+  const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${locale}/verify-email?token=${token}`;
+  const isEn = locale === 'en';
+  const subject = isEn ? 'Confirm your email address' : 'Konfirmasi alamat email Anda';
+  const html = isEn 
+    ? `<p>Click <a href="${confirmLink}">here</a> to confirm your email address.</p>`
+    : `<p>Klik <a href="${confirmLink}">di sini</a> untuk mengonfirmasi alamat email Anda.</p>`;
 
   if (!resend) {
-    console.log(`[Mock Email] Verification email to ${email}. Link: ${confirmLink}`);
+    console.log(`[Mock Email - ${locale}] Verification email to ${email}. Link: ${confirmLink}`);
     return;
   }
 
@@ -20,19 +25,24 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     await resend.emails.send({
       from: 'onboarding@resend.dev', // Use configured verified domain in production
       to: email,
-      subject: 'Confirm your email',
-      html: `<p>Click <a href="${confirmLink}">here</a> to confirm your email.</p>`
+      subject,
+      html,
     });
   } catch (error) {
     console.error('Failed to send verification email:', error);
   }
 };
 
-export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${routing.defaultLocale}/reset-password?token=${token}`;
+export const sendPasswordResetEmail = async (email: string, token: string, locale: string = routing.defaultLocale) => {
+  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${locale}/reset-password?token=${token}`;
+  const isEn = locale === 'en';
+  const subject = isEn ? 'Reset your password' : 'Atur ulang kata sandi Anda';
+  const html = isEn
+    ? `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`
+    : `<p>Klik <a href="${resetLink}">di sini</a> untuk mengatur ulang kata sandi Anda.</p>`;
 
   if (!resend) {
-    console.log(`[Mock Email] Password reset email to ${email}. Link: ${resetLink}`);
+    console.log(`[Mock Email - ${locale}] Password reset email to ${email}. Link: ${resetLink}`);
     return;
   }
 
@@ -40,10 +50,11 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     await resend.emails.send({
       from: 'onboarding@resend.dev', // Use configured verified domain in production
       to: email,
-      subject: 'Reset your password',
-      html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`
+      subject,
+      html,
     });
   } catch (error) {
     console.error('Failed to send password reset email:', error);
   }
 };
+

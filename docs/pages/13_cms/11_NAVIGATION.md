@@ -1,12 +1,41 @@
-# NAVIGATION PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Navigation\n**Module:** 13 CMS\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Navigation.\n\n## 2. Next.js Routing Path\n```text\napp/(13_cms)/navigation/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# NAVIGATION PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Navigation (Kelola Menu Navigasi)
+**Module:** 13 CMS
+**Role:** CMS Editor
+**Purpose:** Mengelola item menu navigasi global (header) secara dinamis — melengkapi `20_NAVIGATION_MAP.md` yang saat ini mendeskripsikan struktur nav sebagai diagram statis, bukan data yang bisa diubah tanpa deploy.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/cms/navigation/page.tsx
+```
+Sidebar label: "Navigasi".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Table`/tree view — label, URL, urutan, item induk (untuk submenu).
+- Drag handle — atur urutan.
+
+## 4. Data & State Management
+- Menggunakan `NavigationItem` yang diusulkan di `01_DASHBOARD.md` §4 (`placement: HEADER|FOOTER`, `parentId` untuk submenu) — entity yang sama dipakai untuk `12_FOOTER.md`, tidak diduplikasi.
+- **Batasan penting:** item navigasi inti yang menopang alur utama (mis. link ke Search, link Auth) sebaiknya tetap hardcoded di `32_FOLDER_STRUCTURE_SPECIFICATION.md`'s komponen shell, bukan sepenuhnya dinamis — hanya item sekunder/marketing yang layak dikelola CMS Editor, mencegah CMS Editor tanpa sengaja merusak alur navigasi inti produk.
+
+## 5. API Endpoints Referenced
+- Diusulkan `/api/v1/cms/navigation`, menunggu skema §4.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Item navigasi inti (Search, Auth) tidak dapat dihapus dari UI CMS — hanya item marketing sekunder yang bisa diedit/dihapus.
+- [ ] Perubahan urutan tersimpan dan langsung tercermin di `20_NAVIGATION_MAP.md`'s struktur tanpa redeploy.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `Menu` | Header halaman | 20px |
+| `GripVertical` | Drag handle urutan | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+Modul ini bukan salah satu dari 8 dashboard berbasis peran, sehingga tidak memiliki bagian khusus di `27_DASHBOARD_DESIGN_GUIDELINES.md` — mewarisi langsung arketipe Dashboard dari `21_WIREFRAME_SPECIFICATION.md` §8.4, token dari `15_DESIGN_SYSTEM.md`, dan komponen dari `17_COMPONENT_LIBRARY.md`.

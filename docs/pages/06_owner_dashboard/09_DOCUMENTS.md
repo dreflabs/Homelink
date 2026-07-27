@@ -58,6 +58,9 @@ app/(dashboard)/owner/properties/[propertyId]/documents/page.tsx
 - **Size:** 16px.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Daftar Dokumen:** Baris list `rounded-xl`, ikon jenis file di kiri, nama file + metadata (tanggal, ukuran) di tengah, aksi di kanan.
 - **Preview Dialog:** Modal besar (`Sheet` full-height di mobile) menampilkan PDF via `<iframe>`/viewer, background overlay gelap semi-transparan.
 - **Background:** `White`, pembatas antar baris `border-slate-100` tipis (bukan card terpisah, untuk daftar yang lebih padat/scannable).

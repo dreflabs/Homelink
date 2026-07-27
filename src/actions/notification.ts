@@ -1,10 +1,42 @@
 "use server";
 
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const createNotificationSchema = z.object({
+  userId: z.string().min(1),
+  title: z.string().min(1),
+  body: z.string().min(1),
+  type: z.string().min(1),
+  relatedId: z.string().optional()
+});
+
+const templateSchema = z.object({
+  name: z.string().min(1),
+  subject: z.string().min(1),
+  bodyHtml: z.string().min(1),
+  channel: z.string().min(1)
+});
+
+// ─── Role Guard ───────────────────────────────────────────────────────────────
+
+const ADMIN_ROLES = ["ADMIN", "SUPER_ADMIN"] as const;
+
+async function requireAdmin() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  const role = (session.user as any).role as string;
+  if (!(ADMIN_ROLES as readonly string[]).includes(role)) {
+    throw new Error("Forbidden: Admin access required");
+  }
+  return session.user as { id: string; role: string };
+}
 
 export async function getNotificationHistory() {
   try {
+    await requireAdmin();
     const notifications = await prisma.notification.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -26,13 +58,15 @@ export async function createNotification(
   relatedId?: string
 ) {
   try {
+    await requireAdmin();
+    const parsedData = createNotificationSchema.parse({ userId, title, body, type, relatedId });
     await prisma.notification.create({
       data: {
-        userId,
-        title,
-        body,
-        type,
-        relatedId,
+        userId: parsedData.userId,
+        title: parsedData.title,
+        body: parsedData.body,
+        type: parsedData.type,
+        relatedId: parsedData.relatedId,
       },
     });
     return { success: true };
@@ -41,8 +75,10 @@ export async function createNotification(
     return { success: false, error: "Failed to create notification" };
   }
 }
+
 export async function getNotificationTemplates() {
   try {
+    await requireAdmin();
     const templates = await prisma.notificationTemplate.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -60,8 +96,10 @@ export async function createNotificationTemplate(data: {
   channel: string;
 }) {
   try {
+    await requireAdmin();
+    const parsedData = templateSchema.parse(data);
     await prisma.notificationTemplate.create({
-      data,
+      data: parsedData,
     });
     revalidatePath("/templates");
     return { success: true };
@@ -81,9 +119,11 @@ export async function updateNotificationTemplate(
   }
 ) {
   try {
+    await requireAdmin();
+    const parsedData = templateSchema.parse(data);
     await prisma.notificationTemplate.update({
       where: { id },
-      data,
+      data: parsedData,
     });
     revalidatePath("/templates");
     return { success: true };
@@ -95,6 +135,7 @@ export async function updateNotificationTemplate(
 
 export async function deleteNotificationTemplate(id: string) {
   try {
+    await requireAdmin();
     await prisma.notificationTemplate.delete({
       where: { id },
     });
@@ -105,3 +146,4 @@ export async function deleteNotificationTemplate(id: string) {
     return { success: false, error: "Failed to delete template" };
   }
 }
+

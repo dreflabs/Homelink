@@ -1,12 +1,48 @@
-# DASHBOARD PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Dashboard\n**Module:** 08 INTERNAL HOMELINK AGENT\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Dashboard.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/08_internal_homelink_agent/dashboard/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# DASHBOARD PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Dashboard (Ringkasan)
+**Module:** 08 INTERNAL HOMELINK AGENT
+**Role:** Internal HomeLink Agent (dual mandate: Sales & Verification/Support, `13_PRODUCT_ROADMAP.md` §8.3 Fase 2)
+**Purpose:** Landing page yang menjawab prioritas tertinggi seorang Internal Agent: item verifikasi mana yang paling lama menunggu (aging tertua) sebelum melihat lead atau tiket dukungan — sesuai Information Hierarchy di `27_DASHBOARD_DESIGN_GUIDELINES.md` §8.5 (verifikasi aging tertua &gt; leads aktif &gt; tiket dukungan &gt; komisi/analitik).
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/internal-agent/page.tsx
+```
+Sidebar label: "Ringkasan", ditempatkan di luar dua grup nav ("Sales" dan "Verifikasi & Dukungan") per `27` §8.5.
+
+## 3. Required UI Components (Shadcn/ui)
+- Queue row (Table, `17_COMPONENT_LIBRARY.md` §8.3) — item verifikasi properti tertua yang belum diputuskan, diambil dari `VERIFICATION_AUDIT` (entity yang sudah ada di `40_ERD.md`).
+- `Action Card` — pratinjau lead aktif teratas (lihat gap §4).
+- `Metric Card` — jumlah tiket dukungan Tier 2 yang eskalasi ke agent ini.
+- `EmptyState` — jika antrian verifikasi kosong (nada positif, per `27` §8.5: "Semua verifikasi selesai — kerja bagus.").
+
+## 4. Data & State Management
+- **Antrian verifikasi (sudah bisa diimplementasikan hari ini):** `VERIFICATION_AUDIT` sudah ada di ERD — dapat langsung dipakai untuk menghitung usia antrian (selisih `createdAt` properti berstatus `PENDING` terhadap waktu sekarang), mengikuti pola SLA 12h/20h/24h yang sudah terbukti di `11_admin/05_VERIFICATION_QUEUE.md`. Halaman ini **berbagi logika SLA yang sama**, bukan duplikat aturan.
+- **Lead aktif — Gap skema:** bergantung pada entity `Lead` yang belum ada, sama seperti `07_partner_agent_dashboard/03_LEADS.md`. Perbedaan penting: Lead yang ditangani Internal Agent berasal dari kontak langsung ke HomeLink (bukan referal Partner Agent) — keputusan produk yang masih terbuka adalah bagaimana `Lead.agentId`/`leadSource` membedakan kedua jalur ini pada satu entity yang sama, bukan dua tabel terpisah.
+- **Tiket dukungan:** per `90_CUSTOMER_SUPPORT_SOP.md`, data tiket sesungguhnya hidup di alat eksternal (Zendesk/Crisp), bukan tabel Prisma — lihat `05_CUSTOMER_SUPPORT.md` untuk detail.
+- Sampai `Lead` tersedia, kartu leads dirender `EmptyState`; antrian verifikasi tetap berfungsi penuh karena `VERIFICATION_AUDIT` sudah ada.
+
+## 5. API Endpoints Referenced
+- Query atas `PROPERTY`/`VERIFICATION_AUDIT` — sudah ada (pola sama dengan `11_admin/05_VERIFICATION_QUEUE.md`).
+- `GET /api/v1/agents/me/leads` — diusulkan, menunggu skema `Lead` (lihat `02_LEAD_MANAGEMENT.md`).
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Antrian verifikasi tertua tampil sebagai elemen dengan urgensi visual tertinggi di halaman (lebih menonjol dari metrik lain), sesuai `27` §8.5.
+- [ ] Kartu leads merender `EmptyState`, bukan error, selama backend `Lead` belum tersedia.
+- [ ] Warna usia antrian eskalasi `text.muted → Warning → Danger` (bukan warna acak), konsisten dengan pola SLA Admin.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `ShieldAlert` | Antrian verifikasi tertua (Hero) | 20px |
+| `Users` | Pratinjau leads aktif | 20px |
+| `Headset` | Metrik tiket dukungan eskalasi | 20px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.5 Internal Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

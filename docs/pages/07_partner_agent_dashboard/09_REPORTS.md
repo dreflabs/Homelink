@@ -1,12 +1,42 @@
-# REPORTS PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Reports\n**Module:** 07 PARTNER AGENT DASHBOARD\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Reports.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/07_partner_agent_dashboard/reports/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# REPORTS PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Reports (Laporan Performa)
+**Module:** 07 PARTNER AGENT DASHBOARD
+**Role:** Partner Agent
+**Purpose:** Ringkasan performa penjualan agent — jumlah lead masuk, tingkat konversi ke closing, dan estimasi komisi — untuk membantu agent mengevaluasi produktivitasnya sendiri secara berkala (bukan harian).
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/partner-agent/reports/page.tsx
+```
+Sidebar label: "Laporan".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Analytics Card` (`17_COMPONENT_LIBRARY.md` §8.4) — grafik tren lead masuk & konversi per bulan.
+- `Metric Card` — tingkat konversi (%), total closing, total komisi periode terpilih.
+- `Select` — pemilih rentang waktu (bulan ini/3 bulan/tahun ini).
+
+## 4. Data & State Management
+- **Bergantung penuh pada dua gap yang sama seperti halaman lain di modul ini:** entity `Lead` (`03_LEADS.md`) untuk menghitung funnel/konversi, dan entity `Commission` (`05_COMMISSION.md`) untuk nilai komisi. Halaman ini tidak memperkenalkan entity baru — murni agregasi dari keduanya, mengikuti pola honest-gap yang sama seperti `06_owner_dashboard/07_ANALYTICS.md`.
+- Tidak ada entity agregasi/materialized view terpisah yang diusulkan di sini — metrik dihitung on-the-fly dari `Lead`/`Commission` begitu keduanya tersedia, konsisten dengan pendekatan `11_admin/06_REPORTS.md`.
+
+## 5. API Endpoints Referenced
+- Tidak ada endpoint khusus laporan diusulkan — dihitung dari `GET /api/v1/agents/me/leads` dan `GET /api/v1/agents/me/commissions` begitu keduanya ada (lihat `03_LEADS.md`, `05_COMMISSION.md`).
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Halaman ini secara eksplisit menyatakan ketergantungannya pada `Lead`/`Commission` di UI (banner info), bukan diam-diam menampilkan grafik kosong.
+- [ ] Tingkat konversi dihitung dari data nyata begitu tersedia, tidak pernah di-hardcode sebagai contoh angka.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `TrendingUp` | Metric Card tingkat konversi | 24px |
+| `BarChart3` | Analytics Card tren bulanan | 20px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.4 Partner Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

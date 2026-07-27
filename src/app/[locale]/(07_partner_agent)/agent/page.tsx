@@ -21,7 +21,7 @@ export default async function AgentDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Stat Card 1 */}
         <div className="bg-white rounded-2xl md:rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center space-x-4">
-          <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
+          <div className="p-3 bg-slate-50 text-primary rounded-xl">
             <UserRound size={24}  />
           </div>
           <div>
@@ -32,7 +32,7 @@ export default async function AgentDashboardPage() {
 
         {/* Stat Card 2 */}
         <div className="bg-white rounded-2xl md:rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center space-x-4">
-          <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
+          <div className="p-3 bg-slate-50 text-primary rounded-xl">
             <Wallet size={24}  />
           </div>
           <div>
@@ -43,7 +43,7 @@ export default async function AgentDashboardPage() {
 
         {/* Stat Card 3 */}
         <div className="bg-white rounded-2xl md:rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center space-x-4">
-          <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
+          <div className="p-3 bg-slate-50 text-primary rounded-xl">
             <Calendar size={24}  />
           </div>
           <div>
@@ -57,7 +57,7 @@ export default async function AgentDashboardPage() {
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex justify-between items-center">
           <h2 className="text-lg font-semibold text-slate-900">{t('Dashboard.todayTasks')}</h2>
-          <button className="text-sm font-medium text-blue-700 hover:text-blue-800 transition-colors">
+          <button className="text-sm font-medium text-primary hover:text-primary transition-colors">
             {t('Dashboard.seeAll')}
           </button>
         </div>
@@ -121,7 +121,7 @@ export default async function AgentDashboardPage() {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-50 text-primary">
                     {t('Dashboard.ongoing')}
                   </span>
                 </td>

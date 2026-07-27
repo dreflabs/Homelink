@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,7 @@ type Template = {
 };
 
 export default function TemplateClient({ initialTemplates }: { initialTemplates: Template[] }) {
+  const tTable = useTranslations('Common.table');
   const [templates, setTemplates] = useState<Template[]>(initialTemplates);
   const [isOpen, setIsOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
@@ -170,10 +173,10 @@ export default function TemplateClient({ initialTemplates }: { initialTemplates:
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
+                    <TableHead>{tTable('name')}</TableHead>
                     <TableHead>Channel</TableHead>
                     <TableHead>Subject</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">{tTable('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

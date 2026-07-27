@@ -32,10 +32,11 @@ export async function processPaymentWebhook(eventId: string) {
         return;
       }
 
-      await prisma.invoice.update({
+      const txOps: any[] = [];
+      txOps.push(prisma.invoice.update({
         where: { id: invoiceId },
         data: { status: "PAID", paidAt: new Date() }
-      });
+      }));
 
       if (invoice.subscriptionId) {
         // Calculate subscription dates
@@ -44,15 +45,17 @@ export async function processPaymentWebhook(eventId: string) {
         const newEndDate = new Date(now);
         newEndDate.setMonth(newEndDate.getMonth() + durationMonths);
 
-        await prisma.subscription.update({
+        txOps.push(prisma.subscription.update({
           where: { id: invoice.subscriptionId },
           data: { 
             status: "ACTIVE",
             startDate: now,
             endDate: newEndDate
           }
-        });
+        }));
       }
+      
+      await prisma.$transaction(txOps);
     } else if (status === "FAILED") {
       await prisma.invoice.update({
         where: { id: invoiceId },
@@ -61,12 +64,17 @@ export async function processPaymentWebhook(eventId: string) {
 
       // Release trapped coupons
       const usages = await prisma.couponUsage.findMany({ where: { invoiceId } });
-      for (const usage of usages) {
-        await prisma.coupon.update({
-          where: { id: usage.couponId },
-          data: { usedCount: { decrement: 1 } }
-        });
-        await prisma.couponUsage.delete({ where: { id: usage.id } });
+      if (usages.length > 0) {
+        const couponIds = usages.map(u => u.couponId);
+        await prisma.$transaction([
+          prisma.coupon.updateMany({
+            where: { id: { in: couponIds } },
+            data: { usedCount: { decrement: 1 } }
+          }),
+          prisma.couponUsage.deleteMany({
+            where: { invoiceId }
+          })
+        ]);
       }
     }
 

@@ -181,3 +181,133 @@ export async function calculateCommission(bookingId: string) {
 
   return commission;
 }
+
+function requireAgent(session: any) {
+  if (!session?.user) throw new Error("Unauthorized");
+  const currentUser = session.user as { id: string; role: string };
+  if (!isAgentRole(currentUser.role)) {
+    throw new Error("Forbidden: Agent role required");
+  }
+  return currentUser;
+}
+
+/**
+ * Properties this agent is actively working, derived from their lead pipeline
+ * (the set of properties they have leads on).
+ */
+export async function getAgentProperties() {
+  const session = await auth();
+  const currentUser = requireAgent(session);
+
+  const leads = await prisma.lead.findMany({
+    where: {
+      buyerId: currentUser.id,
+      property: { isDeleted: false },
+    },
+    select: {
+      property: {
+        select: {
+          id: true,
+          title: true,
+          address: true,
+          price: true,
+          status: true,
+          propertyType: true,
+          bedrooms: true,
+          bathrooms: true,
+          buildingArea: true,
+        },
+      },
+    },
+    distinct: ["propertyId"],
+  });
+
+  return leads.map((l) => l.property);
+}
+
+/**
+ * This agent's lead/prospect pipeline. Note: the Lead model does not track a
+ * separate client identity from the agent, so each entry represents one
+ * property inquiry/follow-up rather than a distinct named client.
+ */
+export async function getAgentClients() {
+  const session = await auth();
+  const currentUser = requireAgent(session);
+
+  const leads = await prisma.lead.findMany({
+    where: { buyerId: currentUser.id },
+    include: {
+      property: { select: { id: true, title: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return leads.map((lead) => ({
+    id: lead.id,
+    property: lead.property.title,
+    status: lead.followUpStatus,
+    lastContact: lead.createdAt,
+  }));
+}
+
+/**
+ * Tasks assigned to this agent.
+ */
+export async function getAgentTasks() {
+  const session = await auth();
+  const currentUser = requireAgent(session);
+
+  return prisma.task.findMany({
+    where: { assigneeId: currentUser.id },
+    orderBy: { dueDate: "asc" },
+  });
+}
+
+/**
+ * Upcoming calendar events for this agent, derived from their task due dates.
+ */
+export async function getAgentCalendarEvents() {
+  const tasks = await getAgentTasks();
+  return tasks.filter((t) => t.dueDate);
+}
+
+/**
+ * Documents uploaded by this agent.
+ */
+export async function getAgentDocuments() {
+  const session = await auth();
+  const currentUser = requireAgent(session);
+
+  return prisma.document.findMany({
+    where: { userId: currentUser.id },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+/**
+ * Aggregate performance stats for this agent, computed from real leads/commissions/tasks.
+ */
+export async function getAgentReportStats() {
+  const session = await auth();
+  const currentUser = requireAgent(session);
+
+  const [totalLeads, closedLeads, commissions, tasks] = await Promise.all([
+    prisma.lead.count({ where: { buyerId: currentUser.id } }),
+    prisma.lead.count({ where: { buyerId: currentUser.id, followUpStatus: "CLOSED" } }),
+    prisma.commission.findMany({ where: { agentId: currentUser.id } }),
+    prisma.task.findMany({ where: { assigneeId: currentUser.id } }),
+  ]);
+
+  const totalCommission = commissions.reduce((sum, c) => sum + Number(c.amount), 0);
+  const doneTasks = tasks.filter((t) => t.status === "DONE").length;
+  const taskCompletionRate = tasks.length > 0 ? Math.round((doneTasks / tasks.length) * 100) : 0;
+  const conversionRate = totalLeads > 0 ? Number(((closedLeads / totalLeads) * 100).toFixed(2)) : 0;
+
+  return {
+    totalLeads,
+    closedLeads,
+    totalCommission,
+    taskCompletionRate,
+    conversionRate,
+  };
+}

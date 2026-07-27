@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { Search, Book, MessageCircle, FileCheck, Settings, Shield } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,19 +16,21 @@ const categories = [
   { icon: Settings, title: "Account Settings", desc: "Manage your profile, passwords, and notifications" },
 ];
 
-export default function HelpCenterPage() {
+export default async function HelpCenterPage() {
+  const tSearch = await getTranslations('Common.search');
+
   return (
     <main className="min-h-screen bg-slate-50">
-      <section className="bg-blue-700 py-24 px-4 text-center">
+      <section className="bg-primary py-24 px-4 text-center">
         <div className="max-w-3xl mx-auto space-y-8">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
             How can we help you?
           </h1>
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2  w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2  w-5 h-5" strokeWidth={1.5} />
             <Input 
-              placeholder="Search for articles, guides, and FAQs..." 
-              className="w-full h-14 pl-12 rounded-full text-base bg-white border-none shadow-lg focus-visible:ring-2 focus-visible:ring-blue-400"
+              placeholder={tSearch("helpCenter")} 
+              className="w-full h-14 pl-12 rounded-full text-base bg-white border-none shadow-sm focus-visible:ring-2 focus-visible:ring-blue-400"
             />
           </div>
         </div>
@@ -36,9 +39,9 @@ export default function HelpCenterPage() {
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((cat, idx) => (
-            <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow cursor-pointer">
-              <div className="w-12 h-12 bg-blue-50 text-blue-700 rounded-xl flex items-center justify-center mb-6">
-                <cat.icon className="w-6 h-6" />
+            <div key={idx} className="bg-white p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 transition-shadow cursor-pointer">
+              <div className="w-12 h-12 bg-slate-50 text-primary rounded-xl flex items-center justify-center mb-6">
+                <cat.icon className="w-6 h-6" strokeWidth={1.5} />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 mb-2">{cat.title}</h3>
               <p className="text-slate-600">{cat.desc}</p>
@@ -46,13 +49,13 @@ export default function HelpCenterPage() {
           ))}
         </div>
 
-        <div className="mt-24 text-center bg-white p-12 rounded-3xl border border-slate-100 shadow-sm max-w-4xl mx-auto">
+        <div className="mt-24 text-center bg-white p-12 rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-slate-900 mb-4">Still need help?</h2>
           <p className="text-slate-600 mb-8 max-w-xl mx-auto">
             Our support team is always ready to help you with any questions or issues you might have.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button className="bg-blue-700 hover:bg-blue-800 text-white rounded-full px-8 h-12">
+            <Button className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-8 h-12">
               Contact Support
             </Button>
             <Button variant="outline" className="rounded-full px-8 h-12">

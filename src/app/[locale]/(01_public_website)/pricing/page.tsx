@@ -40,9 +40,9 @@ export default async function PricingPage() {
   ];
   return (
     <main className="min-h-screen bg-slate-50">
-      <section className="pt-32 pb-24 px-4 max-w-7xl mx-auto">
+      <section className="py-24 lg:py-32 px-4 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter leading-[1.05] text-slate-900 mb-6">
             {t("title")}
           </h1>
           <p className="text-lg text-slate-600">
@@ -54,29 +54,29 @@ export default async function PricingPage() {
           {tiers.map((tier, idx) => (
             <div 
               key={idx} 
-              className={`bg-white rounded-3xl p-8 border ${tier.popular ? 'border-blue-600 shadow-xl relative' : 'border-slate-200 shadow-sm'}`}
+              className={`bg-white rounded-3xl p-8 border ${tier.popular ? 'border-primary shadow-float relative' : 'border-slate-200 shadow-card hover:shadow-card-hover transition-all'}`}
             >
               {tier.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                   {t("most_popular")}
                 </div>
               )}
               <h3 className="text-xl font-semibold text-slate-900 mb-2">{tier.name}</h3>
               <p className="text-slate-500 text-sm mb-6 h-10">{tier.description}</p>
               <div className="mb-8">
-                <span className="text-4xl font-bold text-slate-900">{tier.price}</span>
+                <span className="text-4xl font-bold text-slate-900 tabular-nums">{tier.price}</span>
                 {tier.period && <span className="text-slate-500 font-medium">{tier.period}</span>}
               </div>
               <ul className="space-y-4 mb-8">
                 {tier.features.map((feature, fIdx) => (
                   <li key={fIdx} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-blue-600 shrink-0" />
+                    <Check className="w-5 h-5 text-primary shrink-0" strokeWidth={1.5} />
                     <span className="text-slate-600 text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
               <Button 
-                className={`w-full h-12 text-base font-semibold ${tier.popular ? 'bg-blue-700 hover:bg-blue-800 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-900'}`}
+                className={`w-full h-12 text-base font-semibold ${tier.popular ? 'bg-primary hover:bg-primary text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-900'}`}
               >
                 {tier.buttonText}
               </Button>

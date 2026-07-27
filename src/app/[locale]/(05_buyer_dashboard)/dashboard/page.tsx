@@ -1,143 +1,140 @@
-import { getBuyerDashboard } from "@/actions/dashboard";
+import { getBuyerDashboard, getBuyerFavorites } from "@/actions/dashboard";
 import { Suspense } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { GlassCard } from "@/components/ui/glass-card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Calendar, FileCheck, MessageCircle, Clock } from "lucide-react";
+import { Sparkles, CalendarClock, Eye, Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getTranslations } from "next-intl/server";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { PropertyCard } from "@/components/shared/PropertyCard";
 
-function StatsSkeleton() {
+function HeroSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-2xl" />)}
+    <div className="bg-slate-100 border border-slate-200 p-8 rounded-3xl h-[120px] animate-pulse w-full"></div>
+  );
+}
+
+function GridSkeleton() {
+  return (
+    <div className="mt-8">
+      <div className="h-7 w-48 bg-slate-100 rounded mb-6 animate-pulse" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-[400px] bg-slate-100 rounded-3xl animate-pulse" />
+        ))}
+      </div>
     </div>
   );
 }
 
-function ContentSkeleton() {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Skeleton className="h-64 rounded-2xl" />
-      <Skeleton className="h-64 rounded-2xl" />
-    </div>
-  );
-}
-
-async function DashboardContent() {
+async function DashboardHero() {
   const data = await getBuyerDashboard();
   const t = await getTranslations("BuyerDashboard");
+  
+  let icon = <Sparkles className="w-5 h-5 text-primary" />;
+  let title = `${t("dashboard.welcome")}, ${data.profile.name}!`;
+  let subtitle = "Mulai jelajahi properti terverifikasi.";
+  let ctaText = "Cari Properti";
+  let ctaLink = "/search-result";
+
+  if (data.heroState.upcomingBooking) {
+    icon = <CalendarClock className="w-5 h-5 text-primary" />;
+    title = `Jadwal Survei Terdekat`;
+    subtitle = `Anda memiliki jadwal survei untuk ${data.heroState.upcomingBooking.propertyTitle}.`;
+    ctaText = "Lihat Jadwal";
+    ctaLink = "/dashboard/bookings";
+  } else if (data.heroState.recentlyViewed) {
+    icon = <Eye className="w-5 h-5 text-primary" />;
+    title = `Lanjutkan Pencarian Anda`;
+    subtitle = `Anda terakhir melihat properti: ${data.heroState.recentlyViewed.propertyTitle}.`;
+    ctaText = "Lihat Properti";
+    ctaLink = `/property/${data.heroState.recentlyViewed.propertyId}`;
+  }
+
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <GlassCard>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">{t("dashboard.stats.savedProperties")}</CardTitle>
-            <Heart className="h-5 w-5 " />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{data.stats.totalSavedProperties}</div>
-          </CardContent>
-        </GlassCard>
-        <GlassCard>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">{t("dashboard.stats.schedule")}</CardTitle>
-            <Calendar className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{data.stats.totalBookings}</div>
-          </CardContent>
-        </GlassCard>
-        <GlassCard>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">{t("dashboard.stats.activeOffers")}</CardTitle>
-            <FileCheck className="h-5 w-5 " />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{data.stats.totalLeads}</div>
-          </CardContent>
-        </GlassCard>
-        <GlassCard>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">{t("dashboard.stats.unreadMessages")}</CardTitle>
-            <MessageCircle className="h-5 w-5 " />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{data.stats.totalSavedSearches}</div>
-          </CardContent>
-        </GlassCard>
+    <div className="bg-white border border-slate-200 p-8 md:p-10 rounded-[2rem] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex gap-5 items-start">
+        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 shrink-0">
+          {icon}
+        </div>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
+          <p className="text-slate-500 mt-2 text-base md:text-lg max-w-xl font-medium">{subtitle}</p>
+        </div>
       </div>
+      <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-8 py-6 h-auto text-base font-semibold shrink-0 shadow-sm transition-all duration-300 hover:-translate-y-0.5" asChild>
+        <Link href={ctaLink}>{ctaText} <ArrowRight className="ml-2 w-5 h-5" /></Link>
+      </Button>
+    </div>
+  );
+}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <GlassCard className="h-full">
-          <CardHeader>
-            <CardTitle>{t("dashboard.activity.title")}</CardTitle>
-            <CardDescription>{t("dashboard.activity.subtitle")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {data.recentActivities.map((activity) => (
-                <div key={activity.id} className="flex gap-4 items-start">
-                  <div className="bg-blue-50 p-2 rounded-full mt-1">
-                    <Clock className="h-5 w-5 " />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{activity.title}</h4>
-                    <p className="text-sm text-gray-500">{activity.description}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {new Date(activity.date).toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6">
-              <Button variant="outline" className="w-full" asChild>
-                <Link href="/notifications">{t("dashboard.activity.viewAll")}</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </GlassCard>
+async function SavedPropertiesGrid() {
+  const { data } = await getBuyerFavorites(1, 4);
 
-        <Card className="h-full bg-gradient-to-br from-indigo-900 to-slate-800 text-white border-0">
-          <CardHeader>
-            <CardTitle className="text-indigo-50">{t("dashboard.profile.title")}</CardTitle>
-            <CardDescription className="text-indigo-200">
-              {t("dashboard.profile.subtitle")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6">
-              <div className="flex justify-between text-sm mb-2 text-indigo-100">
-                <span>{t("dashboard.profile.completeness")}</span>
-                <span>80%</span>
-              </div>
-              <div className="w-full bg-indigo-950/50 rounded-full h-2.5">
-                <div className="bg-indigo-400 h-2.5 rounded-full" style={{ width: '80%' }}></div>
-              </div>
-            </div>
-            <Button className="bg-white text-indigo-900 hover:bg-indigo-50" asChild>
-              <Link href="/my-profile">{t("dashboard.profile.update")}</Link>
+  if (!data || data.length === 0) {
+    return (
+      <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Properti Tersimpan</h2>
+          <div className="h-1.5 w-16 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full mt-3 mb-8"></div>
+        </div>
+        <EmptyState 
+          icon={Heart}
+          title="Belum Ada Properti Tersimpan"
+          description="Anda belum menyimpan properti apapun. Mulai jelajahi dan simpan properti impian Anda untuk membandingkannya nanti."
+          className="border-dashed border-2 border-slate-200/60 bg-gradient-to-b from-slate-50/50 to-white hover:border-blue-300 transition-colors duration-500 py-16"
+          action={
+            <Button className="rounded-full mt-4 bg-primary hover:bg-primary text-white px-8 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5" asChild>
+              <Link href="/search-result">Cari Properti <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
-          </CardContent>
-        </Card>
+          }
+        />
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Properti Tersimpan</h2>
+          <div className="h-1.5 w-16 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full mt-3"></div>
+        </div>
+        <Link href="/dashboard/favorites" className="text-sm font-semibold text-primary hover:text-primary flex items-center group transition-colors">
+          Lihat Semua <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {data.map((property) => (
+          <PropertyCard
+            key={property.id}
+            id={property.propertyId}
+            title={property.title}
+            price={property.price}
+            address={property.address}
+            specs={{
+              bed: property.bedrooms || 0,
+              bath: property.bathrooms || 0,
+              area: property.surfaceArea || 0,
+            }}
+            imageUrl={property.imageUrl || "/property_1.jpg"}
+            isVerified={property.status === "PUBLISHED"}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
 export default async function BuyerDashboardPage() {
-  const data = await getBuyerDashboard();
-  const t = await getTranslations("BuyerDashboard");
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t("dashboard.welcome")}, {data.profile.name}!</h1>
-        <p className="text-gray-500 mt-2 text-lg">{t("dashboard.subtitle")}</p>
-      </div>
-      <Suspense fallback={<StatsSkeleton />}>
-        <DashboardContent />
+    <div className="max-w-7xl mx-auto">
+      <Suspense fallback={<HeroSkeleton />}>
+        <DashboardHero />
+      </Suspense>
+
+      <Suspense fallback={<GridSkeleton />}>
+        <SavedPropertiesGrid />
       </Suspense>
     </div>
   );

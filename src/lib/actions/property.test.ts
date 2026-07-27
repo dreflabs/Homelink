@@ -64,7 +64,7 @@ describe('createProperty', () => {
 
   test('rejects invalid lat/lng', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'OWNER' } });
-    await expect(createProperty(validFormData({ lat: 'north' }))).resolves.toEqual({ success: false, error: "Cannot read properties of undefined (reading 'id')" });
+    await expect(createProperty(validFormData({ lat: 'north' }))).resolves.toEqual({ success: false, error: 'Internal Server Error: Gagal menyimpan data properti.' });
   });
 
   test('creates the property with status PENDING for a valid OWNER submission', async () => {
@@ -105,6 +105,6 @@ describe('createProperty', () => {
     auth.mockResolvedValue({ user: { id: 'owner-1', role: 'OWNER' } });
     prismaCreate.mockRejectedValue(new Error('connection reset'));
 
-    await expect(createProperty(validFormData())).resolves.toEqual({ success: false, error: 'connection reset' });
+    await expect(createProperty(validFormData())).resolves.toEqual({ success: false, error: 'Internal Server Error: Gagal menyimpan data properti.' });
   });
 });

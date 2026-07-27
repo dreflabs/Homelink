@@ -13,16 +13,18 @@ app/(02_authentication)/register/page.tsx
 Seperti Login, halaman ini dapat dirender via Auth Modal / Intercepting Routes (`app/(02_authentication)/@modal/(.)register/page.tsx`) mengikuti `55_AUTHENTICATION_FLOW.md` dan `18_SCREEN_INVENTORY.md` SCR-004, agar pengguna dapat beralih dari modal Login ke Register tanpa kehilangan konteks halaman. Route penuh `/register` tetap tersedia sebagai fallback.
 
 ## 3. Required UI Components
-- `Select`/`Tabs` — pemilihan peran akun (Buyer/Owner/Surveyor) sesuai kebutuhan Phase 1; menentukan field tambahan yang relevan.
-- `Input` — Nama Lengkap (tanpa ikon atau ikon `User`).
-- `Input` — Email (ikon `Mail`).
-- `Input` — Nomor Telepon (ikon `Phone`), format Indonesia, unik di sistem.
-- `Input` — Password (ikon `Lock`, trailing `Eye`/`EyeOff`) dengan **indikator kekuatan password** (strength meter: lemah/sedang/kuat) yang bereaksi real-time terhadap aturan (min 8 karakter, 1 huruf besar, 1 angka).
-- `Input` — Konfirmasi Password.
-- `Checkbox` — persetujuan Syarat & Ketentuan / Kebijakan Privasi (wajib dicentang sebelum submit aktif).
-- `Button` (variant `default`) — "Daftar", dengan `isLoading`.
-- `Button` (variant `outline`) — "Daftar dengan Google" / "Daftar dengan Apple".
-- Link — "Sudah punya akun? Masuk" menuju `01_LOGIN`.
+- **Immersive Hero Panel (Desktop Only)**: Panel arsitektur premium di sisi kiri (`w-1/2`) dengan `bg-black/50` overlay, testimoni nyata, dan *trust badges* (sekelas Airbnb/Apple).
+- **Floating Glass Auth Card**: Kontainer form dengan *glassmorphism* (`bg-white/70 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), `rounded-2xl` padding tebal.
+- **Progressive Registration Wizard (3 Langkah)**:
+  - **Minimalist Stepper**: Indikator langkah (misal: "Langkah 1 dari 3") di atas form.
+  - **Langkah 1: Peran (The Gateway)**: 3 Kartu Visual interaktif (Pencari Properti, Pemilik Properti, Mitra Surveyor) dengan deskripsi singkat. Tidak ada input teks.
+  - **Langkah 2: Identitas (The Introduction)**: Input Nama Lengkap, Email, dan Nomor Telepon.
+  - **Langkah 3: Keamanan (The Key)**: Input Password, Konfirmasi Password, Checkbox Syarat & Ketentuan.
+- `Input` — Semua input menggunakan styling elegan (`border-slate-200`, `rounded-xl`, focus `ring-emerald-500`).
+- **Indikator Kekuatan Password**: Bereaksi real-time tanpa menghakimi (abu-abu -> biru -> hijau emerald).
+- `Button` (variant `default`) — "Selanjutnya" / "Bergabung dengan HomeLink" (`bg-slate-900` text white), transisi hover 200ms.
+- **Prioritas SSO**: `Button` "Daftar dengan Google" / "Daftar dengan Apple" dengan border tipis dan ikon provider.
+- Link teks — "Sudah punya akun? Masuk di sini" menuju `01_LOGIN`.
 
 ## 4. Data & State Management
 **Zod Schema (sketch):**
@@ -43,10 +45,10 @@ const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 ```
-- **Local State:** kekuatan password terhitung real-time (`passwordStrength: "weak"|"medium"|"strong"`), toggle visibility dua field password, role terpilih menentukan field kondisional yang tampil.
+- **Local State (Wizard)**: `currentStep` (1, 2, atau 3) mengatur tampilan form. Pengguna tidak bisa lanjut ke Langkah 2 jika Langkah 1 (Role) kosong. Validasi harus terjadi per langkah (`trigger()` dari react-hook-form). Kekuatan password terhitung real-time (`passwordStrength`), toggle visibility password aktif.
 - **Server State:** tidak ada fetch data pra-render selain cek sesi (agar pengguna yang sudah login diarahkan pergi dari halaman ini).
-- **Form Handling:** `react-hook-form` + `zodResolver(registerSchema)`. Field `phone` diverifikasi UNIQUE oleh backend (kolom `USER.phone` unik+nullable) — error duplikat harus dipetakan ke field spesifik.
-- Setelah submit sukses, state alur berpindah ke halaman `06_VERIFY_OTP` (verifikasi telepon) dan/atau `05_VERIFY_EMAIL`/`07_ACCOUNT_VERIFICATION_PENDING` tergantung metode registrasi.
+- **Form Handling:** `react-hook-form` + `zodResolver(registerSchema)`. Saat menekan "Selanjutnya", sistem memvalidasi *fields* spesifik pada langkah aktif sebelum beralih ke slide berikutnya. Field `phone` diverifikasi UNIQUE oleh backend.
+- Setelah submit sukses di Langkah 3, state alur berpindah ke halaman `06_VERIFY_OTP` (verifikasi telepon) dan/atau `05_VERIFY_EMAIL`.
 
 ## 5. API Endpoints Referenced
 - `POST /api/v1/auth/register` — payload `{ name, email, phone, password, role }`, response JSend `{ status: "success", data: { user } }` atau error `VALIDATION_FAILED` (400) dengan `errors` per-field (mis. email/phone sudah terdaftar).
@@ -71,6 +73,9 @@ const registerSchema = z.object({
 - `CheckCircle2` — indikator kriteria password terpenuhi di strength meter (mis. "min 8 karakter ✓").
 
 ## 8. UI/UX Aesthetic Rules
-Menggunakan Design System yang sama: White/Surface Light Gray/Royal Blue/Dark Navy, radius rounded-2xl/3xl, bayangan lembut, font Inter/SF Pro Display.
-- Karena form Register lebih panjang dari Login, terapkan pengelompokan visual (spacing lebih besar antar section: Identitas → Kredensial → Persetujuan) agar tetap terasa ringan, selaras prinsip "Instant Clarity & Trust".
-- Strength meter menggunakan warna status yang tenang (bukan merah menyala untuk "lemah") — gunakan gradasi Muted Cool Gray → Royal Blue → hijau emerald agar tidak terasa menghakimi pengguna, konsisten dengan aturan copy "jangan menyalahkan pengguna".
+Mengikuti "The Exclusive Welcome" HomeLink 2.0:
+- **Konsep Wizard**: Mengubah form panjang menjadi *Progressive Disclosure* 3 langkah. Hal ini secara drastis mengurangi beban kognitif pengguna dan membangun *engagement* secara bertahap.
+- **Tipografi**: Heading `text-[36px] leading-[44px]` dan `text-[28px]` `font-semibold tracking-tight`. Teks sekunder warna `slate-500`.
+- **Glassmorphism & Elevasi**: Latar form `bg-white/70 backdrop-blur-md border border-white/20` dengan Elevasi Tinggi (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`).
+- **Transisi**: Animasi transisi antar langkah harus menggunakan *smooth slide* atau *fade* (`animate-in fade-in slide-in-from-right` durasi 300ms) agar terasa layaknya aplikasi *native* premium.
+- Strength meter menggunakan warna status yang tenang (bukan merah menyala untuk "lemah") — gunakan gradasi abu-abu → biru → hijau emerald agar tidak terasa menghakimi pengguna.

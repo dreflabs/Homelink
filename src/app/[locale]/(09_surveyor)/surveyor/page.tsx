@@ -19,7 +19,7 @@ export default function SurveyorDashboard() {
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
               Tugas Hari Ini
             </CardTitle>
-            <CalendarDays className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <CalendarDays className="h-4 w-4 text-primary dark:text-blue-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</div>
@@ -64,15 +64,15 @@ export default function SurveyorDashboard() {
         <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
           <CardHeader className="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
-              <Map className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <Map className="h-5 w-5 text-primary dark:text-blue-400" />
               Peta Lokasi Selanjutnya
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="flex flex-col items-center justify-center py-12 text-center h-[400px] border-2 border-dashed border-slate-200 rounded-xl relative overflow-hidden">
               <div className="relative z-10 flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <div className="h-16 w-16 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-4 shadow-inner">
-                  <Map className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                <div className="h-16 w-16 bg-slate-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                  <Map className="h-8 w-8 text-primary dark:text-blue-400" />
                 </div>
                 <h3 className="text-xl font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Integrasi Peta Interaktif
@@ -83,7 +83,7 @@ export default function SurveyorDashboard() {
               </div>
               
               {/* Decorative elements */}
-              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
+              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-slate-500/10 rounded-full blur-3xl"></div>
               <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"></div>
             </div>
           </CardContent>

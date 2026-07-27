@@ -16,10 +16,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/unauthorized");
   }
 
+  const logoNode = (
+    <div className="flex items-center gap-2">
+      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span className="text-white font-bold text-lg leading-none">H</span>
+      </div>
+      <span className="text-xl font-bold tracking-tight text-slate-900">HomeLink</span>
+    </div>
+  );
+
   return (
     <DashboardLayoutWrapper
       title="HomeLink Admin"
       sidebarTheme="light"
+      logoutLabel="Sign Out"
+      roleBadge="Super Admin"
+      logoNode={logoNode}
       links={[
         { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
         { href: "/admin/users", label: "UserRound", icon: <UserRound className="w-5 h-5" /> },

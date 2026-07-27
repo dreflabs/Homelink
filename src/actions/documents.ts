@@ -40,8 +40,13 @@ export async function uploadDocument(formData: FormData) {
       throw new Error("Ukuran file maksimal 5MB");
     }
 
+    const ext = path.extname(file.name).toLowerCase() || ".pdf";
+    const allowedExtensions = [".pdf", ".jpg", ".jpeg", ".png", ".webp"];
+    if (!allowedExtensions.includes(ext)) {
+      throw new Error("Format file tidak diizinkan. Hanya PDF dan gambar (JPG, PNG, WEBP).");
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
-    const ext = path.extname(file.name) || ".pdf";
     const filename = `${session.user.id}-${Date.now()}${ext}`;
     const uploadDir = path.join(process.cwd(), "public", "uploads", "documents");
     
@@ -69,6 +74,6 @@ export async function uploadDocument(formData: FormData) {
     return { success: true, document: doc };
   } catch (error: any) {
     console.error("Upload document error:", error);
-    return { success: false, error: error.message || "Gagal mengunggah dokumen" };
+    return { success: false, error: "Gagal mengunggah dokumen. Silakan coba lagi." };
   }
 }

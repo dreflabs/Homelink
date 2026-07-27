@@ -44,7 +44,10 @@ app/(dashboard)/surveyor/tasks/[propertyId]/form/page.tsx
 - **`AlertTriangle`** — muncul otomatis pada opsi kondisi "Perlu Perbaikan", `text-amber-600`, untuk menyorot temuan yang butuh perhatian Admin.
 - **`Save`** — pada `AutoSaveIndicator`, `text-slate-400`, `aria-hidden="true"` karena disertai teks "Tersimpan otomatis".
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Karena form ini panjang dan diisi sambil berdiri/berjalan di lokasi properti, gunakan pola satu section per layar (bukan satu form panjang tunggal) agar navigasi jempol tetap ringan. Semua tombol pilihan kondisi (`Baik`/`Cukup`/dst.) harus berukuran besar (minimal 44x44px) dan berjarak cukup agar tidak salah tap saat Surveyor mengenakan sarung tangan atau memegang alat ukur.

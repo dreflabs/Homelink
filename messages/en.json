@@ -8,7 +8,9 @@
     "about": "About Us",
     "contact": "Contact",
     "faq": "FAQ",
-    "login": "Login"
+    "login": "Login",
+    "search": "Search Properties",
+    "sell": "Sell Property"
   },
   "Auth": {
     "login": {
@@ -82,7 +84,8 @@
         "offers": "Offers",
         "documents": "Documents",
         "messages": "Messages",
-        "settings": "Settings"
+        "settings": "Settings",
+        "logout": "Sign Out"
       }
     },
     "dashboard": {
@@ -152,7 +155,7 @@
     "savedSearches": {
       "title": "Saved Searches",
       "subtitle": "Manage saved searches here.",
-      "moduleInDevelopment": "Modul sedang dalam pengembangan tahap lanjut."
+      "moduleInDevelopment": "Module is currently in advanced development stages."
     },
     "documents": {
       "title": "Documents",
@@ -200,58 +203,111 @@
     "settingsPage": {
       "title": "Settings",
       "subtitle": "Manage your account preferences and notifications."
+    },
+    "settingsForm": {
+      "notifications": {
+        "title": "Email Notifications",
+        "subtitle": "Choose what type of notifications you want to receive.",
+        "savedProperties": "Saved Properties",
+        "savedPropertiesDesc": "Get notified about price or status changes on your favorite properties.",
+        "newMessages": "New Messages",
+        "newMessagesDesc": "Get notified when property owners reply to your messages.",
+        "recommendations": "Property Recommendations",
+        "recommendationsDesc": "Receive weekly property recommendations matching your criteria."
+      },
+      "accountSecurity": {
+        "title": "Account Security",
+        "subtitle": "Manage your password and account security."
+      },
+      "actions": {
+        "save": "Save Settings",
+        "saving": "Saving...",
+        "saved": "Saved"
+      }
     }
   },
   "Public": {
     "HomePage": {
       "Hero": {
-        "badge": "#1 Property Platform Free of Ghost Listings",
-        "title_1": "Your Dream Property. ",
-        "title_2": "100% Verified.",
-        "subtitle": "Goodbye to fake ads. Every property on HomeLink is strictly inspected physically and legally by our independent team of experts.",
-        "stats_1": "10,000+ Active Properties",
-        "stats_2": "2-Step Legal Verification",
-        "stats_3": "Rp 2T+ Property Value"
+        "badge": "100% Verified Properties",
+        "title_1": "Find Your Dream Home",
+        "title_2": "Without Worries.",
+        "subtitle": "Every property on HomeLink has undergone strict physical inspection and legal verification. Zero ghost listings, 100% trusted."
+      },
+      "Featured": {
+        "title": "Verified Property of the Week",
+        "subtitle": "Exclusive curation with the highest verification score.",
+        "badge": "Physically & Legally Verified",
+        "prop_name": "Kemang Paradiso Villa",
+        "prop_loc": "Kemang, South Jakarta",
+        "price_label": "Asking Price",
+        "price": "IDR 12.5 Billion",
+        "btn": "View Details"
       },
       "Verification": {
-        "title": "Why is HomeLink Different?",
-        "subtitle": "Our 2-step verification process guarantees you will never find fictitious listings, fake photos, or manipulative pricing.",
-        "step_1_title": "1. Legality Audit",
-        "step_1_desc": "Checking certificates, IMB, and PBB directly with the BPN database to ensure valid ownership.",
-        "step_2_title": "2. Physical Inspection",
-        "step_2_desc": "Independent surveyors visit the location, verify actual conditions, and take standardized photos/videos.",
-        "step_3_title": "3. Zero Ghost Listing",
-        "step_3_desc": "Only after passing these two stages will a property receive the Verified badge and be featured on the platform."
+        "badge": "Our Process",
+        "title_1": "No Room for ",
+        "title_2": "Doubt.",
+        "subtitle": "Every property listed on our platform must pass 3 strict verification stages by an independent team. If it fails, the property will not be listed.",
+        "step1_title": "1. Legal Audit",
+        "step1_desc": "Checking the Certificate of Ownership, Building Permit, and Tax to ensure the property is free of legal disputes.",
+        "step2_title": "2. 360° Physical Inspection",
+        "step2_desc": "Our surveyors visit the location to take authentic photos, videos, and record the true condition of the building.",
+        "step3_title": "3. Verified Badge Issuance",
+        "step3_desc": "The property is approved, its price is locked, and it goes live with the exclusive HomeLink Verified badge.",
+        "visual_doc": "Document Status",
+        "visual_status": "Verification Passed"
       },
-      "Features": {
-        "badge": "Exclusive Technology",
-        "title": "Modern Property Innovation",
-        "ai_title": "AI Instant Valuation",
-        "ai_desc": "Setting a new standard in property valuation. Our algorithm analyzes thousands of real-time market data points to provide highly accurate price estimates.",
-        "ai_button": "Try AI Calculator",
-        "ai_card_title": "Live Market Analysis",
-        "ai_card_label": "Price Estimate",
-        "security_title": "Guaranteed Transaction Security",
-        "security_desc": "From signing to payment, the entire transaction process is facilitated with bank-standard legal infrastructure.",
-        "security_button": "Learn more"
+      "Categories": {
+        "title": "Collections by Lifestyle",
+        "cat_penthouse": "Penthouse",
+        "cat_villa": "Tropical Villa",
+        "cat_apartment": "City Apartment",
+        "cat_land": "Land Plots"
       },
-      "Collections": {
-        "title": "Exclusive Collections",
-        "subtitle": "Discover architectural masterpieces that have been validated for excellence by the HomeLink team.",
-        "see_all": "View All",
-        "empty_title": "Collection is Being Prepared",
-        "empty_desc": "Our curators are selecting the most extraordinary properties for you. Please explore our full catalog.",
-        "empty_button": "Explore Catalog",
-        "see_all_mobile": "View All Collections"
+      "AIValuation": {
+        "demo_title": "Type 45 House, BSD City",
+        "demo_time": "Scanned 2 mins ago",
+        "demo_badge": "AI Ready",
+        "demo_est_label": "Estimated Selling Price (Real-time)",
+        "demo_est_price": "IDR 1,850,000,000",
+        "demo_vs": "+12% vs surrounding market price",
+        "demo_acc_label": "Prediction Accuracy Rate",
+        "demo_acc_val": "96%",
+        "demo_float_title": "Data Updated",
+        "demo_float_desc": "Analyzing 1,204 transactions",
+        "title_1": "Property Pricing ",
+        "title_2": "Without Guesswork.",
+        "desc": "HomeLink's exclusive AI engine analyzes thousands of historical data points and hyper-local market trends to provide highly precise property price estimates in seconds.",
+        "btn": "Try Free AI Valuation"
       },
-      "Testimonials": {
-        "title": "Trusted by Industry Leaders"
+      "Collection": {
+        "title": "Exclusive Collection",
+        "desc": "Premium properties specially curated by our property directors.",
+        "btn": "Explore All"
+      },
+      "Insight": {
+        "title": "Smart Market Insights",
+        "desc": "Big decisions require solid data. Get access to property market analytics, rental yield trends, and hyper-local reports directly from your dashboard.",
+        "feat_1": "Price per square meter trend analysis",
+        "feat_2": "Rental ROI potential calculation",
+        "feat_3": "Price change notifications in favorite areas",
+        "btn": "View Today's Insights",
+        "visual_label": "Kemang ROI",
+        "visual_val": "+8.4% / Yr"
       },
       "CTA": {
-        "title": "Ready to Maximize Your Asset Value?",
-        "subtitle": "Join thousands of property owners who have trusted their assets to HomeLink 2.0's exclusive technology and network.",
-        "button_1": "List Your Property Now",
-        "button_2": "Contact Our Consultants"
+        "title": "Time to Unlock Your Property's Potential.",
+        "desc": "Join the exclusive property owners network. Get professional photo services, AI valuation, and agent assistance for free.",
+        "btn": "Start Selling or Renting"
+      },
+      "MobileCTA": {
+        "btn": "Explore Properties"
+      },
+      "Collections": {
+        "empty_title": "No Properties Yet",
+        "empty_desc": "There are no verified properties matching this criteria yet.",
+        "empty_button": "Search Other Properties"
       }
     },
     "FAQ": {
@@ -489,6 +545,12 @@
     }
   },
   "OwnerDashboard": {
+    "error": {
+      "title": "Failed to Load Owner Portal",
+      "description": "Failed to load your property listing information. Please reload.",
+      "try_again": "Try Again",
+      "manage_properties": "Manage Properties"
+    },
     "layout": {
       "title": "Owner Dashboard",
       "links": {
@@ -729,5 +791,116 @@
     "gagal_memuat_leads": "Failed to load leads data.",
     "manajemen_leads": "Lead Management",
     "internal_dashboard": "Internal Dashboard"
+  },
+  "Common": {
+    "table": {
+      "name": "Name",
+      "title": "Title",
+      "status": "Status",
+      "actions": "Actions",
+      "date": "Date",
+      "category": "Category",
+      "author": "Author",
+      "role": "Role",
+      "type": "Type",
+      "amount": "Amount",
+      "user": "User",
+      "description": "Description",
+      "rating": "Rating",
+      "order": "Order",
+      "tenant": "Tenant"
+    },
+    "search": {
+      "placeholder": "Search...",
+      "byTitle": "Search by title, address, or owner...",
+      "users": "Search users...",
+      "reports": "Search reports by property ID...",
+      "helpCenter": "Search for articles, guides, and FAQs...",
+      "tenants": "Search tenants..."
+    }
+  },
+  "AdminDashboard": {
+    "page": {
+      "title": "Dashboard",
+      "description": "Daily operational summary of the HomeLink platform.",
+      "verification_queue": "Verification Queue",
+      "passed_sla": "passed SLA",
+      "total_active_users": "Total Active Users",
+      "users_this_week": "users this week",
+      "total_live_properties": "Total Live Properties",
+      "properties_this_month": "properties this month",
+      "total_agents": "Total Agents",
+      "registered_partner_agents": "Registered partner agents",
+      "recent_activity": "Recent Activity",
+      "view_all": "View All",
+      "table": {
+        "activity": "Activity",
+        "actor": "Actor",
+        "target": "Target",
+        "time": "Time"
+      },
+      "dummy_data": {
+        "approve_property": "Approve Property",
+        "reject_property": "Reject Property",
+        "suspend_user": "Suspend User",
+        "verify_agent": "Verify Agent",
+        "admin_user": "Admin User",
+        "admin_system": "Admin System",
+        "admin_staff": "Admin Staff",
+        "mins_ago": "mins ago",
+        "hours_ago": "hours ago"
+      }
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "total_users": "Total Users",
+      "active_properties": "Active Properties",
+      "transactions": "Transactions",
+      "from_last_month": "from last month",
+      "user_growth_chart": "User Growth Chart",
+      "chart_desc": "Monthly active users over the past year.",
+      "chart_placeholder": "[Chart Component Placeholder]"
+    }
+  },
+  "SearchHero": {
+    "intent_buy": "Buy",
+    "intent_rent": "Rent",
+    "intent_sell": "Sell",
+    "placeholder": "Search properties...",
+    "fake_placeholder": "Type anything...",
+    "button": "Search",
+    "ph_1": "Search houses in BSD...",
+    "ph_2": "2 Billion house in South Jakarta...",
+    "ph_3": "Apartment near MRT...",
+    "ph_4": "Bali Villa with pool..."
+  },
+  "FeaturedProperties": {
+    "tab_1": "Newest",
+    "tab_2": "Traffic Free (Near Transit)",
+    "tab_3": "Perfect for New Families",
+    "tab_4": "High ROI Investment"
+  },
+  "Footer": {
+    "sell_property": "Sell Property",
+    "search_property": "Search Property",
+    "headline": "Setting a new standard in real estate trust and transparency.",
+    "description": "HomeLink was founded with one goal: to eliminate doubt from every property transaction. Through independent physical verification, advanced AI technology, and strict curation, we build an ecosystem where buyers and owners can transact with absolute certainty.",
+    "platform": "Platform",
+    "collections": "Property Collections",
+    "ai_valuation": "AI Valuation",
+    "pricing": "Pricing & Services",
+    "company": "Company",
+    "about": "About Us",
+    "careers": "Careers",
+    "press": "Press & Media",
+    "contact": "Contact Us",
+    "verified_100": "100% Verified Properties",
+    "no_ghost": "No Ghost Listings",
+    "privacy": "Privacy",
+    "terms": "Terms & Conditions",
+    "rights": "All rights reserved."
+  },
+  "MobileNav": {
+    "search": "Search Properties"
   }
 }

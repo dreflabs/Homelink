@@ -41,7 +41,7 @@ export async function authenticate(
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Email atau password salah.";
+          return "Email atau kata sandi salah.";
         default:
           return "Terjadi kesalahan saat login.";
       }
@@ -52,9 +52,15 @@ export async function authenticate(
   // Login berhasil — cari role user lalu redirect
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    const dest = ROLE_REDIRECT[user?.role ?? ""] ?? "/";
+    if (!user || user.isDeleted) {
+      return "Akun Anda telah dinonaktifkan.";
+    }
+    const dest = ROLE_REDIRECT[user.role ?? ""] ?? "/";
     redirect(dest);
-  } catch {
+  } catch (error: any) {
+    if (error?.message?.includes("NEXT_REDIRECT") || error?.digest?.startsWith("NEXT_REDIRECT")) {
+      throw error;
+    }
     redirect("/");
   }
 }

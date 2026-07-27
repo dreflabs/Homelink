@@ -42,7 +42,10 @@ app/(dashboard)/surveyor/schedule/page.tsx
 - **`ListTodo`** — toggle ke `AgendaListView`.
 - **`CalendarClock`** — trigger `RescheduleActionSheet`, menandakan aksi ubah jadwal.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Karena Surveyor mengecek jadwal ini sering kali sambil dalam perjalanan (mobile, kadang di dalam kendaraan), prioritaskan keterbacaan sekilas (glanceable): tanggal, alamat singkat, dan slot waktu harus terlihat jelas tanpa perlu membuka detail. Hindari elemen kalender grid padat khas desktop pada breakpoint mobile — gunakan agenda vertikal dengan target sentuh besar antar-hari.

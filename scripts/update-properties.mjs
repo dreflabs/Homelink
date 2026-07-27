@@ -1,4 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+
+if (process.env.NODE_ENV === 'production' && !process.argv.includes('--confirm')) {
+  console.error("ERROR: Script is running in production. Pass --confirm to execute.");
+  process.exit(1);
+}
+
 const prisma = new PrismaClient();
 async function main() {
   const properties = await prisma.property.findMany({ take: 4 });

@@ -36,8 +36,24 @@ export default async function OwnerDashboardLayout({
     redirect("/unauthorized");
   }
 
+  const logoNode = (
+    <div className="flex items-center gap-2">
+      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span className="text-white font-bold text-lg leading-none">H</span>
+      </div>
+      <span className="text-xl font-bold tracking-tight text-white">HomeLink</span>
+    </div>
+  );
+
   return (
-    <DashboardLayoutWrapper title={t("title")} links={ownerLinks} sidebarTheme="dark">
+    <DashboardLayoutWrapper 
+      title={t("title")} 
+      links={ownerLinks} 
+      sidebarTheme="dark"
+      logoutLabel="Sign Out"
+      roleBadge="Portal Pemilik"
+      logoNode={logoNode}
+    >
       {children}
     </DashboardLayoutWrapper>
   );

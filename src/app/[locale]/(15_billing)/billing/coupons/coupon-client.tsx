@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +32,7 @@ type Coupon = {
 };
 
 export function CouponClient({ initialCoupons }: { initialCoupons: Coupon[] }) {
+  const tTable = useTranslations('Common.table');
   const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -147,8 +150,8 @@ export function CouponClient({ initialCoupons }: { initialCoupons: Coupon[] }) {
               <TableHead>Code</TableHead>
               <TableHead>Discount</TableHead>
               <TableHead>Usage</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{tTable('status')}</TableHead>
+              <TableHead className="text-right">{tTable('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

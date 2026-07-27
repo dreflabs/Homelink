@@ -60,6 +60,9 @@ Rute publik: `/dashboard/documents`. Tidak ada Screen ID di `18_SCREEN_INVENTORY
 | `FolderOpen` | Empty state ilustratif (48px, Light Gray) — "Belum ada dokumen" | 48px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, daftar dokumen sebagai list bergaris pembatas tipis `slate-50`, bukan grid kartu besar (dokumen bersifat utilitarian, bukan visual-heavy).

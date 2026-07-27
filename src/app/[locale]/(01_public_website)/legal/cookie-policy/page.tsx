@@ -21,40 +21,40 @@ export default function CookiePolicyPage() {
               <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">
                 {t('toc')}
               </h3>
-              <a href="#pendahuluan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#pendahuluan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('intro')}</span>
               </a>
-              <a href="#apa-itu-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Cookie className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#apa-itu-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Cookie className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('what_is')}</span>
               </a>
-              <a href="#jenis-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#jenis-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Shield className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('types')}</span>
               </a>
-              <a href="#penggunaan-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#penggunaan-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('purposes')}</span>
               </a>
-              <a href="#pengaturan-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#pengaturan-cookie" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Settings className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('manage')}</span>
               </a>
-              <a href="#perubahan-kebijakan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Lock className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#perubahan-kebijakan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Lock className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('changes')}</span>
               </a>
-              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Mail className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('contact')}</span>
               </a>
             </nav>
             <div className="mt-8 border-t border-slate-200 pt-6 space-y-2">
-              <Link href="/legal/privacy-policy" className="block text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/privacy-policy" className="block text-sm font-medium text-primary hover:text-primary">
                 {t('privacy_link')}
               </Link>
-              <Link href="/legal/terms" className="block text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/terms" className="block text-sm font-medium text-primary hover:text-primary">
                 {t('terms_link')}
               </Link>
             </div>
@@ -67,7 +67,7 @@ export default function CookiePolicyPage() {
                 
                 {/* Header Section */}
                 <div className="border-b border-slate-200 pb-8">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-slate-50 text-primary border border-slate-200 mb-4">
                     <Cookie className="h-3.5 w-3.5" />
                     <span>{t('badge')}</span>
                   </div>
@@ -79,7 +79,7 @@ export default function CookiePolicyPage() {
                   </p>
                 </div>
 
-                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-blue-600 space-y-8">
+                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-primary space-y-8">
                   
                   <section id="pendahuluan" className="scroll-mt-24">
                     <h2 className="text-2xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
@@ -113,7 +113,7 @@ export default function CookiePolicyPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose mt-4">
                       <div className="p-5 rounded-xl bg-slate-50 border border-slate-200/80">
                         <div className="flex items-center gap-2 font-semibold text-slate-900 mb-2">
-                          <Lock className="h-4 w-4 text-blue-600" />
+                          <Lock className="h-4 w-4 text-primary" />
                           <span>{t('essential_title')}</span>
                         </div>
                         <p className="text-sm text-slate-600 leading-relaxed">

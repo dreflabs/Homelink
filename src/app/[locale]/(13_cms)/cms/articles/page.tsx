@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import React from "react"
 import { Plus } from "lucide-react"
 import prisma from "@/lib/prisma";
@@ -12,8 +13,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 
 export default async function ArticlesPage() {
+  const tTable = await getTranslations('Common.table');
+
   const articles = await prisma.article.findMany({
     include: { category: true, author: true },
     orderBy: { createdAt: "desc" }
@@ -31,29 +35,29 @@ export default async function ArticlesPage() {
         </div>
       </div>
       
-      <div className="border rounded-md">
+      <div className="w-full overflow-x-auto pb-2 rounded-xl border border-border/70 shadow-sm bg-card">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Judul</TableHead>
-              <TableHead>Kategori</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Penulis</TableHead>
-              <TableHead>Tanggal</TableHead>
+              <TableHead>{tTable('title')}</TableHead>
+              <TableHead>{tTable('category')}</TableHead>
+              <TableHead>{tTable('status')}</TableHead>
+              <TableHead>{tTable('author')}</TableHead>
+              <TableHead>{tTable('date')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {articles.map((article) => (
-              <TableRow key={article.id}>
-                <TableCell className="font-medium">{article.title}</TableCell>
-                <TableCell>{article.category?.name || "-"}</TableCell>
+              <TableRow key={article.id} className="hover:bg-muted/50 transition-colors">
+                <TableCell className="font-semibold text-foreground">{article.title}</TableCell>
+                <TableCell className="text-muted-foreground">{article.category?.name || "-"}</TableCell>
                 <TableCell>
                   <Badge variant={article.status === "PUBLISHED" ? "default" : "secondary"}>
                     {article.status}
                   </Badge>
                 </TableCell>
-                <TableCell>{article.author?.name || "-"}</TableCell>
-                <TableCell>
+                <TableCell className="text-muted-foreground">{article.author?.name || "-"}</TableCell>
+                <TableCell className="text-muted-foreground text-xs">
                   {new Date(article.createdAt).toLocaleDateString("id-ID", {
                     year: "numeric",
                     month: "long",
@@ -64,8 +68,11 @@ export default async function ArticlesPage() {
             ))}
             {articles.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  Belum ada artikel.
+                <TableCell colSpan={5} className="p-0 border-0">
+                  <TableEmptyState
+                    title="Belum Ada Artikel"
+                    description="Belum ada artikel yang dipublikasikan atau disimpan di dalam draf Anda."
+                  />
                 </TableCell>
               </TableRow>
             )}

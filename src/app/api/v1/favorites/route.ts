@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-
-
 
 export async function GET() {
   try {
-    // get all favorites for now, ignoring buyerId filter for simulation
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { status: 'error', message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const favorites = await prisma.savedProperty.findMany({
+      where: { buyerId: session.user.id },
       include: { property: true },
     });
 
@@ -17,7 +24,7 @@ export async function GET() {
   } catch (error: any) {
     console.error('Error fetching favorites:', error);
     return NextResponse.json(
-      { status: 'error', message: 'Failed to fetch favorites', details: error?.message || 'Unknown error' },
+      { status: 'error', message: 'Failed to fetch favorites', details: 'Terjadi kesalahan internal. Silakan coba lagi.' },
       { status: 500 }
     );
   }
@@ -25,11 +32,19 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { propertyId, buyerId } = await request.json();
-
-    if (!propertyId || !buyerId) {
+    const session = await auth();
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { status: 'error', message: 'propertyId and buyerId are required' },
+        { status: 'error', message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const { propertyId } = await request.json();
+
+    if (!propertyId) {
+      return NextResponse.json(
+        { status: 'error', message: 'propertyId is required' },
         { status: 400 }
       );
     }
@@ -37,7 +52,7 @@ export async function POST(request: Request) {
     const savedProperty = await prisma.savedProperty.create({
       data: {
         propertyId,
-        buyerId,
+        buyerId: session.user.id,
       },
     });
 
@@ -48,7 +63,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('Error adding favorite:', error);
     return NextResponse.json(
-      { status: 'error', message: 'Failed to add favorite', details: error?.message || 'Unknown error' },
+      { status: 'error', message: 'Failed to add favorite', details: 'Terjadi kesalahan internal. Silakan coba lagi.' },
       { status: 500 }
     );
   }

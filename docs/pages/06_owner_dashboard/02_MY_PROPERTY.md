@@ -59,6 +59,9 @@ Sidebar label: "Listing Saya" (per `20_NAVIGATION_MAP.md`). SCR-202 di `18_SCREE
 - **Size:** 16px.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Background:** `White`, grid kartu dengan gap konsisten (24px).
 - **Card Properti:** `rounded-2xl`, foto properti rasio 4:3, *warm lighting* pada foto, bayangan lembut saat hover (elevasi naik tipis).
 - **Badge Status:** Posisi top-left di atas foto (overlay semi-transparan) agar cepat dipindai mata Owner saat scroll.

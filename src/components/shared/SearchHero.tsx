@@ -3,20 +3,18 @@
 import React, { useState, useEffect } from "react"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 export interface SearchHeroProps {
   onSearchSubmit: (query: string) => void
   isCompact?: boolean
 }
 
-const PLACEHOLDERS = [
-  "Cari rumah di BSD...",
-  "Rumah 2 Miliar di Jaksel...",
-  "Apartemen dekat MRT...",
-  "Villa di Bali dengan kolam renang...",
-]
+
 
 export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProps) {
+  const t = useTranslations("SearchHero")
+  const PLACEHOLDERS = [t("ph_1"), t("ph_2"), t("ph_3"), t("ph_4")]
   const [query, setQuery] = useState("")
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [displayText, setDisplayText] = useState("")
@@ -65,20 +63,20 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
     return (
       <form onSubmit={handleSubmit} className="relative flex-1 max-w-2xl mx-auto w-full">
         <div className="relative flex items-center w-full">
-          <Search 
-            className={`absolute left-4 w-5 h-5 transition-colors ${isFocused ? "text-blue-700" : "text-muted-foreground"}`} 
-            aria-hidden="true" 
-            
-          />
+            <Search 
+              className={`absolute left-4 w-5 h-5 transition-colors ${isFocused ? "text-primary" : "text-muted-foreground"}`} 
+              aria-hidden="true" 
+              strokeWidth={1.5}
+            />
           <input
             type="text"
-            className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-full text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
+            className="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-full text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Cari properti..."
-            aria-label="Cari properti"
+            placeholder={t("placeholder")}
+            aria-label={t("placeholder")}
           />
         </div>
       </form>
@@ -91,9 +89,9 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
         <div className="relative flex items-center w-full rounded-full bg-white shadow-card p-2">
           <div className="relative flex-1 flex items-center h-14 md:h-16 pl-4 md:pl-6">
             <Search 
-              className={`w-5 h-5 md:w-6 md:h-6 transition-colors ${isFocused ? "text-blue-700" : "text-muted-foreground"}`} 
+              className={`w-5 h-5 md:w-6 md:h-6 transition-colors ${isFocused ? "text-primary" : "text-muted-foreground"}`} 
               aria-hidden="true" 
-              
+              strokeWidth={1.5}
             />
             <div className="relative w-full h-full flex items-center ml-3">
               <input
@@ -103,12 +101,12 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                aria-label="Cari properti"
+                aria-label={t("placeholder")}
               />
               {/* Fake animated placeholder */}
               {!query && (
                 <div className="absolute inset-y-0 left-0 flex items-center text-slate-400 text-lg md:text-xl pointer-events-none whitespace-nowrap overflow-hidden">
-                  {isFocused ? "Ketik apa saja..." : displayText}
+                  {isFocused ? t("fake_placeholder") : displayText}
                   {!isFocused && <span className="w-0.5 h-6 bg-slate-400 ml-1 animate-pulse"></span>}
                 </div>
               )}
@@ -116,10 +114,8 @@ export function SearchHero({ onSearchSubmit, isCompact = false }: SearchHeroProp
           </div>
           <Button 
             type="submit" 
-            className="h-12 md:h-14 px-8 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold text-base md:text-lg transition-colors flex-shrink-0"
-          >
-            Cari
-          </Button>
+            className="h-12 md:h-14 px-8 rounded-full font-semibold text-base md:text-lg transition-colors flex-shrink-0"
+          >{t("button")}</Button>
         </div>
       </form>
     </div>

@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server';
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-
-
 
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ propertyId: string }> }
 ) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { status: 'error', message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { propertyId } = await params;
 
     if (!propertyId) {
@@ -20,6 +27,7 @@ export async function DELETE(
     await prisma.savedProperty.deleteMany({
       where: {
         propertyId,
+        buyerId: session.user.id,
       },
     });
 

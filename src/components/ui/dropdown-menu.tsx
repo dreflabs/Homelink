@@ -14,8 +14,17 @@ function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
   return <MenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
 }
 
-function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
-  return <MenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
+function DropdownMenuTrigger({ className, ...props }: MenuPrimitive.Trigger.Props) {
+  return (
+    <MenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      className={cn(
+        "cursor-pointer focus-visible:outline-none min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 function DropdownMenuContent({

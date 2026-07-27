@@ -62,7 +62,7 @@ export function EditPropertyClient({ property }: { property: any }) {
           <Button variant="outline" asChild className="rounded-full px-6">
             <Link href="/owner/properties">Batal</Link>
           </Button>
-          <Button type="submit" disabled={loading} className="rounded-full px-6 bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all">
+          <Button type="submit" disabled={loading} className="rounded-full px-6 bg-primary hover:bg-primary text-white shadow-md transition-all">
             {loading ? "Menyimpan..." : "Simpan Perubahan"}
           </Button>
         </div>

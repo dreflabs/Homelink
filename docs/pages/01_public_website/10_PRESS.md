@@ -52,3 +52,11 @@ app/(01_public_website)/press/page.tsx
 Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png`: background putih dominan, aksi utama `Royal Blue` (`blue-700`), teks `Dark Navy` (`slate-900`), surface sekunder `slate-50`, card dengan *diffused soft shadow*, border radius besar (`16-24px`).
 
 **Spesifik halaman ini:** Seksi aset media menggunakan grid kartu dengan pratinjau thumbnail besar (logo di atas latar `slate-50` untuk kontras), terpisah jelas secara visual dari daftar siaran pers berbasis teks di bawahnya.
+
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

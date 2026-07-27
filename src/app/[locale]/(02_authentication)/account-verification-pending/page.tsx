@@ -70,7 +70,7 @@ export default function AccountVerificationPendingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50/50 p-4">
       <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-8 shadow-sm border border-slate-100 text-center" aria-live="polite">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-primary">
           <Hourglass className="h-8 w-8" />
         </div>
         

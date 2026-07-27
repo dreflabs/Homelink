@@ -34,35 +34,35 @@ export default async function AILayout({ children }: { children: React.ReactNode
           <nav className="flex flex-col gap-1">
             <Link 
               href="/ai/assistant" 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all text-slate-600 font-medium"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-primary transition-all text-slate-600 font-medium"
             >
-              <Bot className="w-5 h-5 text-blue-600" />
+              <Bot className="w-5 h-5 text-primary" />
               <span>AI Assistant</span>
             </Link>
             
             <Link 
               href="/ai/valuation" 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all text-slate-600 font-medium"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-primary transition-all text-slate-600 font-medium"
             >
-              <Building className="w-5 h-5 text-blue-600" />
+              <Building className="w-5 h-5 text-primary" />
               <span>AI Valuation</span>
             </Link>
             
             <Link 
               href="/ai/analytics" 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-700 transition-all text-slate-600 font-medium"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 hover:text-primary transition-all text-slate-600 font-medium"
             >
-              <ChartCandlestick className="w-5 h-5 text-blue-600" />
+              <ChartCandlestick className="w-5 h-5 text-primary" />
               <span>Analytics</span>
             </Link>
           </nav>
         </div>
         
         <div className="mt-auto p-6">
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
             <p className="text-xs text-slate-500 mb-2 font-medium">Token Usage</p>
             <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden mb-1">
-              <div className="h-full bg-blue-600 w-[65%] rounded-full"></div>
+              <div className="h-full bg-primary w-[65%] rounded-full"></div>
             </div>
             <p className="text-xs text-slate-400 text-right">65% / 1M</p>
           </div>

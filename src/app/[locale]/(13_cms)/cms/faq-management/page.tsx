@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getFAQs, toggleFAQ, deleteFAQ } from "@/actions/cms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit, Trash2, Power } from "lucide-react";
 
 export default async function FAQManagementPage() {
+  const tTable = await getTranslations('Common.table');
+
   const faqs = await getFAQs();
 
   return (
@@ -24,8 +27,8 @@ export default async function FAQManagementPage() {
               <TableRow>
                 <TableHead className="w-16">Order</TableHead>
                 <TableHead>Question</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{tTable('status')}</TableHead>
+                <TableHead className="text-right">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

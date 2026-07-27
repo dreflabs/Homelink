@@ -2,10 +2,8 @@ import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import * as argon2 from 'argon2';
-
-const prisma = new PrismaClient();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -23,21 +21,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const email = credentials.email as string;
+        const email = (credentials.email as string).toLowerCase().trim();
         const password = credentials.password as string;
+
+        console.log(`[AUTH DEBUG] Attempting login for email: "${email}" with password length: ${password?.length}`);
 
         const user = await prisma.user.findUnique({
           where: { email },
         });
 
         if (!user || !user.passwordHash) {
+          console.log(`[AUTH DEBUG] User not found or no password hash for: ${email}`);
           return null;
         }
 
-        const passwordsMatch = await argon2.verify(user.passwordHash, password);
+        try {
+          const passwordsMatch = await argon2.verify(user.passwordHash, password);
+          console.log(`[AUTH DEBUG] passwordsMatch: ${passwordsMatch}`);
 
-        if (passwordsMatch) {
-          return user;
+          if (passwordsMatch) {
+            return user;
+          }
+        } catch (err) {
+          console.error('[AUTH DEBUG] Error during password verification:', err);
         }
 
         return null;

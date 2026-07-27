@@ -49,6 +49,9 @@ Rute publik: `/dashboard/profile`. Tidak memiliki Screen ID eksplisit di `18_SCR
 | `BadgeCheck` | Indikator email terverifikasi | 16px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White` bersih, form disusun dalam satu `Card` `rounded-2xl` dengan padding lega.

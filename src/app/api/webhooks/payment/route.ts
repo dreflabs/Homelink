@@ -15,7 +15,11 @@ export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
     const signature = req.headers.get("x-webhook-signature");
-    const secret = process.env.PAYMENT_WEBHOOK_SECRET || "default_secret";
+    const secret = process.env.PAYMENT_WEBHOOK_SECRET;
+
+    if (!secret) {
+      return NextResponse.json({ error: "Webhook secret is not configured" }, { status: 500 });
+    }
 
     if (!signature) {
       return NextResponse.json({ error: "Missing signature" }, { status: 401 });
@@ -26,7 +30,10 @@ export async function POST(req: Request) {
       .update(rawBody)
       .digest("hex");
 
-    if (signature !== expectedSignature) {
+    const signatureBuffer = Buffer.from(signature, 'utf8');
+    const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+
+    if (signatureBuffer.length !== expectedSignatureBuffer.length || !crypto.timingSafeEqual(signatureBuffer, expectedSignatureBuffer)) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 

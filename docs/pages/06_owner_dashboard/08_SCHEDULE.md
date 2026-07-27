@@ -56,6 +56,9 @@ Sidebar label: "Jadwal" (per `20_NAVIGATION_MAP.md`).
 - **Size:** 16px, `text-orange-600`.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Kalender:** Sel tanggal `rounded-xl`, tanggal terpilih diberi background `blue-700` teks putih; indikator booking berupa titik kecil `blue-500` di bawah angka tanggal.
 - **Daftar Agenda:** Setiap baris booking berupa card ringkas `rounded-2xl` dengan bayangan lembut, dipisah per `timeSlot` menggunakan sub-header.
 - **Background:** `White` dominan, `slate-50` untuk panel kalender agar terpisah visual dari daftar agenda.

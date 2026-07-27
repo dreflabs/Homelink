@@ -21,29 +21,29 @@ export default function LicensingPage() {
               <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">
                 {t('toc')}
               </h3>
-              <a href="#kekayaan-intelektual" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Award className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#kekayaan-intelektual" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Award className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('ip')}</span>
               </a>
-              <a href="#konten-pengguna" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#konten-pengguna" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <FileCheck className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('ugc')}</span>
               </a>
-              <a href="#open-source" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
-                <Code className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-blue-600" />
+              <a href="#open-source" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
+                <Code className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-slate-400 group-hover:text-primary" />
                 <span className="truncate">{t('oss')}</span>
               </a>
-              <a href="#batasan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#batasan" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <ShieldCheck className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('limits')}</span>
               </a>
-              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-blue-600 hover:bg-slate-100/60 transition-colors">
+              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:text-primary hover:bg-slate-100/60 transition-colors">
                 <Mail className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 group-hover:" />
                 <span className="truncate">{t('contact')}</span>
               </a>
             </nav>
             <div className="mt-8 border-t border-slate-200 pt-6 space-y-2">
-              <Link href="/legal/terms" className="block text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/terms" className="block text-sm font-medium text-primary hover:text-primary">
                 {t('terms_link')}
               </Link>
             </div>
@@ -68,7 +68,7 @@ export default function LicensingPage() {
                   </p>
                 </div>
 
-                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-blue-600 space-y-8">
+                <div className="prose prose-blue max-w-none prose-headings:text-slate-900 prose-a:text-primary space-y-8">
                   
                   <section id="kekayaan-intelektual" className="scroll-mt-24">
                     <h2 className="text-2xl font-semibold text-slate-900 mb-4">1. {t('ip')}</h2>

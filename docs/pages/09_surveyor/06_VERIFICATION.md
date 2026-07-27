@@ -43,7 +43,10 @@ app/(dashboard)/surveyor/tasks/[propertyId]/verification/page.tsx
 - **`FileWarning`** — muncul di `VerificationSummaryPanel` jika ada bukti yang belum lengkap (mis. foto tanpa GPS valid), `text-amber-600`.
 - **`ShieldCheck`** — menyertai teks konfirmasi di `ConfirmationDialog`, menandakan keputusan bersifat resmi/mengikat.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow), dengan pengecualian yang disengaja pada `ApproveActionButton`/`RejectActionButton` yang menggunakan hijau/merah solid berkontras tinggi — ini keputusan berdampak besar sehingga warna aksi harus tidak ambigu, berbeda dari tombol biru netral di halaman lain.
 
 Karena keputusan ini final dan berdampak pada reputasi properti, hindari tombol berukuran kecil berdekatan (risiko salah tap approve/reject) — beri jarak visual signifikan antara kedua tombol dan pertimbangkan pola "tap lalu confirm" dua langkah, bukan aksi sekali tap.

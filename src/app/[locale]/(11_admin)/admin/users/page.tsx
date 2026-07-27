@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import React from "react"
 import prisma from "@/lib/prisma";
 import {
@@ -23,6 +24,9 @@ import { Input } from "@/components/ui/input"
 import { MoreHorizontal, Plus, Search, Filter } from "lucide-react"
 
 export default async function UserManagementPage() {
+  const tTable = await getTranslations('Common.table');
+  const tSearch = await getTranslations('Common.search');
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' }
   })
@@ -47,7 +51,7 @@ export default async function UserManagementPage() {
           <Search className="absolute left-2.5 top-3 h-5 w-5 " />
           <Input
             type="search"
-            placeholder="Search users..."
+            placeholder={tSearch("users")}
             className="pl-9 w-full bg-background shadow-sm"
           />
         </div>
@@ -61,11 +65,11 @@ export default async function UserManagementPage() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="w-[300px]">User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="w-[300px]">{tTable('user')}</TableHead>
+              <TableHead>{tTable('role')}</TableHead>
+              <TableHead>{tTable('status')}</TableHead>
               <TableHead className="hidden md:table-cell">Joined</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">{tTable('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

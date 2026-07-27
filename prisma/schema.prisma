@@ -1,6 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -72,13 +73,13 @@ model Property {
   slug         String                       @unique
   title        String
   description  String
-  price        Decimal
+  price        Decimal                      @db.Decimal(15, 2)
   propertyType String
   bedrooms     Int?
   bathrooms    Int?
   surfaceArea  Float?
   buildingArea Float?
-  status       String
+  status       PropertyStatus               @default(DRAFT)
   address      String
   latitude     Float
   longitude    Float
@@ -87,7 +88,7 @@ model Property {
   createdAt    DateTime                     @default(now())
   updatedAt    DateTime                     @updatedAt
 
-  owner                  User                   @relation(fields: [ownerId], references: [id])
+  owner                  User                   @relation(fields: [ownerId], references: [id]) // Default: RESTRICT (Soft-delete via isDeleted)
   media                  PropertyMedia[]
   bookings               Booking[]
   verificationAudits     VerificationAudit[]
@@ -124,12 +125,12 @@ model Booking {
   buyerId    String
   surveyDate DateTime
   timeSlot   String
-  status     String   @default("PENDING")
+  status     BookingStatus @default(PENDING)
   isDeleted  Boolean  @default(false)
   createdAt  DateTime @default(now())
 
-  property    Property     @relation(fields: [propertyId], references: [id])
-  buyer       User         @relation(fields: [buyerId], references: [id])
+  property    Property     @relation(fields: [propertyId], references: [id]) // Default: RESTRICT
+  buyer       User         @relation(fields: [buyerId], references: [id]) // Default: RESTRICT
   commissions Commission[]
 
   @@index([propertyId])
@@ -225,6 +226,7 @@ model Lead {
 
   @@index([propertyId])
   @@index([buyerId])
+  @@index([followUpStatus])
 }
 
 model Category {
@@ -246,7 +248,7 @@ model Article {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  category Category? @relation(fields: [categoryId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   author   User      @relation(fields: [authorId], references: [id])
 
   @@index([categoryId])
@@ -294,8 +296,8 @@ model Offer {
   propertyId String
   buyerId    String
   ownerId    String
-  amount     Decimal
-  status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, COUNTERED
+  amount     Decimal     @db.Decimal(15, 2)
+  status     OfferStatus @default(PENDING) // PENDING, ACCEPTED, REJECTED, COUNTERED
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -378,8 +380,8 @@ model Commission {
   bookingId  String
   agentId    String
   invoiceId  String?
-  percentage Decimal
-  amount     Decimal
+  percentage Decimal  @db.Decimal(5, 2)
+  amount     Decimal  @db.Decimal(15, 2)
   status     String   @default("PENDING") // PENDING | PAID
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -406,6 +408,7 @@ model Notification {
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@index([userId, isRead])
 }
 
 model NotificationTemplate {
@@ -440,7 +443,7 @@ model Invoice {
   subscriptionId String?
   couponUsages   CouponUsage[]
   commissions    Commission[]
-  amount         Decimal
+  amount         Decimal       @db.Decimal(15, 2)
   status         String        @default("PENDING") // PENDING | PAID | CANCELLED
   paidAt         DateTime?
   createdAt      DateTime      @default(now())
@@ -510,7 +513,7 @@ model FAQ {
 model Coupon {
   id         String    @id @default(uuid())
   code       String    @unique
-  discount   Decimal // percentage or fixed amount
+  discount   Decimal   @db.Decimal(15, 2) // percentage or fixed amount
   type       String    @default("PERCENTAGE") // PERCENTAGE | FIXED
   maxUses    Int?
   usedCount  Int       @default(0)
@@ -574,6 +577,30 @@ model Ticket {
   updatedAt   DateTime       @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+enum PropertyStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COUNTERED
 }
 
 enum IdType {
@@ -627,6 +654,10 @@ model Task {
   updatedAt   DateTime   @updatedAt
 
   assignee User @relation("InternalTasks", fields: [assigneeId], references: [id])
+
+  @@index([assigneeId])
+  @@index([status])
+  @@index([dueDate])
 }
 
 enum PhotographerTaskStatus {
@@ -648,6 +679,8 @@ model PhotographerTask {
 
   property     Property @relation(fields: [propertyId], references: [id])
   photographer User     @relation("PhotographerTasks", fields: [photographerId], references: [id])
+
+  @@index([photographerId, status])
 }
 
 enum DeliveryStatus {
@@ -668,6 +701,8 @@ model PhotographerDelivery {
 
   property     Property @relation(fields: [propertyId], references: [id])
   photographer User     @relation("PhotographerDeliveries", fields: [photographerId], references: [id])
+
+  @@index([photographerId, status])
 }
 
 model SystemConfig {

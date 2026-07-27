@@ -42,7 +42,7 @@ export default function SavedSearchPage() {
 
       <div className="container mx-auto px-4 max-w-5xl py-12">
         <div className="flex items-center gap-3 mb-8">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+          <div className="p-3 bg-slate-100 text-primary rounded-xl">
             <Bookmark className="w-6 h-6" />
           </div>
           <div>
@@ -58,9 +58,9 @@ export default function SavedSearchPage() {
                 
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{search.title}</h3>
+                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-primary transition-colors">{search.title}</h3>
                     {search.newResults > 0 && (
-                      <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-md">
+                      <span className="bg-slate-100 text-primary text-xs font-bold px-2 py-1 rounded-md">
                         {search.newResults} Properti Baru
                       </span>
                     )}
@@ -78,7 +78,7 @@ export default function SavedSearchPage() {
                   <label className="flex items-center gap-2 text-sm font-medium text-slate-600 cursor-pointer">
                     <input 
                       type="checkbox" 
-                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" 
+                      className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" 
                       defaultChecked={search.alertEnabled}
                     />
                     <Bell className="w-5 h-5" />
@@ -86,7 +86,7 @@ export default function SavedSearchPage() {
                   </label>
                   
                   <Link href={`/search-result?q=${encodeURIComponent(search.title)}`} className="ml-auto md:ml-0">
-                    <Button className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-0 shadow-none rounded-xl">
+                    <Button className="bg-slate-50 text-primary hover:bg-slate-100 border-0 shadow-none rounded-xl">
                       Lihat Hasil <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>

@@ -44,7 +44,10 @@ Sesuai `31_MODULE_BREAKDOWN.md` §8.4 yang secara eksplisit menyebut rute `/surv
 - **`Clock`** — menandai tenggat SLA yang mendekati batas waktu (berubah `text-red-600` jika < 6 jam tersisa).
 - **`Filter`** — trigger untuk `FilterTabBar` pada layar kecil (jika di-collapse jadi dropdown).
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Karena halaman ini adalah daftar yang di-scroll berulang kali sepanjang hari kerja di lapangan, `AssignmentListCard` harus memiliki target sentuh vertikal minimal 44px per baris agar mudah di-tap sambil berjalan atau memegang alat. Kontras Badge status harus tinggi (bukan pastel tipis) agar tetap terbaca di bawah sinar matahari langsung — ini pertimbangan UX field-use, bukan sekadar checklist WCAG.

@@ -13,13 +13,15 @@ app/(02_authentication)/login/page.tsx
 Sesuai `55_AUTHENTICATION_FLOW.md` dan `18_SCREEN_INVENTORY.md` (SCR-004), Login **utamanya dirender sebagai Auth Modal melalui Next.js Intercepting Routes** (`app/(02_authentication)/@modal/(.)login/page.tsx`) sehingga saat Guest men-trigger aksi terproteksi (mis. tombol "Booking Survei"), modal login tampil di atas halaman asal tanpa navigasi penuh — konteks halaman (properti yang sedang dilihat) tetap terjaga. Route penuh `/login` tetap ada sebagai fallback (direct link, refresh, share URL, atau saat JS dinonaktifkan).
 
 ## 3. Required UI Components
+- **Immersive Hero Panel (Desktop Only)**: Panel di sisi kiri (`w-1/2`) dengan gambar arsitektural properti premium. Harus menggunakan overlay gelap (`bg-black/50`) dan teks *brand storytelling* ("Selamat Datang Kembali") berwarna putih di atasnya.
+- **Floating Glass Auth Card**: Kontainer form dengan efek *glassmorphism* (`bg-white/70 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), dan `rounded-2xl` padding tebal.
 - `Dialog`/Modal container (untuk mode intercepted route) dengan animasi entrance medium spring (300-400ms, stiffness 300 damping 30), menghormati `prefers-reduced-motion`.
-- `Input` — Email (left icon `Mail`), state default/hover/focus/error sesuai Design System.
+- **Prioritas SSO (Single Sign-On)**: Opsi OAuth (Apple, Google) diletakkan di urutan paling atas form sebagai jalur utama.
+- `Input` — Email (left icon `Mail`, radius `rounded-xl`, focus `ring-emerald-500`).
 - `Input` — Password (left icon `Lock`, trailing toggle icon `Eye`/`EyeOff`).
 - `Checkbox` — "Ingat saya" (opsional, tidak memengaruhi TTL token karena token tetap stateless JWT).
-- `Button` (variant `default`) — "Masuk", dengan `isLoading` prop menampilkan spinner dan menonaktifkan klik selama request berlangsung.
-- `Button` (variant `outline`/`ghost`) — "Lanjutkan dengan Google" dan "Lanjutkan dengan Apple" (ikon provider, memicu OAuth 2.0 flow Auth.js).
-- Link teks — "Lupa password?" menuju `03_FORGOT_PASSWORD`, dan "Belum punya akun? Daftar" menuju `02_REGISTER`.
+- `Button` (variant `default`) — "Masuk" (`bg-slate-900` text white), dengan `isLoading` prop menampilkan spinner dan menonaktifkan klik selama request berlangsung. Transisi hover 200ms.
+- Link teks — "Lupa password?" menuju `03_FORGOT_PASSWORD`, dan "Belum punya akun? Mulai perjalanan Anda" menuju `02_REGISTER`.
 - Inline alert banner (di atas form) untuk pesan lockout rate-limit.
 - `Skeleton` untuk state pengecekan sesi awal (mencegah flicker saat auto-redirect pengguna yang sudah login).
 
@@ -59,6 +61,11 @@ const loginSchema = z.object({
 - `AlertTriangle` — digunakan pada inline alert banner saat mendekati/mencapai rate-limit lockout.
 
 ## 8. UI/UX Aesthetic Rules
-Mengikuti Design System HomeLink 2.0: Background White (#FFFFFF), Surface Light Gray (#F7F9FC), Primary Royal Blue (blue-700/#1D4ED8) untuk CTA utama, Heading/Text Dark Navy (slate-900, tidak pernah hitam pekat), Muted Cool Gray (slate-500) untuk teks sekunder, font Inter/SF Pro Display, radius rounded-2xl/3xl, bayangan ultra-lembut (diffused soft shadow).
-- Sesuai prinsip "Instant Clarity & Trust" (`14_UX_BLUEPRINT.md`), Login harus terasa cepat dan tanpa gesekan: satu kolom, maksimal 2 field utama terlihat sekaligus, CTA utama selalu terlihat tanpa scroll di viewport modal.
-- Karena ini titik masuk paling sering diakses, prioritaskan kejelasan pesan error di atas dekorasi — hindari copywriting playful; gunakan Bahasa Indonesia baku, tenang, profesional.
+Mengikuti "The Exclusive Welcome" HomeLink 2.0:
+- **Konsep**: Autentikasi tidak boleh terasa seperti form biasa, melainkan undangan masuk ke layanan *concierge* atau *private club* kelas atas (sekelas Apple/Airbnb).
+- **Tipografi**: Heading `text-[36px] leading-[44px]` dan `text-[28px]` `font-semibold tracking-tight`. Teks sekunder warna `slate-500`.
+- **Spacing**: Kelipatan 4px, `gap-6` atau `gap-8` antar grup form.
+- **Glassmorphism & Elevasi**: Latar form `bg-white/70 backdrop-blur-md border border-white/20` dengan Elevasi Tinggi (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`)
+- **Transisi**: Animasi halus pada tombol (`transition-all duration-200 hover:bg-slate-800 active:scale-95`). Animasi masuk halaman menggunakan `animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out`.
+- Sesuai prinsip "Instant Clarity & Trust" (`14_UX_BLUEPRINT.md`), Login harus terasa cepat dan tanpa gesekan: prioritaskan SSO di atas form email/password, dan jangan penuhi layar dengan elemen tak perlu.
+- Karena ini titik masuk paling sering diakses, prioritaskan kejelasan pesan error secara elegan (inline, warna tenang) tanpa copywriting playful; gunakan Bahasa Indonesia baku yang terasa profesional.

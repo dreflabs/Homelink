@@ -34,7 +34,7 @@ export default async function CommissionPage() {
           <h1 className="text-2xl font-bold text-gray-900">{t("commission_overview")}</h1>
           <p className="text-gray-500">{t("commission_overview_desc")}</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-primary hover:bg-primary text-white">
           {t("generate_report")}
         </Button>
       </div>
@@ -83,7 +83,7 @@ export default async function CommissionPage() {
                 <p className="text-sm font-medium text-gray-500">{t("average_split")}</p>
                 <h3 className="text-2xl font-bold mt-1">4.2%</h3>
               </div>
-              <div className="p-2 bg-blue-50 rounded-lg">
+              <div className="p-2 bg-slate-50 rounded-lg">
                 <ChartCandlestick className="w-5 h-5 " />
               </div>
             </div>
@@ -131,7 +131,7 @@ export default async function CommissionPage() {
               <tbody className="divide-y">
                 {commissions.map((trx) => (
                   <tr key={trx.id} className="hover:bg-gray-50/50">
-                    <td className="px-4 py-3 font-medium text-blue-600">{trx.id.substring(0, 8)}</td>
+                    <td className="px-4 py-3 font-medium text-primary">{trx.id.substring(0, 8)}</td>
                     <td className="px-4 py-3 text-gray-500">{format(new Date(trx.createdAt), 'MMM dd, yyyy')}</td>
                     <td className="px-4 py-3 font-medium">{trx.agent?.name}</td>
                     <td className="px-4 py-3 text-gray-600 truncate max-w-[200px]">{trx.booking?.property?.title || t("unknown_property")}</td>

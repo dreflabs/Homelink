@@ -58,6 +58,9 @@ Rute publik: `/dashboard/recently-viewed`. Tidak ada Screen ID di `18_SCREEN_INV
 | `Eye` | Badge kecil "Terakhir dilihat" pada kartu | 14px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, daftar disusun sebagai baris kartu horizontal ringkas (bukan grid tebal seperti Saved Property, karena riwayat lebih sekunder/sementara).

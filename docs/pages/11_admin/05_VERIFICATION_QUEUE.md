@@ -55,7 +55,10 @@ app/(dashboard)/11_admin/verify/page.tsx
 #### Icon: `FileCheck2`
 - **Purpose:** Menandai dokumen sertifikat (SHM/HGB) yang sudah dicocokkan pada Detail View. **Size:** 18px. **Color:** `text-slate-500`, berubah `text-emerald-600` setelah dicentang cocok.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Ini adalah halaman moderasi paling kritis-waktu di modul Admin — badge SLA harus selalu terlihat tanpa scroll horizontal, dan tombol Approve/Reject harus reachable tanpa hover (persyaratan aksesibilitas keras, bukan hanya rekomendasi) karena keduanya adalah aksi yang mengubah status hukum/bisnis properti secara permanen.

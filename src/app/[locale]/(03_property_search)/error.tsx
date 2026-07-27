@@ -26,7 +26,7 @@ export default function SearchError({
         Sistem mengalami masalah saat mengambil daftar properti. Silakan muat ulang atau coba kriteria pencarian lain.
       </p>
       <div className="flex gap-3">
-        <Button onClick={() => reset()} className="rounded-full bg-blue-700 hover:bg-blue-800 text-white">
+        <Button onClick={() => reset()} className="rounded-full bg-primary hover:bg-primary text-white">
           <RefreshCw className="w-4 h-4 mr-2" />
           Coba Lagi
         </Button>

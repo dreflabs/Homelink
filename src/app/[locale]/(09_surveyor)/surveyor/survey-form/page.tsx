@@ -47,7 +47,7 @@ export default function SurveyFormPage() {
             </div>
 
             <div className="flex justify-end pt-4">
-              <Button type="button">Submit Survey Report</Button>
+              <Button type="button" className="min-h-[44px] px-6 font-medium cursor-pointer">Kirim Laporan Survey</Button>
             </div>
           </form>
         </CardContent>

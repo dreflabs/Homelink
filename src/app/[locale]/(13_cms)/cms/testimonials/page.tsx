@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getTestimonials, publishTestimonial, deleteTestimonial } from "@/actions/cms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,6 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default async function TestimonialsPage() {
+  const tTable = await getTranslations('Common.table');
+
   const testimonials = await getTestimonials();
 
   return (
@@ -22,11 +25,11 @@ export default async function TestimonialsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Author</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Rating</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{tTable('author')}</TableHead>
+                <TableHead>{tTable('role')}</TableHead>
+                <TableHead>{tTable('rating')}</TableHead>
+                <TableHead>{tTable('status')}</TableHead>
+                <TableHead className="text-right">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -36,7 +39,7 @@ export default async function TestimonialsPage() {
                   <TableCell>{testi.authorRole}</TableCell>
                   <TableCell>{'⭐'.repeat(testi.rating)}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${testi.isPublished ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${testi.isPublished ? 'bg-slate-100 text-primary' : 'bg-yellow-100 text-yellow-700'}`}>
                       {testi.isPublished ? 'Published' : 'Draft'}
                     </span>
                   </TableCell>

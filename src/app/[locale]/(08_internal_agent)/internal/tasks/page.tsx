@@ -55,7 +55,7 @@ export default function TasksPage() {
           <h1 className="text-2xl font-bold text-gray-900">{t("task_management")}</h1>
           <p className="text-gray-500">{t("task_management_desc")}</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-primary hover:bg-primary text-white">
           <Plus className="w-4 h-4 mr-2" />
           {t("create_task")}
         </Button>
@@ -69,7 +69,7 @@ export default function TasksPage() {
                 <p className="text-sm font-medium text-gray-500">{t("my_tasks")}</p>
                 <h3 className="text-2xl font-bold mt-1">{myTasksCount}</h3>
               </div>
-              <div className="p-2 bg-blue-50 rounded-lg">
+              <div className="p-2 bg-slate-50 rounded-lg">
                 <ShieldCheck className="w-5 h-5 " />
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function TasksPage() {
             <div className="flex gap-4">
               <CardTitle>{t("all_tasks")}</CardTitle>
               <div className="flex gap-2">
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{t("all")}</Badge>
+                <Badge variant="outline" className="bg-slate-50 text-primary border-slate-200">{t("all")}</Badge>
                 <Badge variant="outline" className="cursor-pointer hover:bg-gray-50">{t("to_do")}</Badge>
                 <Badge variant="outline" className="cursor-pointer hover:bg-gray-50">{t("in_progress")}</Badge>
                 <Badge variant="outline" className="cursor-pointer hover:bg-gray-50">{t("done")}</Badge>
@@ -165,7 +165,7 @@ export default function TasksPage() {
                     <td className="px-4 py-3">
                       <input 
                         type="checkbox" 
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                        className="rounded border-gray-300 text-primary focus:ring-primary w-4 h-4 cursor-pointer"
                         checked={task.status === 'DONE'}
                         onChange={() => handleToggleStatus(task.id, task.status)}
                       />
@@ -188,7 +188,7 @@ export default function TasksPage() {
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={task.status === 'DONE' ? 'default' : 'secondary'} className={
-                        task.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' :
+                        task.status === 'IN_PROGRESS' ? 'bg-slate-100 text-primary hover:bg-slate-100' :
                         task.status === 'TODO' ? 'bg-gray-100 text-gray-700 hover:bg-gray-100' :
                         task.status === 'OVERDUE' ? 'bg-red-100 text-red-700 hover:bg-red-100' :
                         'bg-green-100 text-green-700 hover:bg-green-100'

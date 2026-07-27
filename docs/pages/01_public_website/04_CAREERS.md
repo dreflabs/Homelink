@@ -57,3 +57,11 @@ app/(01_public_website)/careers/page.tsx
 Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png`: background putih dominan, aksi utama `Royal Blue` (`blue-700`), teks `Dark Navy` (`slate-900`), surface sekunder `slate-50`, card dengan *diffused soft shadow*, border radius besar (`16-24px`).
 
 **Spesifik halaman ini:** Daftar lowongan menggunakan layout grid card 2 kolom desktop / 1 kolom mobile, dengan filter sticky di bagian atas (bukan sidebar) agar mudah diakses saat scroll panjang.
+
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +30,9 @@ const initialTenants = [
 ];
 
 export default function TenantManagementPage() {
+  const tTable = useTranslations('Common.table');
+  const tSearch = useTranslations('Common.search');
+
   const [tenants, setTenants] = useState(initialTenants);
   const [isPending, startTransition] = useTransition();
 
@@ -74,7 +79,7 @@ export default function TenantManagementPage() {
               <Search className="absolute left-2.5 top-2.5 h-5 w-5 " />
               <Input
                 type="search"
-                placeholder="Search tenants..."
+                placeholder={tSearch("tenants")}
                 className="pl-9 bg-gray-50 border-gray-200"
               />
             </div>
@@ -90,8 +95,8 @@ export default function TenantManagementPage() {
                   <TableHead className="font-semibold text-gray-600">UserRound</TableHead>
                   <TableHead className="font-semibold text-gray-600">DB Size</TableHead>
                   <TableHead className="font-semibold text-gray-600">Created</TableHead>
-                  <TableHead className="font-semibold text-gray-600">Status</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-600">Actions</TableHead>
+                  <TableHead className="font-semibold text-gray-600">{tTable('status')}</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-600">{tTable('actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

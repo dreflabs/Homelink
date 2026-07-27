@@ -29,7 +29,7 @@ export default async function SuperAdminDashboardPage() {
             <CardTitle className="text-muted-foreground font-medium">Total UserRound</CardTitle>
             <CardDescription className="sr-only">Count of all registered users on the platform</CardDescription>
             <CardAction>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 ring-1 ring-blue-500/20">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-500/10 ring-1 ring-primary/20">
                 <UserRound className="h-5 w-5  dark:" />
               </div>
             </CardAction>

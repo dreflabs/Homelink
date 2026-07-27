@@ -1,12 +1,44 @@
-# UPLOAD MEDIA PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Upload Media\n**Module:** 10 PHOTOGRAPHER\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Upload Media.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/10_photographer/upload-media/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# UPLOAD MEDIA PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Upload Media
+**Module:** 10 PHOTOGRAPHER
+**Role:** Photographer
+**Purpose:** Mengunggah hasil foto/video/360 sebuah properti untuk penugasan aktif, langsung ke Cloudflare R2 via presigned URL — pola yang sama dengan `09_surveyor/04_UPLOAD_PHOTO.md`.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/photographer/assignments/[id]/upload/page.tsx
+```
+
+## 3. Required UI Components (Shadcn/ui)
+- `Dropzone` (`17_COMPONENT_LIBRARY.md` §8.5) — progress per-file, bukan satu progress bar global.
+- `Badge` — jenis media (Foto/Video/360).
+
+## 4. Data & State Management
+- **Foto — sudah bisa diimplementasikan hari ini:** `PROPERTY_MEDIA.mediaType = IMAGE` sudah ada di `40_ERD.md`, presigned-URL upload flow sudah ada di `POST /api/v1/media/presigned-url` (`52_ENDPOINT_CATALOGUE.md`).
+- **Video/360 — gap sudah tercatat, tidak diduplikasi:** `PROPERTY_MEDIA.mediaType` hanya mendukung `IMAGE`/`PDF_CERTIFICATE` — gap yang sama persis dengan yang sudah diidentifikasi di `09_surveyor/05_UPLOAD_VIDEO.md`, ditandai sebagai *go-live blocker* di sana. Halaman ini mewarisi status gap yang sama, tidak menyatakan ulang seolah masalah baru.
+- Bergantung juga pada gap `PhotographerAssignment` (`02_ASSIGNMENT.md`) untuk tahu properti mana yang sedang aktif diunggah.
+
+## 5. API Endpoints Referenced
+- `POST /api/v1/media/presigned-url`, kemudian `PUT` langsung ke R2 — sudah ada, berfungsi untuk foto.
+- Video/360: menunggu perluasan `mediaType`, tidak ada endpoint baru yang dibutuhkan di luar itu.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Upload foto berfungsi penuh hari ini tanpa menunggu gap lain.
+- [ ] UI jelas menonaktifkan pilihan "Video"/"360" dengan label "Segera hadir" sampai `mediaType` diperluas — bukan menerima upload video lalu gagal diam-diam di backend.
+- [ ] Setiap file progress independen (`17` §8.5 Dropzone anti-pattern) — kegagalan satu file tidak menggagalkan seluruh batch.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `UploadCloud` | Dropzone idle state | 48px |
+| `ImageIcon` | Badge jenis media Foto | 16px |
+| `Video` | Badge jenis media Video (dinonaktifkan) | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.7 Photographer Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

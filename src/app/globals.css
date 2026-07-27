@@ -41,21 +41,22 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: calc(var(--radius) * 0.375); /* 6px if radius is 16px */
+  --radius-md: calc(var(--radius) * 0.5);   /* 8px */
+  --radius-default: calc(var(--radius) * 0.75); /* 12px for buttons/inputs */
+  --radius-lg: calc(var(--radius));         /* 16px for cards */
+  --radius-xl: calc(var(--radius) * 1.5);   /* 24px for modals/hero */
+  --radius-2xl: calc(var(--radius) * 1.75);
+  --radius-3xl: calc(var(--radius) * 2);
+  --radius-full: 9999px;
   
-  /* OKLCH Semantic Shadows for depth consistency */
-  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.05), 0 2px 4px -2px oklch(0% 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.05), 0 4px 6px -4px oklch(0% 0 0 / 0.05);
-  --shadow-card: 0 8px 30px oklch(0% 0 0 / 0.04);
-  --shadow-card-hover: 0 12px 40px oklch(0% 0 0 / 0.08);
-  --shadow-float: 0 20px 50px -12px oklch(0% 0 0 / 0.15);
+  /* OKLCH Semantic Shadows for depth consistency (Apple/Stripe style) */
+  --shadow-sm: 0 1px 2px 0 oklch(0% 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.05), 0 2px 4px -2px oklch(0% 0 0 / 0.04);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.06), 0 4px 6px -4px oklch(0% 0 0 / 0.03);
+  --shadow-card: 0 4px 20px -2px oklch(0% 0 0 / 0.05), 0 1px 3px oklch(0% 0 0 / 0.02);
+  --shadow-card-hover: 0 12px 30px -4px oklch(0% 0 0 / 0.1), 0 4px 6px oklch(0% 0 0 / 0.04);
+  --shadow-float: 0 24px 50px -12px oklch(0% 0 0 / 0.15), 0 10px 20px oklch(0% 0 0 / 0.05);
 }
 
 :root {
@@ -65,8 +66,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.488 0.243 264.376); /* Royal Blue */
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #0D1729; /* Navy Gelap (Primary Brand Color) */
+  --primary-foreground: #FFFFFF;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -100,8 +101,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: #F8FAFC; /* Putih/Slate-50 untuk Dark Mode */
+  --primary-foreground: #0D1729;
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);

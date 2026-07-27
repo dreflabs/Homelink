@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED') {
+export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED', notes?: string) {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
   
@@ -16,6 +16,17 @@ export async function verifyProperty(id: string, status: 'APPROVED' | 'REJECTED'
     where: { id },
     data: { status: status === 'APPROVED' ? 'PUBLISHED' : 'REJECTED' }
   });
+
+  if (notes) {
+    await prisma.verificationAudit.create({
+      data: {
+        propertyId: id,
+        surveyorId: (session.user as any).id,
+        action: `Status changed to ${status}`,
+        notes,
+      },
+    });
+  }
 
   return property;
 }
@@ -31,7 +42,8 @@ export async function getVerificationQueue() {
 
   const queue = await prisma.property.findMany({
     where: {
-      status: 'PENDING_REVIEW'
+      status: 'PENDING_REVIEW',
+      isDeleted: false,
     },
     include: {
       owner: {
@@ -70,6 +82,9 @@ export async function getAllProperties() {
   }
 
   const properties = await prisma.property.findMany({
+    where: {
+      isDeleted: false,
+    },
     include: {
       owner: {
         select: { name: true, email: true }

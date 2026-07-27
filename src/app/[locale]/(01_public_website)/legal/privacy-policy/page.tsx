@@ -30,37 +30,37 @@ export default function PrivacyPolicyPage() {
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
                 {t('toc')}
               </h3>
-              <a href="#pendahuluan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#pendahuluan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Info className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('intro')}</span>
               </a>
-              <a href="#pengumpulan-data" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Database className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#pengumpulan-data" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Database className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('data_collection')}</span>
               </a>
-              <a href="#penggunaan-data" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#penggunaan-data" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('data_usage')}</span>
               </a>
-              <a href="#keamanan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Lock className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#keamanan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Lock className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('security')}</span>
               </a>
-              <a href="#cookies" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Cookie className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#cookies" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Cookie className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('cookies')}</span>
               </a>
-              <a href="#hak-pengguna" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Shield className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#hak-pengguna" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Shield className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('user_rights')}</span>
               </a>
-              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Mail className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#kontak" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Mail className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('contact')}</span>
               </a>
             </nav>
             <div className="mt-8 border-t border-gray-200 pt-6">
-              <Link href="/terms" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/terms" className="text-sm font-medium text-primary hover:text-primary">
                 {t('terms_link')}
               </Link>
             </div>
@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
                   </p>
                 </div>
 
-                <div className="prose prose-blue max-w-none prose-headings:text-gray-900 prose-a:text-blue-600">
+                <div className="prose prose-blue max-w-none prose-headings:text-gray-900 prose-a:text-primary">
                   <section id="pendahuluan" className="scroll-mt-24">
                     <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. {t('intro')}</h2>
                     <p>

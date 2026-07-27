@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import {
   Table,
   TableBody,
@@ -25,6 +26,8 @@ function getActionBadgeVariant(action: string) {
 }
 
 export default async function AuditLogsPage() {
+  const tTable = await getTranslations('Common.table');
+
   const auditLogs = await getAuditLogs();
 
   return (
@@ -44,9 +47,9 @@ export default async function AuditLogsPage() {
             <TableRow>
               <TableHead className="w-[180px]">Waktu</TableHead>
               <TableHead>Aktor</TableHead>
-              <TableHead>Aksi</TableHead>
+              <TableHead>{tTable('actions')}</TableHead>
               <TableHead>Modul/Entitas</TableHead>
-              <TableHead>Deskripsi</TableHead>
+              <TableHead>{tTable('description')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

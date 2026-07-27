@@ -58,7 +58,10 @@ app/(dashboard)/11_admin/user-management/page.tsx
 - **Purpose:** Indikator baris user dengan riwayat pelanggaran (opsional badge di dekat nama).
 - **Size:** 16px. **Color:** `text-amber-600`. **Accessibility:** disertai tooltip teks, `aria-hidden` pada ikon itu sendiri.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Tabel menggunakan baris kompak (row height ~48px) agar banyak user terlihat tanpa scroll berlebihan. Aksi destruktif (Suspend) selalu memakai warna merah dan modal konfirmasi dua-langkah (isi bukti → klik konfirmasi) — tidak pernah aksi satu-klik. Tidak ada pola bulk-select untuk suspend (aksi ini sengaja dibuat granular per-user untuk mencegah kesalahan massal).

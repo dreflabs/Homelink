@@ -42,7 +42,10 @@ app/(dashboard)/surveyor/tasks/[propertyId]/upload-video/page.tsx
 - **`RotateCcw`** — tombol "Rekam Ulang" pada layar preview.
 - **`AlertTriangle`** — pada `DurationSizeWarning`, `text-amber-600`, menandakan video melebihi batas yang direkomendasikan.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar (background putih, aksen `blue-700`, teks `slate-900`, `rounded-2xl`/`rounded-3xl`, diffused soft shadow).
 
 Sama seperti `04_UPLOAD_PHOTO.md`, tombol rekam harus besar dan berkontras tinggi untuk penggunaan satu tangan di lapangan. Karena proses rekam video memakan waktu dan baterai lebih besar, tampilkan estimasi ukuran file secara proaktif sebelum upload agar Surveyor dengan kuota data terbatas dapat membuat keputusan (mis. tunda upload hingga tersedia Wi-Fi) — pertimbangan UX field-use yang relevan untuk file besar.

@@ -50,6 +50,9 @@ Rute publik sesuai `18_SCREEN_INVENTORY.md` SCR-102: `/dashboard/bookings`.
 | `CalendarX2` | Empty state per-tab (48px, Light Gray) | 48px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, tabel/list dengan garis pembatas tipis `slate-50` antar baris (bukan border tebal).

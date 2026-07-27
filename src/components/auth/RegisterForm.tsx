@@ -89,7 +89,7 @@ export function RegisterForm() {
         <div className="space-y-1">
           <select 
             {...register("role")}
-            className="w-full h-12 rounded-xl border border-slate-200 px-4 bg-white text-slate-900 focus:border-blue-700 focus:ring-blue-700 focus:outline-none"
+            className="w-full h-12 rounded-xl border border-slate-200 px-4 bg-white text-slate-900 focus:border-primary focus:ring-primary focus:outline-none"
           >
             <option value="BUYER">Pembeli (Buyer)</option>
             <option value="OWNER">Pemilik (Owner)</option>
@@ -104,7 +104,7 @@ export function RegisterForm() {
             {...register("name")}
             type="text" 
             placeholder="Nama Lengkap" 
-            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
@@ -115,7 +115,7 @@ export function RegisterForm() {
             {...register("email")}
             type="email" 
             placeholder="Email" 
-            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
@@ -126,7 +126,7 @@ export function RegisterForm() {
             {...register("phone")}
             type="tel" 
             placeholder="Nomor Telepon (mis. +62812...)" 
-            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
         </div>
@@ -137,7 +137,7 @@ export function RegisterForm() {
             {...register("password")}
             type={showPassword ? "text" : "password"} 
             placeholder="Password" 
-            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           <button
             type="button"
@@ -150,8 +150,8 @@ export function RegisterForm() {
           
           {passwordValue && (
             <div className="flex gap-1 mt-2 mb-1" aria-live="polite">
-              <div className={`h-1.5 flex-1 rounded-full ${passwordStrength === 'weak' || passwordStrength === 'medium' || passwordStrength === 'strong' ? (passwordStrength === 'weak' ? 'bg-slate-300' : 'bg-blue-500') : 'bg-slate-200'}`} />
-              <div className={`h-1.5 flex-1 rounded-full ${passwordStrength === 'medium' || passwordStrength === 'strong' ? 'bg-blue-500' : 'bg-slate-200'}`} />
+              <div className={`h-1.5 flex-1 rounded-full ${passwordStrength === 'weak' || passwordStrength === 'medium' || passwordStrength === 'strong' ? (passwordStrength === 'weak' ? 'bg-slate-300' : 'bg-slate-500') : 'bg-slate-200'}`} />
+              <div className={`h-1.5 flex-1 rounded-full ${passwordStrength === 'medium' || passwordStrength === 'strong' ? 'bg-slate-500' : 'bg-slate-200'}`} />
               <div className={`h-1.5 flex-1 rounded-full ${passwordStrength === 'strong' ? 'bg-emerald-500' : 'bg-slate-200'}`} />
             </div>
           )}
@@ -164,7 +164,7 @@ export function RegisterForm() {
             {...register("confirmPassword")}
             type={showConfirmPassword ? "text" : "password"} 
             placeholder="Konfirmasi Password" 
-            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           <button
             type="button"
@@ -183,16 +183,16 @@ export function RegisterForm() {
               type="checkbox" 
               id="terms" 
               {...register("agreedToTerms")}
-              className="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-700"
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
             />
             <label htmlFor="terms" className="text-sm text-slate-600">
-              Saya menyetujui <Link href="/terms" className="text-blue-700 hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="text-blue-700 hover:underline">Kebijakan Privasi</Link> HomeLink.
+              Saya menyetujui <Link href="/terms" className="text-primary hover:underline">Syarat & Ketentuan</Link> dan <Link href="/privacy" className="text-primary hover:underline">Kebijakan Privasi</Link> HomeLink.
             </label>
           </div>
           {errors.agreedToTerms && <p className="text-red-500 text-sm">{errors.agreedToTerms.message}</p>}
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full h-12 bg-blue-700 hover:bg-blue-800 text-white rounded-xl font-semibold mt-4">
+        <Button type="submit" disabled={isSubmitting} className="w-full h-12 bg-primary hover:bg-primary text-white rounded-xl font-semibold mt-4">
           {isSubmitting ? (
             <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
           ) : (
@@ -214,7 +214,7 @@ export function RegisterForm() {
 
       <p className="text-center text-sm text-slate-500">
         Sudah punya akun?{" "}
-        <Link href="/login" className="text-blue-700 font-medium hover:underline">
+        <Link href="/login" className="text-primary font-medium hover:underline">
           Masuk
         </Link>
       </p>

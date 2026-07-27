@@ -10,14 +10,14 @@ export default async function OwnerDashboardPage() {
   const t = await getTranslations("OwnerDashboard.dashboard");
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t("hello")}, {data.profile.name}!</h1>
         <p className="text-gray-500 mt-2 text-lg">{t("summary")}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="rounded-2xl bg-white shadow-sm border border-slate-200 transition-all">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">{t("total_properties")}</CardTitle>
             <Building className="h-5 w-5 " />
@@ -28,7 +28,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="rounded-2xl bg-white shadow-sm border border-slate-200 transition-all">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">{t("total_views")}</CardTitle>
             <Eye className="h-5 w-5 " />
@@ -41,7 +41,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
         
-        <Card className="bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="rounded-2xl bg-white shadow-sm border border-slate-200 transition-all">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">{t("inbox")}</CardTitle>
             <MessageCircle className="h-5 w-5 " />
@@ -53,7 +53,7 @@ export default async function OwnerDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="h-full bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm">
+        <Card className="h-full rounded-2xl bg-white shadow-sm border border-slate-200 transition-all">
           <CardHeader>
             <CardTitle>{t("recent_activity")}</CardTitle>
             <CardDescription>{t("recent_updates")}</CardDescription>
@@ -78,7 +78,7 @@ export default async function OwnerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="h-full bg-white/50 backdrop-blur-xl rounded-2xl border border-white/20 shadow-sm">
+        <Card className="h-full rounded-2xl bg-white shadow-sm border border-slate-200 transition-all">
           <CardHeader>
             <CardTitle>{t("monthly_performance")}</CardTitle>
             <CardDescription>{t("view_trends")}</CardDescription>

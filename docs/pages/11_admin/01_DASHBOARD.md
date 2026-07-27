@@ -54,7 +54,10 @@ app/(dashboard)/11_admin/dashboard/page.tsx
 - **Purpose:** Header seksi "Aktivitas Terbaru" (feed dari `AUDIT_LOG`).
 - **Size:** 18px. **Color:** `text-slate-500`. **Accessibility:** `aria-hidden="true"` (selalu didampingi label teks "Aktivitas Terbaru").
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global HomeLink 2.0 ("Apple × Airbnb × Stripe × Zillow"): background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Dashboard ini adalah entry point data-dense — grid 4 kolom kartu KPI pada desktop (2 kolom pada tablet, stack pada mobile), tanpa hero image/fotografi marketing. Badge status memakai kode warna konsisten dengan seluruh modul Admin: hijau = aman/terverifikasi, amber = mendekati SLA/perlu perhatian, merah = melewati SLA/ditolak.

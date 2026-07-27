@@ -30,37 +30,37 @@ export default function TermsAndConditionsPage() {
               <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
                 {t('toc')}
               </h3>
-              <a href="#penerimaan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <FileCheck className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#penerimaan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <FileCheck className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('acceptance')}</span>
               </a>
-              <a href="#akun" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <ShieldAlert className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#akun" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <ShieldAlert className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('account')}</span>
               </a>
-              <a href="#properti" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Building className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#properti" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Building className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('property')}</span>
               </a>
-              <a href="#larangan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Scale className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#larangan" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Scale className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('prohibited')}</span>
               </a>
-              <a href="#pembayaran" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <CreditCard className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+              <a href="#pembayaran" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <CreditCard className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('payment')}</span>
               </a>
-              <a href="#tanggung-jawab" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <HelpCircle className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#tanggung-jawab" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <HelpCircle className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('liability')}</span>
               </a>
-              <a href="#hukum" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-blue-600 hover:bg-gray-50">
-                <Gavel className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-blue-600" />
+              <a href="#hukum" className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-primary hover:bg-gray-50">
+                <Gavel className="flex-shrink-0 -ml-1 mr-3 h-4 w-4 text-gray-400 group-hover:text-primary" />
                 <span className="truncate">{t('law')}</span>
               </a>
             </nav>
             <div className="mt-8 border-t border-gray-200 pt-6">
-              <Link href="/privacy" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/legal/privacy-policy" className="text-sm font-medium text-primary hover:text-primary">
                 {t('privacy_link')}
               </Link>
             </div>
@@ -79,7 +79,7 @@ export default function TermsAndConditionsPage() {
                   </p>
                 </div>
 
-                <div className="prose prose-blue max-w-none prose-headings:text-gray-900 prose-a:text-blue-600">
+                <div className="prose prose-blue max-w-none prose-headings:text-gray-900 prose-a:text-primary">
                   <section id="penerimaan" className="scroll-mt-24">
                     <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. {t('acceptance')}</h2>
                     <p>

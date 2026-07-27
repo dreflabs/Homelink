@@ -17,7 +17,7 @@ export default function UnauthorizedPage() {
         </p>
 
         <div className="flex flex-col gap-3">
-          <Button asChild className="w-full rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold py-6">
+          <Button asChild className="w-full rounded-xl bg-primary hover:bg-primary text-white font-semibold py-6">
             <Link href="/dashboard">
               <LayoutDashboard className="mr-2 h-5 w-5" />
               Kembali ke Dashboard Saya

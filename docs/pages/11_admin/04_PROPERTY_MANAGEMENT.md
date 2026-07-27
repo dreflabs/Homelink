@@ -56,7 +56,10 @@ app/(dashboard)/11_admin/property-management/page.tsx
 - **Purpose:** Tombol pembuka filter status.
 - **Size:** 18px. **Color:** `text-slate-500`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Tabel memakai baris kompak dengan Badge status berkode warna konsisten (PENDING=amber, REJECTED=merah, PHYSICAL_VERIFIED/LEGAL_VERIFIED=biru muda sebagai status transisi, FULLY_VERIFIED=hijau). Detail panel (Sheet) dibuka dari sisi kanan agar konteks tabel tetap terlihat — pola ini konsisten dengan kebutuhan Admin untuk membandingkan banyak listing berturut-turut tanpa kehilangan posisi scroll tabel.

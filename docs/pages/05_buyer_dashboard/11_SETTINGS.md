@@ -56,6 +56,9 @@ Rute publik: `/dashboard/settings`. Sesuai `20_NAVIGATION_MAP.md` (`DB_Settings[
 | `BellRing` | Ikon seksi "Preferensi Notifikasi" | 18px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, dua `Card` terpisah (`rounded-2xl`) untuk "Keamanan Akun" dan "Preferensi Notifikasi" dengan jarak vertikal jelas antar seksi.

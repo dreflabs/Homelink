@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { getBanners, toggleBanner, deleteBanner } from "@/actions/cms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,8 @@ import { Plus, Edit, Trash2, Power } from "lucide-react";
 import Image from "next/image";
 
 export default async function BannerPage() {
+  const tTable = await getTranslations('Common.table');
+
   const banners = await getBanners();
 
   return (
@@ -24,10 +27,10 @@ export default async function BannerPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Image</TableHead>
-                <TableHead>Title</TableHead>
+                <TableHead>{tTable('title')}</TableHead>
                 <TableHead>Position</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{tTable('status')}</TableHead>
+                <TableHead className="text-right">{tTable('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

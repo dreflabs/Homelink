@@ -28,7 +28,7 @@ export default function PublicError({
         Maaf, sistem mengalami kendala saat memuat halaman ini. Silakan coba muat ulang atau kembali ke beranda.
       </p>
       <div className="flex flex-col sm:flex-row items-center gap-3">
-        <Button onClick={() => reset()} className="rounded-full bg-blue-700 hover:bg-blue-800 text-white px-6">
+        <Button onClick={() => reset()} className="rounded-full bg-primary hover:bg-primary text-white px-6">
           <RefreshCw className="w-4 h-4 mr-2" />
           Coba Lagi
         </Button>

@@ -59,6 +59,9 @@ app/(dashboard)/owner/properties/[propertyId]/edit/page.tsx
 - **Size:** 18px.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Banner Peringatan:** Background `amber-50`, border `amber-200`, teks `slate-900`, `rounded-2xl`, ikon di kiri.
 - **Field Terkunci:** Background `slate-50`, cursor `not-allowed`, opacity teks sedikit diturunkan namun tetap kontras cukup untuk WCAG AA.
 - **Layout:** Single-column form dengan section headers ("Informasi Dasar", "Lokasi", "Media") dipisah oleh divider `slate-100`.

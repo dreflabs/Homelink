@@ -1,12 +1,48 @@
-# PROPERTY VERIFICATION PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Property Verification\n**Module:** 08 INTERNAL HOMELINK AGENT\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Property Verification.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/08_internal_homelink_agent/property-verification/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# PROPERTY VERIFICATION PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Property Verification (Antrian Verifikasi Properti)
+**Module:** 08 INTERNAL HOMELINK AGENT
+**Role:** Internal HomeLink Agent
+**Purpose:** Meninjau laporan survei (foto/video/checklist dari Surveyor) dan dokumen legal properti sebelum keputusan akhir — first-pass review Internal Agent, sebelum eskalasi ke Admin untuk persetujuan final `FULLY_VERIFIED`. Ini adalah halaman paling kritis di modul ini, sesuai `27_DASHBOARD_DESIGN_GUIDELINES.md` §8.5 Information Hierarchy prioritas #1.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/internal-agent/verification/properties/page.tsx
+```
+Sidebar label: "Verifikasi Properti", di bawah grup nav "Verifikasi & Dukungan".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Table` (Queue, `17_COMPONENT_LIBRARY.md` §8.3) — diurutkan tertua dulu, kolom: properti, Surveyor penanggung jawab, usia antrian, `Badge` status.
+- `Timeline Card` — riwayat `VERIFICATION_AUDIT` per properti saat baris dibuka.
+- `Button` (Approve/Reject) — selalu terlihat, tidak disembunyikan di dropdown (`27` §8.5 Do: "Approve/Reject harus selalu visible, tidak boleh di menu 'Actions' generik").
+
+## 4. Data & State Management
+- **Sudah bisa diimplementasikan penuh:** `VERIFICATION_AUDIT` (fields `action`, `notes`, `surveyorId`) dan `PROPERTY.status` sudah ada di `40_ERD.md` — tidak ada gap skema untuk fungsi inti halaman ini.
+- **Logika SLA dibagi dengan Admin:** ambang waktu 12h/20h/24h yang sudah didefinisikan di `11_admin/05_VERIFICATION_QUEUE.md` dipakai identik di sini — Internal Agent dan Admin melihat antrian yang **sama**, hanya beda level wewenang keputusan (Internal Agent: rekomendasi first-pass; Admin: keputusan final `FULLY_VERIFIED`). Ini harus diimplementasikan sebagai satu query/service yang dipakai kedua halaman, bukan duplikasi logika.
+- **Local State:** filter Surveyor/rentang usia disimpan di URL search params.
+
+## 5. API Endpoints Referenced
+- `GET /api/v1/properties?status=PENDING&sort=createdAt` — sudah ada.
+- `PATCH /api/v1/properties/:id/status` — sudah ada, Admin-only per `56_AUTHORIZATION_MATRIX.md`; Internal Agent memakai endpoint terpisah untuk menandai rekomendasi (`PATCH /api/v1/properties/:id/recommend` — **belum ada di `52_ENDPOINT_CATALOGUE.md`**, diusulkan, karena saat ini hanya Admin yang punya endpoint status-change).
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Antrian terurut tertua-dulu secara default, tidak bisa diubah ke termuda-dulu tanpa alasan eksplisit (usia adalah sinyal utama urgensi).
+- [ ] Tombol Approve/Reject selalu terlihat langsung di baris, bukan di belakang menu dropdown.
+- [ ] Baris yang diputuskan (approve/reject) collapse keluar dari daftar dengan animasi Fast tier (`27` §8.5 Motion Behaviour), bukan hilang instan.
+- [ ] Internal Agent tidak dapat mengubah `PROPERTY.status` langsung (hanya rekomendasi) — BOLA/wewenang test wajib lolos.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `ShieldAlert` | Header halaman/antrian | 20px |
+| `CheckCircle2` | Tombol Approve (rekomendasi) | 20px |
+| `XCircle` | Tombol Reject | 20px |
+| `Clock` | Indikator usia antrian per baris | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.5 Internal Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

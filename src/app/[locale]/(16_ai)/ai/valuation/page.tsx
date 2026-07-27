@@ -29,7 +29,7 @@ export default function AIValuationPage() {
     }, 2500);
   };
 
-  const inputClass = "w-full bg-white border border-slate-200 text-slate-900 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all placeholder:text-slate-400 text-sm shadow-sm";
+  const inputClass = "w-full bg-white border border-slate-200 text-slate-900 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-slate-400 text-sm shadow-sm";
   const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
 
   return (
@@ -37,12 +37,12 @@ export default function AIValuationPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-3">
-          <div className="bg-blue-700 p-1.5 rounded-lg">
+          <div className="bg-primary p-1.5 rounded-lg">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-blue-700 uppercase tracking-wide">AI-Powered</span>
+          <span className="text-sm font-semibold text-primary uppercase tracking-wide">AI-Powered</span>
         </div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">
+        <h1 className="text-3xl font-bold tracking-tighter leading-[1.05] text-slate-900 mb-2">
           AI Property Valuation
         </h1>
         <p className="text-slate-500 max-w-xl leading-relaxed">
@@ -53,9 +53,9 @@ export default function AIValuationPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Form Section */}
         <div className="lg:col-span-3">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2 mb-6">
-              <Calculator className="w-5 h-5 text-blue-600" />
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all">
+            <h2 className="text-lg font-semibold tracking-tighter leading-[1.05] text-slate-900 flex items-center gap-2 mb-6">
+              <Calculator className="w-5 h-5 text-primary" />
               Detail Properti
             </h2>
             
@@ -140,7 +140,7 @@ export default function AIValuationPage() {
               <Button
                 type="submit"
                 disabled={isCalculating}
-                className="w-full py-6 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-base transition-all shadow-sm disabled:opacity-60"
+                className="w-full py-6 rounded-xl bg-primary hover:bg-primary text-white font-semibold text-base transition-all shadow-sm disabled:opacity-60"
               >
                 {isCalculating ? (
                   <>
@@ -161,16 +161,16 @@ export default function AIValuationPage() {
         {/* Result Section */}
         <div className="lg:col-span-2">
           {isCalculating ? (
-            <div className="h-full min-h-[300px] bg-white border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-sm">
-              <div className="w-14 h-14 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin" />
+            <div className="h-full min-h-[300px] bg-white border border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-card">
+              <div className="w-14 h-14 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin" />
               <div>
                 <p className="text-slate-700 font-semibold">Menghubungkan ke Database AI...</p>
                 <p className="text-sm text-slate-400 mt-1">Menganalisis nilai pasar terkini</p>
               </div>
             </div>
           ) : result ? (
-            <div className="h-full bg-white border border-slate-200 rounded-2xl p-6 flex flex-col shadow-sm">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-6 w-fit">
+            <div className="h-full bg-white border border-slate-200 rounded-2xl p-6 flex flex-col shadow-card hover:shadow-card-hover transition-all">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-primary text-xs font-semibold mb-6 w-fit">
                 <Sparkles className="w-3 h-3" /> Hasil Analisis AI
               </div>
               
@@ -192,7 +192,7 @@ export default function AIValuationPage() {
 
                 <div className="flex gap-2 text-xs text-slate-500">
                   <div className="flex items-center gap-1.5 flex-1 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <TrendingUp className="w-4 h-4 text-blue-600 shrink-0" />
+                    <TrendingUp className="w-4 h-4 text-primary shrink-0" />
                     <span>Harga naik 8% dari tahun lalu</span>
                   </div>
                   <div className="flex items-center gap-1.5 flex-1 p-3 bg-slate-50 rounded-xl border border-slate-100">
@@ -201,13 +201,13 @@ export default function AIValuationPage() {
                   </div>
                 </div>
                 
-                <Button variant="outline" className="w-full border-blue-200 text-blue-700 hover:bg-blue-50 font-medium">
+                <Button variant="outline" className="w-full border-slate-200 text-primary hover:bg-slate-50 font-medium">
                   Lihat Analisis Mendalam
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="h-full min-h-[300px] bg-white border border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-sm">
+            <div className="h-full min-h-[300px] bg-white border border-dashed border-slate-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-card">
               <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
                 <Building className="w-7 h-7 text-slate-400" />
               </div>

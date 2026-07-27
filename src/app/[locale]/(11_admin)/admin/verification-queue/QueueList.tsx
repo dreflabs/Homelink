@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { approveProperty, rejectProperty } from '@/actions/admin';
 import { Check, X } from "lucide-react";
+import { toast } from 'sonner';
 
 type QueueItem = {
   id: string;
@@ -21,8 +22,10 @@ export default function QueueList({ initialQueue }: { initialQueue: QueueItem[] 
     try {
       await approveProperty(id);
       setQueue(q => q.filter(item => item.id !== id));
+      toast.success("Properti berhasil diverifikasi dan disetujui untuk dipublikasikan.");
     } catch (error) {
       console.error(error);
+      toast.error("Gagal melakukan persetujuan properti. Silakan coba lagi.");
     } finally {
       setLoadingId(null);
     }
@@ -33,8 +36,10 @@ export default function QueueList({ initialQueue }: { initialQueue: QueueItem[] 
     try {
       await rejectProperty(id);
       setQueue(q => q.filter(item => item.id !== id));
+      toast.success("Properti telah ditolak dari antrean verifikasi.");
     } catch (error) {
       console.error(error);
+      toast.error("Gagal menolak properti. Silakan coba kembali.");
     } finally {
       setLoadingId(null);
     }

@@ -1,12 +1,43 @@
-# ANALYTICS PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Analytics\n**Module:** 08 INTERNAL HOMELINK AGENT\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Analytics.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/08_internal_homelink_agent/analytics/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# ANALYTICS PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Analytics (Analitik Kinerja)
+**Module:** 08 INTERNAL HOMELINK AGENT
+**Role:** Internal HomeLink Agent
+**Purpose:** Tren throughput verifikasi (berapa properti/owner diverifikasi per minggu, rata-rata waktu putus) dan tren konversi lead — gabungan metrik dari dua mandat modul ini (Sales & Verification).
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/internal-agent/analytics/page.tsx
+```
+Sidebar label: "Analitik".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Analytics Card` (`17_COMPONENT_LIBRARY.md` §8.4) — dua grafik terpisah: throughput verifikasi, dan funnel konversi lead.
+- `Select` — rentang waktu.
+
+## 4. Data & State Management
+- **Throughput verifikasi — sudah bisa diimplementasikan hari ini:** dihitung dari `VERIFICATION_AUDIT` (yang sudah ada di ERD), agregasi `COUNT()`/`AVG(waktu antara createdAt dan resolvedAt)` per minggu — tidak ada gap skema untuk metrik ini.
+- **Funnel konversi lead — bergantung pada gap `Lead`** (`02_LEAD_MANAGEMENT.md`) — tidak dapat dihitung sampai entity tersedia.
+- Halaman ini secara sengaja memisahkan dua metrik dengan status berbeda (satu real, satu blocked) alih-alih menyembunyikan keduanya di balik satu banner "coming soon" generik.
+
+## 5. API Endpoints Referenced
+- Verifikasi: dihitung dari `GET /api/v1/verification-audits` (proposal, mengikuti pola `11_admin/07_ANALYTICS.md` yang juga belum punya endpoint agregasi khusus, dihitung on-the-fly).
+- Lead: menunggu skema, lihat `02_LEAD_MANAGEMENT.md`.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Grafik throughput verifikasi menampilkan data nyata (bukan dummy) karena entity pendukungnya sudah ada.
+- [ ] Grafik funnel lead menampilkan `EmptyState`/banner gap yang jelas, terpisah dari grafik verifikasi yang berfungsi.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `BarChart3` | Analytics Card throughput verifikasi | 20px |
+| `TrendingUp` | Analytics Card funnel lead | 20px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.5 Internal Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

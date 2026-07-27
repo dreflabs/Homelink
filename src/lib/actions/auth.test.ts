@@ -52,7 +52,7 @@ describe('authenticate', () => {
 
     const result = await authenticate(undefined, loginForm('buyer@test.com'));
 
-    expect(result).toBe('Email atau password salah.');
+    expect(result).toBe('Email atau kata sandi salah.');
     expect(redirect).not.toHaveBeenCalled();
   });
 
@@ -104,5 +104,15 @@ describe('authenticate', () => {
     await authenticate(undefined, loginForm('user@test.com'));
 
     expect(redirect).toHaveBeenCalledWith('/');
+  });
+
+  test('returns deactivated error message when user isDeleted is true', async () => {
+    signIn.mockResolvedValue(undefined);
+    prismaFindUnique.mockResolvedValue({ email: 'user@test.com', role: 'BUYER', isDeleted: true });
+
+    const result = await authenticate(undefined, loginForm('user@test.com'));
+
+    expect(result).toBe('Akun Anda telah dinonaktifkan.');
+    expect(redirect).not.toHaveBeenCalled();
   });
 });

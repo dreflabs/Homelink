@@ -49,7 +49,7 @@ export default async function InternalDashboardPage() {
 
   const stats = [
     { label: t("listing_menunggu_review"), value: pendingReviewsCount, icon: <FileCheck className="" size={24} /> },
-    { label: t("properti_tersurvei"), value: surveyedCount, icon: <CheckSquare className="text-blue-700" size={24} /> },
+    { label: t("properti_tersurvei"), value: surveyedCount, icon: <CheckSquare className="text-primary" size={24} /> },
     { label: t("laporan_masalah"), value: openTicketsCount, icon: <ShieldAlert className="" size={24} /> },
   ];
 
@@ -63,7 +63,7 @@ export default async function InternalDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, idx) => (
           <div key={idx} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center space-x-4">
-            <div className="p-3 bg-blue-50 rounded-lg">
+            <div className="p-3 bg-slate-50 rounded-lg">
               {stat.icon}
             </div>
             <div>
@@ -95,7 +95,7 @@ export default async function InternalDashboardPage() {
                   <td className="p-4 text-sm">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                       item.status === 'TODO' ? 'bg-yellow-100 text-yellow-800' :
-                      item.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                      item.status === 'IN_PROGRESS' ? 'bg-slate-100 text-primary' :
                       item.status === 'OVERDUE' ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
@@ -106,7 +106,7 @@ export default async function InternalDashboardPage() {
                     {item.dueDate ? format(new Date(item.dueDate), "dd MMM yyyy") : "-"}
                   </td>
                   <td className="p-4 text-sm text-right">
-                    <button className="inline-flex items-center justify-center p-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors">
+                    <button className="inline-flex items-center justify-center p-2 text-primary hover:bg-slate-50 rounded-lg transition-colors">
                       <Eye size={18} />
                     </button>
                   </td>

@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import { calculateCommission } from "@/actions/agent";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,14 +11,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Wallet, ChartCandlestick, Clock, Calculator, ShieldCheck, Inbox } from "lucide-react";
-import { toast } from "sonner";
 import { FadeIn } from "@/components/shared/FadeIn";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { TableSkeleton } from "@/components/shared/TableSkeleton";
 
-import { useEffect } from "react";
 import { getAgentCommissions } from "@/actions/partner";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 type Commission = {
   id: string;
@@ -36,25 +30,15 @@ function formatRupiah(amount: number) {
   return `Rp ${amount.toLocaleString("id-ID")}`;
 }
 
-export default function AgentCommissionPage() {
-  const t = useTranslations('PartnerAgent');
-  const [bookings, setBookings] = useState<Commission[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
-  const [loading, setLoading] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getAgentCommissions();
-        setBookings(data);
-      } catch (error) {
-        toast.error(t('Commission.fetchError'));
-      } finally {
-        setLoadingData(false);
-      }
-    }
-    fetchData();
-  }, []);
+export default async function AgentCommissionPage() {
+  const t = await getTranslations('PartnerAgent');
+  let bookings: Commission[] = [];
+  
+  try {
+    bookings = await getAgentCommissions();
+  } catch (error) {
+    console.error(error);
+  }
 
   const totalEarned = bookings
     .filter((b) => b.status === "PAID")
@@ -62,20 +46,6 @@ export default function AgentCommissionPage() {
   const totalPending = bookings
     .filter((b) => b.status === "PENDING")
     .reduce((s, b) => s + b.commission, 0);
-
-  async function handleCalculate(bookingId: string) {
-    setLoading(bookingId);
-    try {
-      await calculateCommission(bookingId);
-      toast.success(t('Commission.calcSuccess'));
-      const data = await getAgentCommissions();
-      setBookings(data);
-    } catch {
-      toast.error(t('Commission.calcError'));
-    } finally {
-      setLoading(null);
-    }
-  }
 
   return (
     <div className="space-y-8">
@@ -96,7 +66,7 @@ export default function AgentCommissionPage() {
             <div className="p-2 bg-white/20 rounded-xl">
               <Wallet className="w-5 h-5 text-white" />
             </div>
-            <p className="text-sm font-medium text-blue-100">{t('Commission.totalEarned')}</p>
+            <p className="text-sm font-medium text-slate-100">{t('Commission.totalEarned')}</p>
           </div>
           <p className="text-2xl font-bold">{formatRupiah(totalEarned)}</p>
           <p className="text-blue-200 text-xs mt-1">{t('Commission.totalPaid')}</p>
@@ -127,9 +97,7 @@ export default function AgentCommissionPage() {
 
       {/* Booking Table */}
       <FadeIn delay={0.3}>
-        {loadingData ? (
-          <TableSkeleton rows={4} columns={6} />
-        ) : bookings.length === 0 ? (
+        {bookings.length === 0 ? (
           <EmptyState
             icon={Inbox}
             title={t('Commission.noCommissionTitle')}
@@ -189,12 +157,10 @@ export default function AgentCommissionPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="text-xs rounded-lg border-blue-200 text-blue-700 hover:bg-blue-50"
-                      onClick={() => handleCalculate(booking.id)}
-                      disabled={loading === booking.id}
+                      className="text-xs rounded-lg border-slate-200 text-primary hover:bg-slate-50"
                     >
                       <Calculator className="w-3.5 h-3.5 mr-1.5" />
-                      {loading === booking.id ? t('Commission.calculating') : t('Commission.calculate')}
+                      {t('Commission.calculate')}
                     </Button>
                   )}
                 </TableCell>

@@ -13,13 +13,14 @@ app/(03_property_search)/search-result/page.tsx
 Reads all filter state from `searchParams` (RSC) — no client route needed for initial render.
 
 ## 3. Required UI Components
-- **SearchHero** (persisted at top, collapsed/sticky variant) — `onSearchSubmit` re-triggers navigation with updated `q` param.
-- **FilterSidebar** — desktop: left rail; mobile: slide-over sheet triggered by a "Filters" button. Contains price range, bedrooms, property type, city.
+- **SearchHero** (persisted at top) — Pencarian utama. **AI Search** hadir sebagai *enhancement chip* ("Gunakan AI untuk pencarian spesifik...") di bawahnya yang bisa diekspansi, bukan menutupi layar utama.
+- **Sorting Chips & Map Toggle** — Sortings berbentuk *chips* interaktif (Relevansi, Terbaru, Harga Terendah) dan di pojok kanan atas terdapat tombol sakelar (Toggle) antara List dan Map View.
+- **FilterSidebar** — desktop: left rail; mobile: slide-over sheet. Diperbarui dengan **Quick Filters** (Verified Only, Siap Huni, Dekat MRT) dan fitur reset yang elegan.
 - **PropertyCard grid** — responsive 1/2/3/4 columns (mobile/md/lg/xl) per `24_RESPONSIVE_SPECIFICATION.md`. Each card: title, price, address, specs (bed/bath/area), imageUrl, isVerified badge, isFeatured treatment, hover scale-105 image + shadow-xl.
 - **Badge** — green+check for `FULLY_VERIFIED`, amber for `PENDING`/partially verified statuses.
 - **Pagination / Infinite Scroll** — cursor-based "Load more" control (not numbered pages, since backend uses cursor pagination).
 - **Skeleton loaders** — grid of pulse-animated card placeholders shown during RSC streaming/Suspense fallback; never a blank screen.
-- **EmptyState** — shown when `data` is an empty array: illustration + "No properties match your search" + CTA button to reset filters or broaden the query.
+- **Smart Empty State** — Tidak hanya pesan kosong, namun berisi saran aktif (Rekomendasi pencarian seperti "Rumah di Bandung di bawah Rp2 Miliar" atau "Apartemen dekat stasiun MRT") untuk mempertahankan pengguna.
 - **Toast/Banner (AI fallback notice)** — non-blocking inline banner: "AI search is temporarily unavailable — showing standard filtered results" when `AI_SERVICE_DOWN` is returned.
 
 ## 4. Data & State Management
@@ -48,7 +49,7 @@ Reads all filter state from `searchParams` (RSC) — no client route needed for 
 - [ ] Lighthouse accessibility score ≥ 90; filter chips and pagination controls are keyboard-navigable.
 
 ## 7. Iconography Specification
-**Library:** Lucide React ONLY, `strokeWidth={1.5}`.
+**Library:** Lucide React ONLY, `strokeWidth={1.75}` (Sesuai dengan 17_COMPONENT_LIBRARY.md).
 
 - **`Search`** — used inside the sticky SearchHero input. 20px, `text-muted-foreground`, `aria-hidden="true"` (input has its own accessible label).
 - **`SlidersHorizontal`** — trigger button for the mobile FilterSidebar sheet. 20px, `text-slate-900`, paired with the visible label "Filters".
@@ -57,3 +58,11 @@ Reads all filter state from `searchParams` (RSC) — no client route needed for 
 
 ## 8. UI/UX Aesthetic Rules
 Background White `#FFFFFF`; Surface Light Gray `#F7F9FC` for the FilterSidebar panel; Primary Royal Blue (`blue-700`) for active filter chips and the "Load more" button; Heading Dark Navy (`slate-900`); Muted Cool Gray (`slate-500`) for secondary metadata (address, specs). Cards use `rounded-2xl`/`rounded-3xl` corners with ultra-soft diffused shadows; PropertyCard image scales to 105% with `shadow-xl` on hover. **Page-specific layout:** FilterSidebar is a fixed-width left column (desktop, ≥lg) collapsing to a bottom sheet (mobile/tablet); result grid occupies the remaining width using the responsive 1→2→3→4 column breakpoints.
+
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

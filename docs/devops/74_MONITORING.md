@@ -47,7 +47,7 @@ Layanan eksternal (UptimeRobot/BetterStack) melakukan polling `GET /api/health` 
 - Endpoint `/api/health` harus dirancang se-ringan mungkin (sekadar `return { status: "OK" }`), jangan melakukan kueri berat ke DB untuk menghindari efek DoS.
 
 ## 10. Acceptance Criteria
-- [x] Laporan Sentry memiliki pembagian (*environment tags*) yang jelas antara `staging` dan `production` agar tim tidak bingung membedakan asal *error*.
+- [ ] Laporan Sentry (Belum diintegrasikan ke kode produksi — status PLANNED/Belum Diimplementasikan).
 
 ## 11. Future Improvements
 - Fase 2: Menambahkan *dashboard* metrik terpusat (misal Grafana) yang menggabungkan Uptime, PM2 Plus, dan Sentry dalam satu tampilan.
@@ -61,4 +61,5 @@ Layanan eksternal (UptimeRobot/BetterStack) melakukan polling `GET /api/health` 
 | Version | Date       | Author               | Status   | Notes                 |
 | :---    | :---       | :---                 | :---     | :---                  |
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
-| 1.0.1   | 2026-07-24 | Documentation Audit  | APPROVED | Distandarisasi ke template 13-bagian (Dependencies, Definitions, Architecture, Future Improvements, References, Version History ditambahkan) untuk konsistensi dengan kategori dokumen lain di corpus. |
+| 1.0.1   | 2026-07-24 | Documentation Audit  | APPROVED | Distandarisasi ke template 13-bagian |
+| 1.0.2   | 2026-07-26 | Antigravity AI       | PLANNED  | Diperbarui: Integrasi Sentry & Uptime Monitoring eksternal diklarifikasi berstatus PLANNED (belum ada di kode produksi). |

@@ -4,7 +4,7 @@ import { Bell, Mail, MessageCircle, Smartphone } from "lucide-react";
 
 export default function NotificationDashboardPage() {
   const stats = [
-    { title: "Total Notifications", value: "12,450", icon: Bell, trend: "+12.5%", color: "text-blue-500" },
+    { title: "Total Notifications", value: "12,450", icon: Bell, trend: "+12.5%", color: "text-primary" },
     { title: "Emails Sent", value: "8,200", icon: Mail, trend: "+5.2%", color: "text-green-500" },
     { title: "SMS Sent", value: "1,150", icon: MessageCircle, trend: "-2.1%", color: "text-yellow-500" },
     { title: "Push Notifications", value: "3,100", icon: Smartphone, trend: "+18.4%", color: "text-purple-500" },

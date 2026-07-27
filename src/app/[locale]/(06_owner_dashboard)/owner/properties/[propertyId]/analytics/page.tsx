@@ -36,7 +36,7 @@ export default async function PropertyAnalyticsPage(props: {
         <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white/50 backdrop-blur-xl rounded-2xl transition-all hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-600">Total Views</CardTitle>
-            <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+            <div className="p-2 bg-slate-50 rounded-lg text-primary">
               <Eye className="h-5 w-5" />
             </div>
           </CardHeader>

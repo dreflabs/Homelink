@@ -5,7 +5,7 @@ import { Wallet, FileCheck, ShieldCheck, Clock } from "lucide-react";
 export default function BillingDashboardPage() {
   const stats = [
     { title: "Total Revenue", value: "Rp 125.500.000", icon: Wallet, trend: "+15%", color: "text-green-500" },
-    { title: "Invoices Sent", value: "342", icon: FileCheck, trend: "+5%", color: "text-blue-500" },
+    { title: "Invoices Sent", value: "342", icon: FileCheck, trend: "+5%", color: "text-primary" },
     { title: "Paid Invoices", value: "298", icon: ShieldCheck, trend: "+8%", color: "text-emerald-500" },
     { title: "Pending Invoices", value: "44", icon: Clock, trend: "-2%", color: "text-yellow-500" },
   ];

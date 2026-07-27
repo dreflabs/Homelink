@@ -1,15 +1,22 @@
 export const dynamic = 'force-dynamic';
 
 import { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import { UserRound, Calendar, LayoutDashboard, FileCheck, MessageCircle, Settings, FileSearch, Heart } from "lucide-react";
 import { DashboardLayoutWrapper, SidebarLink } from "@/components/shared/DashboardLayoutWrapper";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
 
 export default async function BuyerDashboardLayout({
   children,
 }: {
   children: ReactNode;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   const t = await getTranslations("BuyerDashboard");
 
   const buyerLinks: SidebarLink[] = [
@@ -23,8 +30,24 @@ export default async function BuyerDashboardLayout({
     { href: "/settings", label: t("layout.links.settings"), icon: <Settings className="w-5 h-5" /> },
   ];
 
+  const logoNode = (
+    <div className="flex items-center gap-2">
+      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <span className="text-white font-bold text-lg leading-none">H</span>
+      </div>
+      <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">HomeLink</span>
+    </div>
+  );
+
   return (
-    <DashboardLayoutWrapper title={t("layout.title")} links={buyerLinks} sidebarTheme="light">
+    <DashboardLayoutWrapper 
+      title={t("layout.title")} 
+      links={buyerLinks} 
+      sidebarTheme="light"
+      logoutLabel={t("layout.links.logout")}
+      roleBadge="Portal Pembeli"
+      logoNode={logoNode}
+    >
       {children}
     </DashboardLayoutWrapper>
   );

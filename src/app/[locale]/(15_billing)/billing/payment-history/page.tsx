@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import prisma from "@/lib/prisma";
 import {
   Table,
@@ -17,6 +18,8 @@ import { redirect } from "next/navigation";
 export const dynamic = 'force-dynamic';
 
 export default async function PaymentHistoryPage() {
+  const tTable = await getTranslations('Common.table');
+
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -44,10 +47,10 @@ export default async function PaymentHistoryPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Invoice ID</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>{tTable('date')}</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Plan</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{tTable('status')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

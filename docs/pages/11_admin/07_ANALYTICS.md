@@ -50,7 +50,10 @@ app/(dashboard)/11_admin/analytics/page.tsx
 #### Icon: `EyeOff`
 - **Purpose:** Ikon pada placeholder state "Belum Tersedia" untuk metrik view-tracking yang bergantung pada gap `PropertyViewLog`. **Size:** 24px. **Color:** `text-slate-400`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Grid chart 2 kolom pada desktop, stack pada mobile. Palet warna kategori chart mengikuti panduan skill `dataviz` (bukan warna default library) agar konsisten dengan Badge status di seluruh modul Admin (mis. warna donut chart status properti harus sama persis dengan warna Badge di `04_PROPERTY_MANAGEMENT.md` dan `05_VERIFICATION_QUEUE.md`).

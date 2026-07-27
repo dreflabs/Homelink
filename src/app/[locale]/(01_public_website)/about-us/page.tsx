@@ -19,19 +19,19 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-background selection:bg-primary/20">
-      {/* Hero Section - Apple Style (Clean, Large Typography, Spaced out) */}
+      {/* Hero Section - Immersive Premium Aesthetic */}
       <section className="relative overflow-hidden pt-32 pb-24 md:pt-48 md:pb-32 px-6">
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-tight text-foreground leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl lg:text-[80px] font-semibold tracking-tighter text-slate-900 leading-[1.05]">
             Mendefinisikan Ulang <br className="hidden md:block" />
-            <span className="text-muted-foreground">Standar Properti Indonesia.</span>
+            <span className="text-slate-500">Standar Properti Indonesia.</span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
             Kami membangun fondasi kepercayaan, transparansi, dan pengalaman tanpa hambatan di pasar properti.
           </p>
           <div className="pt-8">
-            <Button size="lg" className="rounded-full px-8 py-6 text-base font-medium shadow-sm hover:scale-105 transition-transform duration-300">
-              Bergabung Bersama Kami <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="lg" className="bg-slate-900 text-white rounded-full px-8 py-6 text-base font-medium shadow-sm hover:scale-105 transition-transform duration-300">
+              Bergabung Bersama Kami <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} />
             </Button>
           </div>
         </div>
@@ -41,11 +41,11 @@ export default function AboutPage() {
       </section>
 
       {/* Vision & Mission - Minimalist Bento Grid Style */}
-      <section className="py-24 bg-muted/30 px-6">
+      <section className="py-24 lg:py-32 bg-slate-50 px-6">
         <div className="max-w-7xl mx-auto space-y-20">
           <div className="text-center max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">Pilar Utama Kami</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-tighter leading-[1.05] text-slate-900">Pilar Utama Kami</h2>
+            <p className="text-lg text-slate-500">
               Semua yang kami lakukan berpedoman pada prinsip fundamental ini. Kami tidak sekadar merancang perangkat lunak; kami membangun kepercayaan.
             </p>
           </div>
@@ -56,13 +56,13 @@ export default function AboutPage() {
               { icon: Target, title: "Akurasi Tanpa Kompromi", desc: "Hanya properti terverifikasi. Kami membuang kebohongan agar Anda menemukan yang nyata." },
               { icon: Heart, title: "Desain Berpusat Pada Manusia", desc: "Teknologi harus melayani manusia, bukan sebaliknya. Empati mendorong desain kami." }
             ].map((pillar, i) => (
-              <Card key={i} className="border-none bg-background/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 group">
+              <Card key={i} className="border-none bg-white shadow-card hover:shadow-card-hover transition-all duration-300 group rounded-[2rem]">
                 <CardContent className="p-10 flex flex-col items-center text-center space-y-6">
-                  <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-500">
-                    <pillar.icon className="w-8 h-8" />
+                  <div className="p-4 bg-primary/5 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                    <pillar.icon className="w-8 h-8 text-primary group-hover:text-white" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-xl font-semibold">{pillar.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{pillar.desc}</p>
+                  <h3 className="text-xl font-semibold text-slate-900 tracking-tight">{pillar.title}</h3>
+                  <p className="text-slate-500 leading-relaxed">{pillar.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -71,15 +71,15 @@ export default function AboutPage() {
       </section>
 
       {/* Team Mockup Section - Premium Aesthetic */}
-      <section className="py-32 px-6">
+      <section className="py-24 lg:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row gap-16 items-center">
             <div className="flex-1 space-y-8">
-              <h2 className="text-4xl md:text-6xl font-semibold tracking-tight leading-tight">
+              <h2 className="text-4xl md:text-6xl font-semibold tracking-tighter leading-[1.05] text-slate-900">
                 Temui pemikir <br />
-                <span className="text-muted-foreground">di balik layar.</span>
+                <span className="text-slate-400">di balik layar.</span>
               </h2>
-              <p className="text-xl text-muted-foreground leading-relaxed max-w-xl">
+              <p className="text-xl text-slate-500 leading-relaxed max-w-xl">
                 Sekelompok ahli dari berbagai disiplin ilmu mulai dari teknologi, desain, hingga pakar real estate yang bersatu dengan satu tujuan: membuat transaksi properti lebih mulus.
               </p>
               <Button variant="outline" size="lg" className="rounded-full px-8 py-6 text-base">
@@ -97,7 +97,7 @@ export default function AboutPage() {
                       <p className="text-white/70 text-sm">Head of Design</p>
                     </div>
                   </div>
-                  <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
+                  <div className="w-full h-full bg-[url('/about_office.jpg')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
                 </div>
                 <div className="aspect-square rounded-3xl bg-muted/40 overflow-hidden relative group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -106,7 +106,7 @@ export default function AboutPage() {
                       <p className="text-white/70 text-sm">Lead Engineer</p>
                     </div>
                   </div>
-                  <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
+                  <div className="w-full h-full bg-[url('/about_office.jpg')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
                 </div>
               </div>
               <div className="space-y-4">
@@ -117,7 +117,7 @@ export default function AboutPage() {
                       <p className="text-white/70 text-sm">Chief Executive Officer</p>
                     </div>
                   </div>
-                  <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
+                  <div className="w-full h-full bg-[url('/about_office.jpg')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
                 </div>
                 <div className="aspect-[4/5] rounded-3xl bg-muted/40 overflow-hidden relative group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -126,7 +126,7 @@ export default function AboutPage() {
                       <p className="text-white/70 text-sm">Product Manager</p>
                     </div>
                   </div>
-                  <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
+                  <div className="w-full h-full bg-[url('/about_office.jpg')] bg-cover bg-center mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" />
                 </div>
               </div>
             </div>

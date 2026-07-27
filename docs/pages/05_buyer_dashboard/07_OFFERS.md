@@ -61,6 +61,9 @@ Rute publik: `/dashboard/offers`. Tidak ada Screen ID di `18_SCREEN_INVENTORY.md
 | `CircleX` | Badge status "Ditolak"/tombol tarik penawaran | 14px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, daftar penawaran sebagai kartu `rounded-2xl` dengan nominal offer ditonjolkan besar (mirip tampilan harga properti publik).

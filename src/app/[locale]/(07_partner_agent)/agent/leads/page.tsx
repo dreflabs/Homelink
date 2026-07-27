@@ -21,7 +21,7 @@ export default async function AgentLeadsPage() {
   function getStatusStyle(status: string) {
     switch (status) {
       case "CONTACTED":
-        return "bg-blue-50 text-blue-700 border-blue-200";
+        return "bg-slate-50 text-primary border-slate-200";
       case "CLOSED":
         return "bg-emerald-50 text-emerald-700 border-emerald-200";
       default:
@@ -71,9 +71,9 @@ export default async function AgentLeadsPage() {
       {/* Stats */}
       <FadeIn delay={0.2} className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: t('Leads.stats.total'), value: total, icon: UserRound, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: t('Leads.stats.total'), value: total, icon: UserRound, color: "text-primary", bg: "bg-slate-50" },
           { label: t('Leads.stats.pending'), value: pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { label: t('Leads.stats.contacted'), value: contacted, icon: ChartCandlestick, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: t('Leads.stats.contacted'), value: contacted, icon: ChartCandlestick, color: "text-primary", bg: "bg-slate-50" },
           { label: t('Leads.stats.closed'), value: closed, icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
         ].map((stat) => (
           <Card key={stat.label} className="p-5 rounded-2xl shadow-sm border-slate-100">
@@ -123,7 +123,7 @@ export default async function AgentLeadsPage() {
                 <TableRow key={lead.id} className="hover:bg-slate-50 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 text-primary flex items-center justify-center font-bold text-xs shrink-0">
                         {lead.buyer?.name?.charAt(0) ?? "?"}
                       </div>
                       <div>

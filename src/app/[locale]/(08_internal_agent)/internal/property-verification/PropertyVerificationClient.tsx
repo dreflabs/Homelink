@@ -72,7 +72,7 @@ export default function PropertyVerificationClient({ initialQueue }: { initialQu
         <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
           {queue.filter((p) => p.status === "PENDING_REVIEW").length} {t("menunggu_review")}
         </span>
-        <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+        <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-primary">
           {queue.filter((p) => p.status === "DRAFT").length} Draft
         </span>
       </FadeIn>
@@ -94,7 +94,7 @@ export default function PropertyVerificationClient({ initialQueue }: { initialQu
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 flex-1">
-                  <div className="p-3 bg-blue-50 rounded-xl shrink-0">
+                  <div className="p-3 bg-slate-50 rounded-xl shrink-0">
                     <Building className="w-5 h-5 " />
                   </div>
                   <div className="flex-1">
@@ -104,7 +104,7 @@ export default function PropertyVerificationClient({ initialQueue }: { initialQu
                         variant="outline"
                         className={
                           property.status === "SURVEYED"
-                            ? "bg-blue-50 text-blue-700 border-blue-200 text-xs"
+                            ? "bg-slate-50 text-primary border-slate-200 text-xs"
                             : "bg-amber-50 text-amber-700 border-amber-200 text-xs"
                         }
                       >

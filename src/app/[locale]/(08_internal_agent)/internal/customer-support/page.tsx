@@ -23,7 +23,7 @@ export default async function CustomerSupportPage() {
           <h1 className="text-2xl font-bold text-gray-900">{t("customer_support_title")}</h1>
           <p className="text-gray-500">{t("customer_support_desc")}</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-primary hover:bg-primary text-white">
           <MessageCircle className="w-5 h-5 mr-2" />
           {t("new_ticket")}
         </Button>
@@ -37,7 +37,7 @@ export default async function CustomerSupportPage() {
                 <p className="text-sm font-medium text-gray-500">{t("total_tickets")}</p>
                 <h3 className="text-2xl font-bold mt-1">{tickets.length}</h3>
               </div>
-              <div className="p-2 bg-blue-50 rounded-lg">
+              <div className="p-2 bg-slate-50 rounded-lg">
                 <MessageCircle className="w-5 h-5 " />
               </div>
             </div>
@@ -121,7 +121,7 @@ export default async function CustomerSupportPage() {
               <tbody className="divide-y">
                 {tickets.map((ticket) => (
                   <tr key={ticket.id} className="hover:bg-gray-50/50">
-                    <td className="px-4 py-3 font-medium text-blue-600">{ticket.id.substring(0, 8)}</td>
+                    <td className="px-4 py-3 font-medium text-primary">{ticket.id.substring(0, 8)}</td>
                     <td className="px-4 py-3">{ticket.user?.name || t("unknown_user")}</td>
                     <td className="px-4 py-3 font-medium text-gray-900">{ticket.subject}</td>
                     <td className="px-4 py-3 text-gray-500">{ticket.category}</td>
@@ -140,7 +140,7 @@ export default async function CustomerSupportPage() {
                     <td className="px-4 py-3">
                       <Badge variant="outline" className={
                         ticket.status === 'OPEN' ? 'border-yellow-200 text-yellow-700 bg-yellow-50' :
-                        ticket.status === 'IN_PROGRESS' ? 'border-blue-200 text-blue-700 bg-blue-50' :
+                        ticket.status === 'IN_PROGRESS' ? 'border-slate-200 text-primary bg-slate-50' :
                         'border-green-200 text-green-700 bg-green-50'
                       }>
                         {ticket.status.replace('_', ' ')}
@@ -148,7 +148,7 @@ export default async function CustomerSupportPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-500">{formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</td>
                     <td className="px-4 py-3 text-right">
-                      <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                      <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
                         {t("view_details")}
                       </Button>
                     </td>

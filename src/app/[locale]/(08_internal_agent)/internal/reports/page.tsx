@@ -25,8 +25,8 @@ const availableReports = [
     frequency: "Weekly",
     format: "PDF",
     icon: FileCheck,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50"
+    color: "text-primary",
+    bgColor: "bg-slate-50"
   },
   {
     id: "REP-03",
@@ -61,7 +61,7 @@ export default async function ReportsPage() {
           <h1 className="text-2xl font-bold text-gray-900">{t("reports")}</h1>
           <p className="text-gray-500">{t("reports_desc")}</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-primary hover:bg-primary text-white">
           <FileCheck className="w-5 h-5 mr-2" />
           {t("custom_report")}
         </Button>
@@ -111,7 +111,7 @@ export default async function ReportsPage() {
                       <span>{t("freq")}<span className="font-medium text-gray-700">{report.frequency}</span></span>
                       <span>{t("format")}<span className="font-medium text-gray-700">{report.format}</span></span>
                     </div>
-                    <Button variant="outline" size="sm" className="h-8 text-blue-600 border-blue-200 hover:bg-blue-50">
+                    <Button variant="outline" size="sm" className="h-8 text-primary border-slate-200 hover:bg-slate-50">
                       <Download className="w-3.5 h-3.5 mr-1.5" />
                       {t("generate")}
                     </Button>
@@ -129,22 +129,7 @@ export default async function ReportsPage() {
           <CardDescription>{t("recent_downloads_desc")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileCheck className="w-5 h-5 " />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Weekly Ops Summary - W{40-i}</p>
-                    <p className="text-xs text-gray-500">Generated Oct {25-i}, 2023</p>
-                  </div>
-                </div>
-                <Button variant="ghost" size="icon" className="text-gray-500 hover:text-blue-600">
-                  <Download className="w-4 h-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <p className="text-sm text-gray-400 text-center py-6">Belum ada laporan yang dibuat.</p>
         </CardContent>
       </Card>
     </div>

@@ -39,6 +39,31 @@ export async function getPhotographerDeliveries() {
   return deliveries;
 }
 
+export async function getPhotographerDashboardStats() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+
+  const photographerId = (session.user as any).id;
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const [scheduledThisWeek, deliveriesPending, deliveriesDoneThisMonth] = await Promise.all([
+    prisma.photographerTask.count({
+      where: { photographerId, scheduledAt: { gte: startOfWeek } },
+    }),
+    prisma.photographerDelivery.count({
+      where: { photographerId, status: "PENDING" },
+    }),
+    prisma.photographerDelivery.count({
+      where: { photographerId, status: "DELIVERED", createdAt: { gte: startOfMonth } },
+    }),
+  ]);
+
+  return { scheduledThisWeek, deliveriesPending, deliveriesDoneThisMonth };
+}
+
 export async function getMediaLibrary() {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");

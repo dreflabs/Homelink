@@ -32,7 +32,7 @@ export default async function GalleryPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: "Total Media", value: mediaItems.length, icon: ImageIcon, color: "text-indigo-600", bg: "bg-indigo-50" },
-          { label: "Foto", value: totalImages, icon: ImageIcon, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: "Foto", value: totalImages, icon: ImageIcon, color: "text-primary", bg: "bg-slate-50" },
           { label: "Video", value: totalVideos, icon: Film, color: "text-violet-600", bg: "bg-violet-50" },
         ].map((stat) => (
           <Card key={stat.label} className="rounded-2xl border-slate-100 shadow-sm">

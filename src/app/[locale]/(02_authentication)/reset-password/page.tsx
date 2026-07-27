@@ -111,7 +111,7 @@ function ResetPasswordForm() {
           </Link>
         </div>
 
-        <div className="w-full max-w-[420px] mx-auto mt-16 lg:mt-0">
+        <div className="w-full max-w-md mx-auto mt-16 lg:mt-0">
           
           <Link href="/login" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-8">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -163,7 +163,7 @@ function ResetPasswordForm() {
                 <input type="hidden" {...register("token")} value={searchParams.get("token") || ""} />
 
                 <div className="space-y-2.5">
-                  <Label htmlFor="password" className="font-medium text-slate-700 uppercase tracking-wider text-[11px]">
+                  <Label htmlFor="password" className="font-medium text-slate-700 uppercase tracking-wider text-xs">
                     Password Baru
                   </Label>
                   <div className="relative">
@@ -209,7 +209,7 @@ function ResetPasswordForm() {
                 </div>
 
                 <div className="space-y-2.5">
-                  <Label htmlFor="confirmPassword" className="font-medium text-slate-700 uppercase tracking-wider text-[11px]">
+                  <Label htmlFor="confirmPassword" className="font-medium text-slate-700 uppercase tracking-wider text-xs">
                     Konfirmasi Password
                   </Label>
                   <div className="relative">

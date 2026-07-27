@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 const { auth } = vi.hoisted(() => ({ auth: vi.fn() }));
-vi.mock('../auth', () => ({ auth }));
+vi.mock('../lib/auth', () => ({ auth }));
 
 const { prismaUpdate, prismaAuditCreate } = vi.hoisted(() => ({
   prismaUpdate: vi.fn(),
@@ -31,21 +31,21 @@ describe('verifyProperty', () => {
 
   test('throws Unauthorized when the session user is not an ADMIN', async () => {
     auth.mockResolvedValue({ user: { id: 'u1', role: 'OWNER' } });
-    await expect(verifyProperty('prop-1', 'APPROVED')).rejects.toThrow('Only ADMIN');
+    await expect(verifyProperty('prop-1', 'APPROVED')).rejects.toThrow('Forbidden: Admin or Internal Agent role required');
     expect(prismaUpdate).not.toHaveBeenCalled();
   });
 
   test('updates property status for an ADMIN session', async () => {
     auth.mockResolvedValue({ user: { id: 'admin-1', role: 'ADMIN' } });
-    prismaUpdate.mockResolvedValue({ id: 'prop-1', status: 'APPROVED' });
+    prismaUpdate.mockResolvedValue({ id: 'prop-1', status: 'PUBLISHED' });
 
     const result = await verifyProperty('prop-1', 'APPROVED');
 
     expect(prismaUpdate).toHaveBeenCalledWith({
       where: { id: 'prop-1' },
-      data: { status: 'APPROVED' },
+      data: { status: 'PUBLISHED' },
     });
-    expect(result).toEqual({ id: 'prop-1', status: 'APPROVED' });
+    expect(result).toEqual({ id: 'prop-1', status: 'PUBLISHED' });
   });
 
   test('writes a VerificationAudit row when notes are provided', async () => {
@@ -66,7 +66,7 @@ describe('verifyProperty', () => {
 
   test('skips the VerificationAudit write when no notes are given', async () => {
     auth.mockResolvedValue({ user: { id: 'admin-1', role: 'ADMIN' } });
-    prismaUpdate.mockResolvedValue({ id: 'prop-1', status: 'APPROVED' });
+    prismaUpdate.mockResolvedValue({ id: 'prop-1', status: 'PUBLISHED' });
 
     await verifyProperty('prop-1', 'APPROVED');
 

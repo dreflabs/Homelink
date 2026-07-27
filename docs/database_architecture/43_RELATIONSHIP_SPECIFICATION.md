@@ -29,10 +29,11 @@ Prisma relational integrity.
 
 | Parent Table | Child Table | Foreign Key | On Delete Action | Alasan Bisnis |
 | :--- | :--- | :--- | :--- | :--- |
-| `User` (Owner) | `Property` | `ownerId` | **RESTRICT** | Menghapus akun *User* tidak boleh sembarangan jika mereka memiliki *Property* yang sedang dalam proses verifikasi atau transaksi. *Property* harus dihapus manual terlebih dahulu. |
-| `Property` | `PropertyMedia`| `propertyId` | **CASCADE** | Jika properti dihapus total, foto-fotonya sudah tidak relevan dan harus ikut dihapus (dari DB). |
-| `Property` | `Booking` | `propertyId` | **CASCADE** | Jika properti dihapus, semua jadwal *booking* yang menggantung harus ikut terhapus. |
-| `User` (Buyer) | `Booking` | `buyerId` | **CASCADE** | Jika akun pembeli dihapus (sepenuhnya), data jadwal kunjungan mereka dibersihkan. |
+| `User` (Owner) | `Property` | `ownerId` | **RESTRICT** | Menghapus akun *User* tidak boleh sembarangan jika mereka memiliki *Property* yang sedang dalam proses verifikasi atau transaksi. Aplikasi menggunakan soft-delete (`isDeleted = true`). |
+| `Property` | `PropertyMedia`| `propertyId` | **RESTRICT** | Aplikasi mengelola media via soft-delete (`isDeleted = true`). Hapus keras dicegah. |
+| `Property` | `Booking` | `propertyId` | **RESTRICT** | Jadwal booking historis harus terlindungi demi audit transaksi finansial. |
+| `User` (Buyer) | `Booking` | `buyerId` | **RESTRICT** | Data booking terkait buyer tidak boleh terhapus secara beruntun. |
+| `Category` | `Article` | `categoryId` | **SET NULL** | Menghapus kategori artikel CMS mengubah `categoryId` menjadi `null` tanpa menghapus konten artikel. |
 | `User` | `Account` | `userId` | **CASCADE** | Jika `User` dihapus permanen, tautan OAuth-nya tidak berguna dan harus ikut terhapus. |
 | `User` | `AuditLog` | `actorId` | **RESTRICT** | Log forensik bersifat *append-only*; menghapus `User` tidak boleh menghapus jejak audit historisnya (kebutuhan investigasi/hukum, lihat `67_AUDIT_LOGGING.md`). |
 

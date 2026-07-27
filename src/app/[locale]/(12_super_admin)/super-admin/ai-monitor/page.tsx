@@ -52,7 +52,7 @@ export default async function AIMonitorPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Active Model</CardTitle>
-            <Cpu className="h-4 w-4 text-blue-500" />
+            <Cpu className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-sm font-bold text-gray-900 truncate">Gemini 3.5 Pro</div>

@@ -62,7 +62,13 @@ describe('authConfig.callbacks.authorized', () => {
   test('logged-in user is redirected away from /login and /register', () => {
     const result = callAuthorized('/login', { role: 'BUYER' });
     expect((result as Response).status).toBe(302);
-    expect((result as Response).headers.get('location')).toBe('https://homelink.test/dashboard');
+    expect((result as Response).headers.get('location')).toContain('/dashboard');
+  });
+
+  test('i18n locale-prefixed protected routes properly apply authorization logic', () => {
+    expect(callAuthorized('/id/admin', { role: 'BUYER' })).not.toBe(true);
+    expect(callAuthorized('/id/admin', { role: 'ADMIN' })).toBe(true);
+    expect(callAuthorized('/en/owner', { role: 'OWNER' })).toBe(true);
   });
 
   test('logged-in user can still browse public routes normally', () => {

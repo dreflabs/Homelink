@@ -58,6 +58,9 @@ Rute publik: `/dashboard/saved-searches`. Tidak ada Screen ID di `18_SCREEN_INVE
 | `Search` | Empty state ilustratif (48px, Light Gray) — "Belum ada pencarian tersimpan" | 48px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, daftar tersusun sebagai kartu horizontal ringkas dengan chip filter berlatar `slate-50`.

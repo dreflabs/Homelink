@@ -29,7 +29,7 @@ export default async function DocumentsPage() {
           {documents.map((doc) => (
             <Card key={doc.id}>
               <CardContent className="p-6 flex items-center gap-4">
-                <div className="bg-blue-50 p-3 rounded-lg text-blue-600">
+                <div className="bg-slate-50 p-3 rounded-lg text-primary">
                   <FileCheck className="w-6 h-6" />
                 </div>
                 <div className="flex-1">

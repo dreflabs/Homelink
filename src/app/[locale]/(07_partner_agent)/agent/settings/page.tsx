@@ -18,8 +18,8 @@ function Toggle({ checked, onChange }: ToggleProps) {
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-        checked ? "bg-blue-600" : "bg-slate-200"
+      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+        checked ? "bg-primary" : "bg-slate-200"
       }`}
     >
       <span
@@ -116,7 +116,7 @@ export default function AgentSettingsPage() {
         <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
           <Bell className="w-5 h-5 " />
           <h2 className="font-semibold text-slate-900">{t('notification')}</h2>
-          <Badge variant="outline" className="text-xs ml-auto bg-blue-50 text-blue-700 border-blue-200">
+          <Badge variant="outline" className="text-xs ml-auto bg-slate-50 text-primary border-slate-200">
             {Object.values(notifStates).filter(Boolean).length} {t('active')}
           </Badge>
         </div>

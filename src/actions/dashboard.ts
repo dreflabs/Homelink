@@ -82,31 +82,65 @@ export async function getBuyerDashboard() {
 
   const user = await prisma.user.findUnique({
     where: { id: buyerId },
-    select: { id: true, name: true, email: true, image: true, phone: true, address: true },
+    select: { id: true, name: true },
   });
 
-  const [totalBookings, totalLeads, totalSavedSearches, totalSavedProperties] = await Promise.all([
-    prisma.booking.count({ where: { buyerId, status: { notIn: ["CANCELLED", "REJECTED"] } } }),
-    prisma.lead.count({ where: { buyerId } }),
-    prisma.savedSearch.count({ where: { userId: buyerId } }),
-    prisma.savedProperty.count({ where: { buyerId, property: { isDeleted: false } } }),
-  ]);
+  const now = new Date();
+  const next48Hours = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+
+  // Priority 1: Upcoming booking within 48h
+  const upcomingBooking = await prisma.booking.findFirst({
+    where: {
+      buyerId,
+      surveyDate: {
+        gte: now,
+        lte: next48Hours,
+      },
+      status: "CONFIRMED",
+    },
+    orderBy: { surveyDate: "asc" },
+    include: {
+      property: {
+        select: { title: true, id: true, slug: true },
+      },
+    },
+  });
+
+  // Priority 3: Recently viewed property
+  const recentlyViewed = await prisma.propertyViewLog.findFirst({
+    where: { viewerId: buyerId, property: { isDeleted: false } },
+    orderBy: { viewedAt: "desc" },
+    include: {
+      property: {
+        select: { title: true, id: true, slug: true },
+      },
+    },
+  });
 
   return {
     profile: {
       name: user?.name ?? "Pengguna",
-      email: user?.email ?? "",
-      avatar: user?.image ?? `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user?.name ?? "U")}`,
-      phone: user?.phone ?? "",
-      address: user?.address ?? "",
+      email: "user@example.com",
+      avatar: "/avatar-placeholder.png",
+      phone: "-",
+      address: "-",
     },
-    stats: {
-      totalBookings,
-      totalLeads,
-      totalSavedSearches,
-      totalSavedProperties,
+    heroState: {
+      upcomingBooking: upcomingBooking
+        ? {
+            id: upcomingBooking.id,
+            propertyTitle: upcomingBooking.property.title,
+            surveyDate: upcomingBooking.surveyDate.toISOString(),
+          }
+        : null,
+      recentlyViewed: recentlyViewed
+        ? {
+            propertyId: recentlyViewed.property.id,
+            propertyTitle: recentlyViewed.property.title,
+            propertySlug: recentlyViewed.property.slug,
+          }
+        : null,
     },
-    recentActivities: [] as any[],
   };
 }
 

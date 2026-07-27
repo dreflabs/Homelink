@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { SearchHeroWrapper } from '@/components/shared/SearchHeroWrapper';
@@ -56,7 +56,7 @@ export default function NearbySearchPage() {
 
       <div className="container mx-auto px-4 max-w-7xl py-12">
         <div className="flex items-center gap-3 mb-8">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+          <div className="p-3 bg-slate-100 text-primary rounded-xl">
             <Compass className="w-6 h-6" />
           </div>
           <div>
@@ -67,8 +67,8 @@ export default function NearbySearchPage() {
 
         {!location ? (
           <div className="bg-white rounded-3xl p-12 shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center max-w-2xl mx-auto">
-            <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 relative">
-              <Navigation className="w-10 h-10 text-blue-600 absolute animate-pulse" />
+            <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative">
+              <Navigation className="w-10 h-10 text-primary absolute animate-pulse" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 mb-3">Izinkan Akses Lokasi</h2>
             <p className="text-slate-500 mb-8 max-w-md">
@@ -77,7 +77,7 @@ export default function NearbySearchPage() {
             <Button 
               onClick={requestLocation} 
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 rounded-xl text-base shadow-lg shadow-blue-600/20 w-full sm:w-auto"
+              className="bg-primary hover:bg-primary text-white px-8 py-6 rounded-xl text-base shadow-lg shadow-blue-600/20 w-full sm:w-auto"
             >
               <Navigation className="w-5 h-5 mr-2" />
               {loading ? 'Mendeteksi...' : 'Deteksi Lokasi Saya'}

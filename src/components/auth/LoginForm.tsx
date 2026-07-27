@@ -72,7 +72,7 @@ export function LoginForm() {
             {...register("email")}
             type="email" 
             placeholder="Email" 
-            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
@@ -83,7 +83,7 @@ export function LoginForm() {
             {...register("password")}
             type={showPassword ? "text" : "password"} 
             placeholder="Password" 
-            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-blue-700 focus:ring-blue-700" 
+            className="pl-10 pr-10 h-12 rounded-xl border-slate-200 focus:border-primary focus:ring-primary" 
           />
           <button
             type="button"
@@ -97,12 +97,12 @@ export function LoginForm() {
         </div>
 
         <div className="flex justify-end">
-          <Link href="/forgot-password" className="text-sm text-blue-700 hover:underline font-medium">
+          <Link href="/forgot-password" className="text-sm text-primary hover:underline font-medium">
             Lupa password?
           </Link>
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full h-12 bg-blue-700 hover:bg-blue-800 text-white rounded-xl font-semibold">
+        <Button type="submit" disabled={isSubmitting} className="w-full h-12 bg-primary hover:bg-primary text-white rounded-xl font-semibold">
           {isSubmitting ? (
             <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
           ) : (
@@ -124,7 +124,7 @@ export function LoginForm() {
 
       <p className="text-center text-sm text-slate-500">
         Belum punya akun?{" "}
-        <Link href="/register" className="text-blue-700 font-medium hover:underline">
+        <Link href="/register" className="text-primary font-medium hover:underline">
           Daftar
         </Link>
       </p>

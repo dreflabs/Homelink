@@ -41,8 +41,8 @@ const DEFAULT_STATS: StatItem[] = [
     change: "—",
     isPositive: true,
     icon: ChartCandlestick,
-    colorClass: "text-blue-600",
-    bgClass: "bg-blue-50",
+    colorClass: "text-primary",
+    bgClass: "bg-slate-50",
   },
   {
     title: "Beban Server AI",
@@ -150,7 +150,7 @@ export default function AIAnalyticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-slate-900 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-blue-600" />
+                  <BarChart3 className="w-5 h-5 text-primary" />
                   Grafik Penggunaan Token
                 </CardTitle>
                 <p className="text-sm text-slate-500 mt-1">Estimasi biaya berdasarkan model (GPT-4o & Claude 3.5)</p>
@@ -213,19 +213,19 @@ export default function AIAnalyticsPage() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600 flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-blue-500" /> Rate Limit Assistant
+                  <Bot className="w-4 h-4 text-primary" /> Rate Limit Assistant
                 </span>
                 <span className="text-slate-900 font-semibold">85%</span>
               </div>
               <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 w-[85%] rounded-full" />
+                <div className="h-full bg-slate-500 w-[85%] rounded-full" />
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100">
-              <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3">
-                <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5 animate-pulse shrink-0" />
-                <p className="text-xs text-blue-700 leading-relaxed">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-slate-500 mt-1.5 animate-pulse shrink-0" />
+                <p className="text-xs text-primary leading-relaxed">
                   Traffic prediksi harga sedang tinggi. Sistem telah mengalokasikan 2 node tambahan untuk menjaga stabilitas.
                 </p>
               </div>

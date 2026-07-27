@@ -42,8 +42,8 @@ export default function AISearchPage() {
   return (
     <div className="container mx-auto py-10 px-4 md:px-6 max-w-6xl">
       <div className="flex flex-col items-center justify-center space-y-4 mb-12 text-center animate-in fade-in zoom-in duration-500">
-        <div className="bg-blue-100 p-3 rounded-full mb-2">
-          <Sparkles className="w-8 h-8 text-blue-700" />
+        <div className="bg-slate-100 p-3 rounded-full mb-2">
+          <Sparkles className="w-8 h-8 text-primary" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
           AI Semantic Search
@@ -55,7 +55,7 @@ export default function AISearchPage() {
 
       <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-16 relative group">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-          <Search className="h-6 w-6 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+          <Search className="h-6 w-6 text-slate-400 group-focus-within:text-primary transition-colors" />
         </div>
         <Input
           type="text"
@@ -63,14 +63,14 @@ export default function AISearchPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="e.g. 'A quiet apartment near a park with a balcony for my cat'"
-          className="pl-12 pr-32 py-8 text-lg rounded-full shadow-lg border-slate-200 bg-white/80 backdrop-blur-sm focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-all relative z-0"
+          className="pl-12 pr-32 py-8 text-lg rounded-full shadow-lg border-slate-200 bg-white/80 backdrop-blur-sm focus-visible:ring-primary focus-visible:ring-offset-2 transition-all relative z-0"
           disabled={isSearching}
         />
         <div className="absolute inset-y-2 right-2 flex items-center z-10">
           <Button
             type="submit"
             disabled={!query.trim() || isSearching}
-            className="rounded-full px-6 h-full bg-blue-600 hover:bg-blue-700 text-white shadow-md disabled:opacity-60"
+            className="rounded-full px-6 h-full bg-primary hover:bg-primary text-white shadow-md disabled:opacity-60"
           >
             {isSearching ? "Mencari..." : "Search"}
           </Button>

@@ -8,27 +8,29 @@
     "about": "Tentang Kami",
     "contact": "Kontak",
     "faq": "FAQ",
-    "login": "Masuk"
+    "login": "Masuk",
+    "search": "Cari Properti",
+    "sell": "Jual Properti"
   },
   "Auth": {
     "login": {
-      "title": "Welcome back",
+      "title": "Selamat datang kembali",
       "subtitle": "Masuk ke akun Anda untuk mengelola properti premium.",
-      "email": "Email Address",
+      "email": "Alamat Email",
       "email_placeholder": "nama@email.com",
-      "password": "Password",
+      "password": "Kata Sandi",
       "password_placeholder": "••••••••",
       "forgot_password": "Lupa password?",
       "processing": "Memproses...",
       "submit": "Masuk ke HomeLink",
       "or": "Atau masuk dengan",
-      "google": "Continue with Google",
+      "google": "Lanjutkan dengan Google",
       "no_account": "Belum punya akun?",
       "register": "Daftar sekarang",
       "showcase": {
         "quote": "HomeLink memberikan kendali penuh atas portofolio properti saya dengan cara yang elegan dan tanpa cela.",
         "author": "David Sastrowardoyo",
-        "role": "Premium Property Investor"
+        "role": "Investor Properti Premium"
       }
     },
     "register": {
@@ -45,7 +47,7 @@
       "email_placeholder": "nama@email.com",
       "phone": "Nomor Telepon",
       "phone_placeholder": "08123456789",
-      "password": "Password",
+      "password": "Kata Sandi",
       "password_placeholder": "Min 8 karakter",
       "confirm": "Konfirmasi",
       "confirm_placeholder": "Ulangi password",
@@ -61,7 +63,7 @@
       "showcase": {
         "quote": "Portofolio kami berkembang karena tingkat kepercayaan yang belum pernah ada sebelumnya.",
         "author": "Erick Tohir",
-        "role": "Institutional Investor"
+        "role": "Investor Institusional"
       },
       "success": "Registrasi berhasil!",
       "success_desc": "Silakan periksa email Anda untuk verifikasi.",
@@ -73,16 +75,17 @@
   },
   "BuyerDashboard": {
     "layout": {
-      "title": "Buyer Dashboard",
+      "title": "Dasbor Pembeli",
       "links": {
-        "overview": "Overview",
+        "overview": "Ringkasan",
         "favorites": "Favorit",
         "profile": "Profil",
         "schedule": "Jadwal Kunjungan",
         "offers": "Penawaran",
         "documents": "Dokumen",
         "messages": "Pesan",
-        "settings": "Pengaturan"
+        "settings": "Pengaturan",
+        "logout": "Keluar"
       }
     },
     "dashboard": {
@@ -114,7 +117,7 @@
         "confirmed": "Dikonfirmasi",
         "completed": "Selesai",
         "cancelled": "Dibatalkan",
-        "unknown": "Unknown"
+        "unknown": "Tidak diketahui"
       },
       "card": {
         "id": "ID",
@@ -194,64 +197,117 @@
         "subtitle": "Anda belum mengatur jadwal kunjungan ke properti manapun. Temukan properti impian Anda dan jadwalkan survei sekarang.",
         "searchProperties": "Cari Properti"
       },
-      "reschedule": "Reschedule",
+      "reschedule": "Jadwal Ulang",
       "cancel": "Batalkan"
     },
     "settingsPage": {
       "title": "Pengaturan",
       "subtitle": "Atur preferensi akun dan notifikasi Anda."
+    },
+    "settingsForm": {
+      "notifications": {
+        "title": "Notifikasi Email",
+        "subtitle": "Pilih jenis notifikasi yang ingin Anda terima via email.",
+        "savedProperties": "Properti Tersimpan",
+        "savedPropertiesDesc": "Pemberitahuan perubahan harga atau status pada properti favorit Anda.",
+        "newMessages": "Pesan Baru",
+        "newMessagesDesc": "Pemberitahuan saat pemilik properti membalas pesan Anda.",
+        "recommendations": "Rekomendasi Properti",
+        "recommendationsDesc": "Menerima rekomendasi properti mingguan sesuai kriteria Anda."
+      },
+      "accountSecurity": {
+        "title": "Keamanan Akun",
+        "subtitle": "Kelola kata sandi dan keamanan akun Anda."
+      },
+      "actions": {
+        "save": "Simpan Pengaturan",
+        "saving": "Menyimpan...",
+        "saved": "Tersimpan"
+      }
     }
   },
   "Public": {
     "HomePage": {
       "Hero": {
-        "badge": "Platform Properti #1 Bebas Ghost Listing",
-        "title_1": "Properti Impian Anda. ",
-        "title_2": "100% Terverifikasi.",
-        "subtitle": "Selamat tinggal iklan palsu. Setiap properti di HomeLink diinspeksi fisik dan legalitasnya secara ketat oleh tim ahli independen.",
-        "stats_1": "10,000+ Properti Aktif",
-        "stats_2": "Verifikasi Legal 2-Langkah",
-        "stats_3": "Rp 2T+ Nilai Properti"
+        "badge": "100% Properti Terverifikasi",
+        "title_1": "Temukan Rumah Impian",
+        "title_2": "Tanpa Rasa Khawatir.",
+        "subtitle": "Setiap properti di HomeLink telah melalui inspeksi fisik dan verifikasi legal ketat. Bebas ghost listing, 100% terpercaya."
+      },
+      "Featured": {
+        "title": "Properti Terverifikasi Minggu Ini",
+        "subtitle": "Kurasi eksklusif dengan skor verifikasi tertinggi.",
+        "badge": "Terverifikasi Fisik & Legal",
+        "prop_name": "Villa Kemang Paradiso",
+        "prop_loc": "Kemang, Jakarta Selatan",
+        "price_label": "Harga Penawaran",
+        "price": "Rp 12.5 Miliar",
+        "btn": "Lihat Detail"
       },
       "Verification": {
-        "title": "Mengapa HomeLink Berbeda?",
-        "subtitle": "Proses verifikasi 2-langkah kami menjamin Anda tidak akan pernah menemukan listing fiktif, foto palsu, atau harga manipulatif.",
-        "step_1_title": "1. Audit Legalitas",
-        "step_1_desc": "Pemeriksaan sertifikat, IMB, dan PBB langsung dengan database BPN untuk memastikan kepemilikan sah.",
-        "step_2_title": "2. Inspeksi Fisik",
-        "step_2_desc": "Surveyor independen mengunjungi lokasi, memverifikasi kondisi asli, dan mengambil foto/video terstandarisasi.",
-        "step_3_title": "3. Zero Ghost Listing",
-        "step_3_desc": "Hanya setelah lulus dua tahap tersebut, properti akan mendapatkan badge Verified dan ditayangkan di platform."
+        "badge": "Proses Kami",
+        "title_1": "Tidak Ada Ruang untuk ",
+        "title_2": "Keraguan.",
+        "subtitle": "Setiap properti yang tayang di platform kami wajib melewati 3 tahap verifikasi ketat oleh tim independen. Jika gagal, properti tidak akan tayang.",
+        "step1_title": "1. Audit Legalitas",
+        "step1_desc": "Pemeriksaan sertifikat Hak Milik, IMB, dan PBB memastikan properti bebas sengketa hukum.",
+        "step2_title": "2. Inspeksi Fisik 360°",
+        "step2_desc": "Surveyor kami mengunjungi lokasi untuk mengambil foto asli, video, dan mencatat kondisi bangunan secara jujur.",
+        "step3_title": "3. Penerbitan Verified Badge",
+        "step3_desc": "Properti disetujui, dikunci harganya, dan tayang dengan lencana Terverifikasi eksklusif HomeLink.",
+        "visual_doc": "Status Dokumen",
+        "visual_status": "Lolos Verifikasi"
       },
-      "Features": {
-        "badge": "Teknologi Eksklusif",
-        "title": "Inovasi Properti Modern",
-        "ai_title": "AI Instant Valuation",
-        "ai_desc": "Menetapkan standar baru dalam penilaian properti. Algoritma kami menganalisis ribuan titik data pasar *real-time* untuk memberikan estimasi harga yang sangat akurat.",
-        "ai_button": "Coba Kalkulator AI",
-        "ai_card_title": "Analisis Pasar Live",
-        "ai_card_label": "Estimasi Harga",
-        "security_title": "Keamanan Transaksi Terjamin",
-        "security_desc": "Dari penandatanganan hingga pembayaran, seluruh proses transaksi difasilitasi dengan infrastruktur legal berstandar perbankan.",
-        "security_button": "Pelajari lebih lanjut"
+      "Categories": {
+        "title": "Koleksi Berdasarkan Gaya Hidup",
+        "cat_penthouse": "Penthouse",
+        "cat_villa": "Villa Tropis",
+        "cat_apartment": "Apartemen Kota",
+        "cat_land": "Tanah Kavling"
       },
-      "Collections": {
+      "AIValuation": {
+        "demo_title": "Rumah Tipe 45, BSD City",
+        "demo_time": "Dipindai 2 menit yang lalu",
+        "demo_badge": "AI Ready",
+        "demo_est_label": "Estimasi Harga Jual (Real-time)",
+        "demo_est_price": "Rp 1.850.000.000",
+        "demo_vs": "+12% vs harga pasar sekitar",
+        "demo_acc_label": "Tingkat Akurasi Prediksi",
+        "demo_acc_val": "96%",
+        "demo_float_title": "Data Diperbarui",
+        "demo_float_desc": "Menganalisis 1,204 transaksi",
+        "title_1": "Penetapan Harga ",
+        "title_2": "Tanpa Menerka-nerka.",
+        "desc": "Mesin AI eksklusif HomeLink menganalisis ribuan titik data historis dan tren pasar hiper-lokal untuk memberikan estimasi harga properti yang sangat presisi dalam hitungan detik.",
+        "btn": "Coba Penilaian AI Gratis"
+      },
+      "Collection": {
         "title": "Koleksi Eksklusif",
-        "subtitle": "Temukan mahakarya arsitektur yang telah divalidasi keunggulannya oleh tim HomeLink.",
-        "see_all": "Lihat Semua",
-        "empty_title": "Koleksi Sedang Disiapkan",
-        "empty_desc": "Tim kurator kami sedang memilih properti paling luar biasa untuk Anda. Silakan jelajahi katalog lengkap kami.",
-        "empty_button": "Jelajahi Katalog",
-        "see_all_mobile": "Lihat Semua Koleksi"
+        "desc": "Properti premium yang dikurasi secara khusus oleh direktur properti kami.",
+        "btn": "Jelajahi Semua"
       },
-      "Testimonials": {
-        "title": "Dipercaya oleh Pemimpin Industri"
+      "Insight": {
+        "title": "Wawasan Pasar Cerdas",
+        "desc": "Keputusan besar membutuhkan data yang solid. Dapatkan akses ke analitik pasar properti, tren yield penyewaan, dan laporan hiper-lokal langsung dari dashboard Anda.",
+        "feat_1": "Analisis tren harga per meter persegi",
+        "feat_2": "Perhitungan potensi ROI penyewaan",
+        "feat_3": "Notifikasi perubahan harga di area favorit",
+        "btn": "Lihat Insight Hari Ini",
+        "visual_label": "ROI Kemang",
+        "visual_val": "+8.4% / Thn"
       },
       "CTA": {
-        "title": "Siap Memaksimalkan Nilai Aset Anda?",
-        "subtitle": "Bergabung dengan ribuan pemilik properti yang telah mempercayakan aset mereka pada teknologi dan jaringan eksklusif HomeLink 2.0.",
-        "button_1": "Daftarkan Properti Sekarang",
-        "button_2": "Hubungi Konsultan Kami"
+        "title": "Waktunya Membuka Potensi Properti Anda.",
+        "desc": "Bergabunglah dengan jaringan pemilik properti eksklusif. Dapatkan layanan foto profesional, penilaian AI, dan pendampingan agen secara gratis.",
+        "btn": "Mulai Jual atau Sewakan"
+      },
+      "MobileCTA": {
+        "btn": "Jelajahi Properti"
+      },
+      "Collections": {
+        "empty_title": "Belum Ada Properti",
+        "empty_desc": "Belum ada properti terverifikasi yang sesuai dengan kriteria ini.",
+        "empty_button": "Cari Properti Lain"
       }
     },
     "FAQ": {
@@ -489,10 +545,16 @@
     }
   },
   "OwnerDashboard": {
+    "error": {
+      "title": "Gagal Memuat Portal Pemilik",
+      "description": "Gagal memuat informasi listing properti Anda. Silakan muat ulang.",
+      "try_again": "Coba Lagi",
+      "manage_properties": "Kelola Properti"
+    },
     "layout": {
-      "title": "Owner Dashboard",
+      "title": "Dasbor Pemilik",
       "links": {
-        "overview": "Overview",
+        "overview": "Ringkasan",
         "my_properties": "Properti Saya",
         "status_performance": "Status & Performa",
         "schedule": "Jadwal Kunjungan",
@@ -567,7 +629,7 @@
     "menunggu": "Menunggu",
     "dihubungi": "Dihubungi",
     "ditutup": "Ditutup",
-    "daftar_leads": "Daftar Leads",
+    "daftar_leads": "Daftar Prospek",
     "properti": "Properti",
     "status_properti": "Status Properti",
     "properti_disetujui": "Properti disetujui!",
@@ -719,15 +781,126 @@
     "identitas_berhasil": "Identitas Owner berhasil diverifikasi!",
     "gagal_memverifikasi": "Gagal memverifikasi identitas",
     "semua_leads_yang_masuk": "Semua leads yang masuk ke sistem, beserta status tindak lanjutnya.",
-    "total_leads": "Total Leads",
+    "total_leads": "Total Prospek",
     "semua": "Semua",
     "total": "total",
     "belum_ada_leads": "Belum ada leads di sistem.",
     "calon_pembeli": "Calon Pembeli",
-    "follow_up": "Follow Up",
+    "follow_up": "Tindak Lanjut",
     "tanggal": "Tanggal",
     "gagal_memuat_leads": "Gagal memuat data leads.",
-    "manajemen_leads": "Manajemen Leads",
+    "manajemen_leads": "Manajemen Prospek",
     "internal_dashboard": "Dasbor Internal"
+  },
+  "Common": {
+    "table": {
+      "name": "Nama",
+      "title": "Judul",
+      "status": "Status",
+      "actions": "Aksi",
+      "date": "Tanggal",
+      "category": "Kategori",
+      "author": "Penulis",
+      "role": "Peran",
+      "type": "Tipe",
+      "amount": "Jumlah / Nilai",
+      "user": "Pengguna",
+      "description": "Deskripsi",
+      "rating": "Penilaian",
+      "order": "Urutan",
+      "tenant": "Tenant"
+    },
+    "search": {
+      "placeholder": "Cari...",
+      "byTitle": "Cari berdasarkan judul, alamat, atau pemilik...",
+      "users": "Cari pengguna...",
+      "reports": "Cari laporan berdasarkan ID properti...",
+      "helpCenter": "Cari artikel, panduan, dan FAQ...",
+      "tenants": "Cari tenant..."
+    }
+  },
+  "AdminDashboard": {
+    "page": {
+      "title": "Dashboard",
+      "description": "Ringkasan operasional harian platform HomeLink.",
+      "verification_queue": "Antrean Verifikasi",
+      "passed_sla": "melewati SLA",
+      "total_active_users": "Total Pengguna Aktif",
+      "users_this_week": "pengguna minggu ini",
+      "total_live_properties": "Total Properti Live",
+      "properties_this_month": "properti bulan ini",
+      "total_agents": "Total Agents",
+      "registered_partner_agents": "Partner agent terdaftar",
+      "recent_activity": "Aktivitas Terbaru",
+      "view_all": "Lihat Semua",
+      "table": {
+        "activity": "Aktivitas",
+        "actor": "Aktor",
+        "target": "Target",
+        "time": "Waktu"
+      },
+      "dummy_data": {
+        "approve_property": "Approve Property",
+        "reject_property": "Reject Property",
+        "suspend_user": "Suspend User",
+        "verify_agent": "Verify Agent",
+        "admin_user": "Admin User",
+        "admin_system": "Admin System",
+        "admin_staff": "Admin Staff",
+        "mins_ago": "menit lalu",
+        "hours_ago": "jam lalu"
+      }
+    },
+    "analytics": {
+      "title": "Dasbor Analitik",
+      "total_users": "Total Pengguna",
+      "active_properties": "Properti Aktif",
+      "transactions": "Transaksi",
+      "from_last_month": "dari bulan lalu",
+      "user_growth_chart": "Grafik Pertumbuhan Pengguna",
+      "chart_desc": "Pengguna aktif bulanan selama setahun terakhir.",
+      "chart_placeholder": "[Placeholder Komponen Grafik]"
+    }
+  },
+  "SearchHero": {
+    "intent_buy": "Beli",
+    "intent_rent": "Sewa",
+    "intent_sell": "Jual",
+    "placeholder": "Cari properti...",
+    "fake_placeholder": "Ketik apa saja...",
+    "button": "Cari",
+    "ph_1": "Cari rumah di BSD...",
+    "ph_2": "Rumah 2 Miliar di Jaksel...",
+    "ph_3": "Apartemen dekat MRT...",
+    "ph_4": "Villa di Bali dengan kolam renang..."
+  },
+  "FeaturedProperties": {
+    "tab_1": "Terbaru",
+    "tab_2": "Bebas Macet (Dekat KRL)",
+    "tab_3": "Cocok untuk Keluarga Baru",
+    "tab_4": "Investasi ROI Tinggi"
+  },
+  "Footer": {
+    "sell_property": "Jual Properti",
+    "search_property": "Cari Properti",
+    "headline": "Menetapkan standar baru dalam kepercayaan dan transparansi real estat.",
+    "description": "HomeLink didirikan dengan satu tujuan: menghilangkan keraguan dari setiap transaksi properti. Melalui verifikasi fisik independen, teknologi AI tingkat lanjut, dan kurasi ketat, kami membangun ekosistem di mana pembeli dan pemilik dapat bertransaksi dengan kepastian mutlak.",
+    "platform": "Platform",
+    "collections": "Koleksi Properti",
+    "ai_valuation": "AI Valuation",
+    "pricing": "Harga & Layanan",
+    "company": "Perusahaan",
+    "about": "Tentang Kami",
+    "careers": "Karir",
+    "press": "Press & Media",
+    "contact": "Hubungi Kami",
+    "verified_100": "100% Properti Terverifikasi",
+    "no_ghost": "Bebas Ghost Listing",
+    "privacy": "Privasi",
+    "terms": "Syarat & Ketentuan",
+    "rights": "Hak cipta dilindungi undang-undang."
+  },
+  "MobileNav": {
+    "search": "Cari Properti"
   }
 }

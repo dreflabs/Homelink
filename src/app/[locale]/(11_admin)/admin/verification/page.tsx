@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import React, { useState } from "react";
 import { 
   ClipboardCheck, 
@@ -10,7 +12,7 @@ import {
   FileCheck2,
   ChevronRight
 } from "lucide-react";
-import { verifyProperty } from "@/lib/actions/admin";
+import { verifyProperty } from "@/actions/admin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -29,6 +31,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 // Dummy Data
 const QUEUE_DATA = [
@@ -45,6 +48,8 @@ const getSlaColor = (hours: number) => {
 };
 
 export default function VerificationQueuePage() {
+  const tTable = useTranslations('Common.table');
+
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -56,9 +61,28 @@ export default function VerificationQueuePage() {
     setRejectModalOpen(true);
   };
 
+  const handleVerifyAction = async (id: string, status: 'APPROVED' | 'REJECTED', reason?: string) => {
+    try {
+      await verifyProperty(id, status, reason);
+      if (status === 'APPROVED') {
+        toast.success("Listing properti berhasil disetujui dan siap dipublikasikan ke publik!");
+      } else {
+        toast.success("Listing properti ditolak sesuai prosedur regulasi dan catatan dikirimkan ke pemilik.");
+      }
+      setRejectModalOpen(false);
+      if (viewDetails && viewDetails.id === id) {
+        setViewDetails(null);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Gagal melakukan aksi verifikasi pada properti ini. Silakan hubungi tim teknis atau coba kembali.");
+    }
+  };
+
   const submitReject = () => {
-    // API logic for rejection goes here
-    setRejectModalOpen(false);
+    if (selectedItem) {
+      handleVerifyAction(selectedItem.id, 'REJECTED', rejectReason);
+    }
   };
 
   if (viewDetails) {
@@ -73,10 +97,10 @@ export default function VerificationQueuePage() {
             <p className="text-sm text-slate-500 mt-1">Compare owner's documents with physical surveyor data.</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => verifyProperty(viewDetails.id, 'REJECTED')}>
+            <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl" onClick={() => handleVerifyAction(viewDetails.id, 'REJECTED')}>
               <XCircle className="w-4 h-4 mr-2" /> Reject
             </Button>
-            <Button className="bg-green-600 hover:bg-green-700 text-white shadow-md rounded-xl" onClick={() => verifyProperty(viewDetails.id, 'APPROVED')}>
+            <Button className="bg-green-600 hover:bg-green-700 text-white shadow-md rounded-xl" onClick={() => handleVerifyAction(viewDetails.id, 'APPROVED')}>
               <ShieldCheck className="w-5 h-5 mr-2" /> Approve Listing
             </Button>
           </div>
@@ -102,13 +126,13 @@ export default function VerificationQueuePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="aspect-square bg-slate-50 rounded-2xl flex flex-col items-center justify-center border border-slate-200 p-4">
                 <span className="text-slate-400 font-medium">Front View</span>
-                <span className="text-xs text-blue-700 mt-3 font-mono bg-blue-50 px-2 py-1 rounded-md">
+                <span className="text-xs text-primary mt-3 font-mono bg-slate-50 px-2 py-1 rounded-md">
                   {viewDetails.lat}, {viewDetails.lng}
                 </span>
               </div>
               <div className="aspect-square bg-slate-50 rounded-2xl flex flex-col items-center justify-center border border-slate-200 p-4">
                 <span className="text-slate-400 font-medium">Street View</span>
-                <span className="text-xs text-blue-700 mt-3 font-mono bg-blue-50 px-2 py-1 rounded-md">
+                <span className="text-xs text-primary mt-3 font-mono bg-slate-50 px-2 py-1 rounded-md">
                   {viewDetails.lat}, {viewDetails.lng}
                 </span>
               </div>
@@ -135,7 +159,7 @@ export default function VerificationQueuePage() {
             </div>
             <DialogFooter className="mt-6">
               <Button variant="ghost" onClick={() => setRejectModalOpen(false)} className="rounded-xl">Cancel</Button>
-              <Button variant="destructive" disabled={rejectReason.trim().length === 0} onClick={() => verifyProperty(selectedItem?.id!, 'REJECTED')} className="rounded-xl">
+              <Button variant="destructive" disabled={rejectReason.trim().length === 0} onClick={() => handleVerifyAction(selectedItem?.id!, 'REJECTED', rejectReason)} className="rounded-xl">
                 Submit Rejection
               </Button>
             </DialogFooter>
@@ -148,8 +172,8 @@ export default function VerificationQueuePage() {
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-blue-50 rounded-xl">
-          <ClipboardCheck className="w-6 h-6 text-blue-700"  />
+        <div className="p-3 bg-slate-50 rounded-xl">
+          <ClipboardCheck className="w-6 h-6 text-primary"  />
         </div>
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">Verification Queue</h1>
@@ -165,7 +189,7 @@ export default function VerificationQueuePage() {
               <TableHead className="font-medium text-slate-500 py-4">Property Title</TableHead>
               <TableHead className="font-medium text-slate-500 py-4">Owner</TableHead>
               <TableHead className="font-medium text-slate-500 py-4">Current Stage</TableHead>
-              <TableHead className="text-right font-medium text-slate-500 py-4 pr-6">Actions</TableHead>
+              <TableHead className="text-right font-medium text-slate-500 py-4 pr-6">{tTable('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -186,13 +210,13 @@ export default function VerificationQueuePage() {
                 </TableCell>
                 <TableCell className="text-right py-4 pr-6">
                   <div className="flex items-center justify-end gap-3">
-                    <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-lg h-9 px-3" onClick={() => verifyProperty(item.id, 'REJECTED')}>
+                    <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-lg h-9 px-3" onClick={() => handleVerifyAction(item.id, 'REJECTED')}>
                       <XCircle className="w-4 h-4 mr-1.5" /> Reject
                     </Button>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white shadow-sm rounded-lg h-9 px-3" onClick={() => verifyProperty(item.id, 'APPROVED')}>
+                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white shadow-sm rounded-lg h-9 px-3" onClick={() => handleVerifyAction(item.id, 'APPROVED')}>
                       <ShieldCheck className="w-5 h-5 mr-1.5" /> Approve
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-slate-500 hover:text-blue-700 rounded-lg h-9 px-3" onClick={() => setViewDetails(item)}>
+                    <Button variant="ghost" size="sm" className="text-slate-500 hover:text-primary rounded-lg h-9 px-3" onClick={() => setViewDetails(item)}>
                       Details <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
@@ -229,7 +253,7 @@ export default function VerificationQueuePage() {
           </div>
           <DialogFooter className="mt-6">
             <Button variant="ghost" onClick={() => setRejectModalOpen(false)} className="rounded-xl">Cancel</Button>
-            <Button variant="destructive" disabled={rejectReason.trim().length === 0} onClick={() => selectedItem && verifyProperty(selectedItem.id, 'REJECTED', rejectReason)} className="rounded-xl">
+            <Button variant="destructive" disabled={rejectReason.trim().length === 0} onClick={() => selectedItem && handleVerifyAction(selectedItem.id, 'REJECTED', rejectReason)} className="rounded-xl">
               Submit Rejection
             </Button>
           </DialogFooter>

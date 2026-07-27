@@ -1,11 +1,15 @@
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { getNotificationHistory } from "@/actions/notification";
+import { TableEmptyState } from "@/components/shared/TableEmptyState";
 
 
 export default async function NotificationHistoryPage() {
+  const tTable = await getTranslations('Common.table');
+
   const notifications = await getNotificationHistory();
 
   return (
@@ -24,18 +28,16 @@ export default async function NotificationHistoryPage() {
         </CardHeader>
         <CardContent>
           {notifications.length === 0 ? (
-            <div className="text-center py-10 text-muted-foreground">
-              No notifications found.
-            </div>
+            <TableEmptyState title="Riwayat Notifikasi Kosong" description="Belum ada pemberitahuan atau pesan sistem yang disiarkan." />
           ) : (
-            <div className="rounded-md border">
+            <div className="w-full overflow-x-auto pb-2 rounded-xl border border-border/60 shadow-sm">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Type</TableHead>
-                    <TableHead>User</TableHead>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>{tTable('type')}</TableHead>
+                    <TableHead>{tTable('user')}</TableHead>
+                    <TableHead>{tTable('title')}</TableHead>
+                    <TableHead>{tTable('status')}</TableHead>
                     <TableHead className="text-right">Time</TableHead>
                   </TableRow>
                 </TableHeader>

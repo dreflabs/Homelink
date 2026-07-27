@@ -58,6 +58,9 @@ Rute publik sesuai `18_SCREEN_INVENTORY.md` SCR-103: `/dashboard/saved`.
 | `Loader2` (animate-spin) | Loading grid saat fetch berikutnya (infinite scroll) | 20px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, grid kartu dengan gap lega untuk ruang bernapas.

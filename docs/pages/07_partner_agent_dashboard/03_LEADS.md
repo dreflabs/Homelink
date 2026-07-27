@@ -1,12 +1,64 @@
-# LEADS PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Leads\n**Module:** 07 PARTNER AGENT DASHBOARD\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Leads.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/07_partner_agent_dashboard/leads/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# LEADS PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Leads (Pipeline)
+**Module:** 07 PARTNER AGENT DASHBOARD
+**Role:** Partner Agent
+**Purpose:** Mengelola alur calon pembeli/penyewa (leads) yang masuk ke Partner Agent, dikelompokkan per tahap (baru → dihubungi → negosiasi → closing), agar agent tahu persis lead mana yang butuh tindak lanjut. Ini adalah halaman inti workspace penjualan Partner Agent per `27_DASHBOARD_DESIGN_GUIDELINES.md` §8.4.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/partner-agent/leads/page.tsx
+```
+Sidebar label: "Leads".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Action Card` (`17_COMPONENT_LIBRARY.md` §8.4) — satu kartu per lead, dikelompokkan dalam 4 kolom tahap (Baru/Dihubungi/Negosiasi/Closing), bukan tabel — sesuai `27` §8.4 ("pipeline-as-cards, bukan spreadsheet-as-default").
+- `Badge` — warna tahap (Info→Warning→Success, `27` §8.4 Color Application).
+- `DropdownMenu` — aksi cepat per kartu (Tandai Dihubungi, Jadwalkan Follow-up, Tandai Closing).
+- `EmptyState` — per kolom, jika tahap tersebut kosong.
+- `Skeleton` — loading independen per kolom (`27` §8.4 Loading State).
+
+## 4. Data & State Management
+- **Gap skema (fondasional, memblokir seluruh halaman ini):** Tidak ada entity `Lead` di `40_ERD.md`/`42_TABLE_SPECIFICATION.md`. Diusulkan skema minimal:
+  ```
+  Lead {
+    id            String   @id @default(uuid())
+    agentId       String   // FK -> USER (role PARTNER_AGENT)
+    propertyId    String?  // FK -> PROPERTY, opsional
+    contactName   String
+    contactPhone  String
+    stage         LeadStage // NEW | CONTACTED | NEGOTIATING | CLOSED_WON | CLOSED_LOST
+    lastContactedAt DateTime?
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+  }
+  ```
+- **Server State (setelah skema tersedia):** `GET /api/v1/agents/me/leads`, difilter server-side `agentId = session.userId` (pola BOLA sama seperti `06_owner_dashboard`).
+- **Local State:** kolom aktif (mobile, tab per tahap) disimpan di URL search params.
+- Sampai skema tersedia, halaman merender 4 kolom `EmptyState` dengan pesan "Fitur Leads akan aktif setelah backend Lead Management tersedia (Fase 2)" — bukan data dummy.
+
+## 5. API Endpoints Referenced
+- Belum ada di `52_ENDPOINT_CATALOGUE.md`. Diusulkan: `GET /api/v1/agents/me/leads`, `PATCH /api/v1/agents/me/leads/:id/stage` — menunggu skema §4, dicatat sebagai gap bukan diasumsikan tersedia.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Setiap kartu lead menampilkan tepat satu Badge tahap, tidak ada tahap ganda.
+- [ ] Perpindahan kartu antar kolom (update `stage`) memakai Standard Spring, bukan Bouncy Spring — Bouncy Spring khusus transisi ke `CLOSED_WON` (`27` §8.4 Motion Behaviour).
+- [ ] Selama backend belum ada, halaman tidak error 500 — merender `EmptyState` bertahap per kolom dengan pesan yang jelas.
+- [ ] BOLA test wajib lolos begitu endpoint tersedia — agent hanya melihat leads miliknya sendiri.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `UserPlus` | Kolom "Baru" | 20px |
+| `PhoneCall` | Kolom "Dihubungi" | 20px |
+| `Handshake` | Kolom "Negosiasi" | 20px |
+| `CheckCircle2` | Kolom "Closing" (menang) | 20px |
+| `Clock` | Indikator lama menunggu tindak lanjut pada kartu | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.4 Partner Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

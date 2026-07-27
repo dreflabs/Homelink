@@ -28,7 +28,7 @@ export function SettingsClient({ profile }: { profile: any }) {
   return (
     <div className="space-y-6">
       {message && (
-        <div className="p-3 text-sm bg-blue-50 text-blue-700 border border-blue-200 rounded-md">
+        <div className="p-3 text-sm bg-slate-50 text-primary border border-slate-200 rounded-md">
           {message}
         </div>
       )}

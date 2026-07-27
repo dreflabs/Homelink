@@ -42,7 +42,7 @@ export async function updateProfile(formData: FormData) {
     return { success: true };
   } catch (error: any) {
     console.error("Update profile error:", error);
-    return { success: false, error: error.message || "Gagal memperbarui profil" };
+    return { success: false, error: "Gagal memperbarui profil. Silakan coba lagi." };
   }
 }
 
@@ -62,13 +62,18 @@ export async function uploadProfileImage(formData: FormData) {
       throw new Error("Ukuran file maksimal 2MB");
     }
     
-    const validTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!validTypes.includes(file.type)) {
+    const MIME_TO_EXT: Record<string, string> = {
+      "image/jpeg": ".jpg",
+      "image/png": ".png",
+      "image/webp": ".webp",
+    };
+
+    if (!MIME_TO_EXT[file.type]) {
       throw new Error("Hanya file JPG, PNG, dan WEBP yang didukung");
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const ext = path.extname(file.name) || ".jpg";
+    const ext = MIME_TO_EXT[file.type];
     const filename = `${session.user.id}-${Date.now()}${ext}`;
     const uploadDir = path.join(process.cwd(), "public", "uploads", "avatars");
     
@@ -92,6 +97,6 @@ export async function uploadProfileImage(formData: FormData) {
     return { success: true, url: imageUrl };
   } catch (error: any) {
     console.error("Upload avatar error:", error);
-    return { success: false, error: error.message || "Gagal mengunggah foto" };
+    return { success: false, error: "Gagal mengunggah foto. Silakan coba lagi." };
   }
 }

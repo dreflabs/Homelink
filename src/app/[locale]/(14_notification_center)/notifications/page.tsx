@@ -11,8 +11,8 @@ const NOTIFICATIONS = [
     date: "10 mins ago",
     unread: true,
     icon: Mail,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100",
+    color: "text-primary",
+    bgColor: "bg-slate-100",
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Inbox</h2>
-        <button className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+        <button className="text-sm font-medium text-primary hover:text-primary transition-colors">
           Mark all as read
         </button>
       </div>
@@ -67,7 +67,7 @@ export default function NotificationsPage() {
               "group relative flex cursor-pointer items-start gap-4 p-4 transition-all duration-300",
               "hover:shadow-md hover:-translate-y-0.5 rounded-2xl md:rounded-3xl",
               notif.unread 
-                ? "bg-white border-blue-100 shadow-sm" 
+                ? "bg-white border-slate-200 shadow-sm" 
                 : "bg-slate-50/50 border-slate-100 shadow-none hover:bg-white"
             )}
           >
@@ -88,7 +88,7 @@ export default function NotificationsPage() {
             </div>
 
             {notif.unread && (
-              <div className="absolute top-1/2 right-6 -translate-y-1/2 h-2.5 w-2.5 shrink-0 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+              <div className="absolute top-1/2 right-6 -translate-y-1/2 h-2.5 w-2.5 shrink-0 rounded-full bg-primary shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
             )}
           </Card>
         ))}

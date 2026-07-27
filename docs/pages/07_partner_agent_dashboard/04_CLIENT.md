@@ -1,12 +1,45 @@
-# CLIENT PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Client\n**Module:** 07 PARTNER AGENT DASHBOARD\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Client.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/07_partner_agent_dashboard/client/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# CLIENT PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Client (Klien Aktif)
+**Module:** 07 PARTNER AGENT DASHBOARD
+**Role:** Partner Agent
+**Purpose:** Daftar klien (lead yang sudah dikonfirmasi sebagai relasi aktif — bukan sekadar prospek) beserta riwayat interaksi, agar agent dapat memberikan layanan personal dan tidak kehilangan konteks percakapan lintas waktu.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/partner-agent/clients/page.tsx
+```
+Sidebar label: "Klien".
+
+## 3. Required UI Components (Shadcn/ui)
+- `Table` (`17_COMPONENT_LIBRARY.md` §8.3) — daftar klien: `Avatar`, nama, properti terkait, tanggal kontak terakhir.
+- `Timeline Card` (`17` §8.4) — riwayat interaksi per klien (dibuka dari baris tabel), menampilkan urutan kronologis kontak.
+- `EmptyState` — jika belum ada klien terkonfirmasi.
+
+## 4. Data & State Management
+- **Bergantung pada gap `Lead` di `03_LEADS.md`** — "Klien" secara konsep adalah `Lead` dengan `stage = CLOSED_WON` atau status relasi aktif berkelanjutan; tidak memerlukan entity terpisah, hanya query dengan filter berbeda atas `Lead` yang sama.
+- **Gap tambahan:** riwayat interaksi (Timeline) memerlukan entity terpisah, mis. `LeadActivity { id, leadId, note, contactedAt, channel }` — belum ada di ERD, diusulkan sebagai perluasan dari skema `Lead` di `03_LEADS.md`, bukan tabel independen.
+- Sampai kedua skema di atas tersedia, halaman merender `EmptyState` dengan pesan yang sama seperti `03_LEADS.md`.
+
+## 5. API Endpoints Referenced
+- Belum ada — bergantung penuh pada `GET /api/v1/agents/me/leads?stage=CLOSED_WON` dan proposal `GET /api/v1/agents/me/leads/:id/activities`, keduanya menunggu skema di `03_LEADS.md`.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Halaman tidak mengimplementasikan logika/skema terpisah dari `Lead` — murni filter berbeda, mencegah duplikasi konsep "Lead" dan "Client" sebagai dua entity berbeda.
+- [ ] Timeline riwayat interaksi terurut kronologis, terbaru di atas.
+- [ ] Merender `EmptyState`, bukan error, selama backend belum tersedia.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `Users` | Header halaman/daftar klien | 20px |
+| `MessageSquare` | Item Timeline — interaksi via chat/WA | 16px |
+| `Phone` | Item Timeline — interaksi via telepon | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.4 Partner Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

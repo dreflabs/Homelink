@@ -44,7 +44,10 @@ Catatan: Rute dasar modul ini adalah `/surveyor/*` sesuai `31_MODULE_BREAKDOWN.m
 - **`CheckCircle2`** — mewakili stat "Selesai Bulan Ini", warna `text-emerald-600`.
 - **`ArrowRight`** — pada `QuickActionButton` dan tautan "Lihat Semua", `aria-hidden="true"` karena teks label sudah menjelaskan aksi.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.6 Surveyor Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti pedoman visual standar "Apple × Airbnb × Stripe × Zillow": background dominan putih, aksen `blue-700`, teks `slate-900`, card `rounded-2xl`/`rounded-3xl` dengan diffused soft shadow.
 
 Pertimbangan khusus lapangan (field-use): karena ini modul mobile-first yang paling sering diakses di luar ruangan, stat card dan tombol aksi utama harus menggunakan kontras tinggi (bukan hanya `slate-50` pastel) agar tetap terbaca di bawah silau matahari langsung. Touch target `QuickActionButton` minimal 44x44px (Apple HIG) dan diposisikan di zona ibu jari (thumb zone) bawah layar mengingat Surveyor sering memegang perangkat dengan satu tangan sambil membawa alat ukur.

@@ -52,6 +52,7 @@ Jika terjadi kegagalan sistem, langkah pemulihan (Restore) adalah:
 ## 10. Acceptance Criteria
 - [x] RTO and RPO metrics are defined.
 - [x] Exact command-line tools (`pg_dump`, `pg_restore`) are specified.
+- [ ] Automated CRON script `backup_db.sh` & R2 sync (Status: PLANNED / Belum diimplementasikan di VPS).
 
 ## 11. Future Improvements
 - Implement Point-In-Time-Recovery (PITR) via WAL (Write-Ahead Log) archiving for an RPO of 5 minutes in Phase 4.
@@ -63,3 +64,4 @@ Jika terjadi kegagalan sistem, langkah pemulihan (Restore) adalah:
 | Version | Date       | Author               | Status   | Notes                 |
 | :---    | :---       | :---                 | :---     | :---                  |
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
+| 1.0.1   | 2026-07-26 | Antigravity AI       | PLANNED  | Diperbarui: Skrip cron backup_db.sh otomatis & R2 sync diklarifikasi berstatus PLANNED. |

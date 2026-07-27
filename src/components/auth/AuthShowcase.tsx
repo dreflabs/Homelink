@@ -17,13 +17,13 @@ const STATS = [
 const TRUST_BADGES = [
   { icon: ShieldCheck, label: "100% Terverifikasi", color: "text-emerald-400" },
   { icon: TrendingUp, label: "Harga Terbaik", color: "text-blue-400" },
-  { icon: Star, label: "Top Rated", color: "text-amber-400" },
+  { icon: Star, label: "Pilihan Utama", color: "text-amber-400" },
 ];
 
 export function AuthShowcase({
   quote = "Menemukan rumah impian adalah sebuah seni. Di HomeLink, kami membuatnya tanpa cela.",
   author = "Sophia Chen",
-  role = "Verified Client",
+  role = "Klien Terverifikasi",
   imageSrc = "/auth-showcase.jpg",
 }: AuthShowcaseProps) {
   return (
@@ -31,7 +31,7 @@ export function AuthShowcase({
       {/* AI-Generated Property Image */}
       <Image
         src={imageSrc}
-        alt="Luxury Property by HomeLink"
+        alt="Properti Mewah Terverifikasi HomeLink"
         fill
         className="object-cover"
         priority
@@ -47,7 +47,7 @@ export function AuthShowcase({
       <div className="absolute top-8 right-8 z-20">
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-sm font-medium">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          Over 10,000 Verified Properties
+          Lebih dari 10.000 Properti Terverifikasi
         </div>
       </div>
 

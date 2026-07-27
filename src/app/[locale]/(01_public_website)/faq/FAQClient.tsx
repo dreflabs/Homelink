@@ -26,15 +26,15 @@ export default function FAQClient({ faqs }: { faqs: FAQ[] }) {
       {faqs.map((faq, idx) => (
         <div 
           key={faq.id} 
-          className="border border-slate-200 rounded-xl overflow-hidden transition-all duration-200"
+          className="border border-slate-200 rounded-xl overflow-hidden transition-all duration-200 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
         >
           <button
             onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-            className="w-full flex items-center justify-between p-6 bg-slate-50 hover:bg-slate-100 transition-colors text-left"
+            className="w-full flex items-center justify-between p-6 bg-white hover:bg-slate-50 transition-colors text-left"
           >
             <span className="font-semibold text-slate-900">{faq.question}</span>
             <ChevronDown 
-              className={`w-5 h-5 text-slate-500 transition-transform duration-200 ${openIdx === idx ? 'rotate-180' : ''}`} 
+              className={`w-5 h-5 text-slate-500 transition-transform duration-200 ${openIdx === idx ? 'rotate-180' : ''}`} strokeWidth={1.5} 
             />
           </button>
           <div 

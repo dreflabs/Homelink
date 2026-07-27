@@ -113,7 +113,7 @@ export function ChatInterface({ initialMessages, currentUserId }: { initialMessa
                 <div 
                   key={contact.id}
                   onClick={() => setActiveContactId(contact.id)}
-                  className={`p-4 border-b border-gray-100 bg-white cursor-pointer hover:bg-gray-50 transition-colors ${activeContactId === contact.id ? 'border-l-4 border-l-blue-600 bg-blue-50/50 hover:bg-blue-50/50' : 'border-l-4 border-l-transparent'}`}
+                  className={`p-4 border-b border-gray-100 bg-white cursor-pointer hover:bg-gray-50 transition-colors ${activeContactId === contact.id ? 'border-l-4 border-l-blue-600 bg-slate-50/50 hover:bg-slate-50/50' : 'border-l-4 border-l-transparent'}`}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <h4 className="font-semibold text-gray-900 truncate pr-2">{contact.name}</h4>
@@ -148,9 +148,9 @@ export function ChatInterface({ initialMessages, currentUserId }: { initialMessa
                 const isMe = msg.senderId === currentUserId;
                 return (
                   <div key={msg.id || i} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`rounded-2xl px-4 py-2 max-w-[80%] ${isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-gray-100 text-gray-900 rounded-tl-sm'}`}>
+                    <div className={`rounded-2xl px-4 py-2 max-w-[80%] ${isMe ? 'bg-primary text-white rounded-tr-sm' : 'bg-gray-100 text-gray-900 rounded-tl-sm'}`}>
                       <p>{msg.content}</p>
-                      <span className={`text-[10px] mt-1 block ${isMe ? 'text-blue-100 text-right' : 'text-gray-500'}`}>
+                      <span className={`text-[10px] mt-1 block ${isMe ? 'text-slate-100 text-right' : 'text-gray-500'}`}>
                         {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                       </span>
                     </div>

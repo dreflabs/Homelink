@@ -55,6 +55,9 @@ app/(dashboard)/owner/properties/[propertyId]/analytics/page.tsx
 - **Size:** 20px, `text-blue-700`.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Chart Colors:** Garis tren utama `blue-700`, area fill gradasi lembut `blue-50` ke transparan di bawah garis.
 - **Stat Tiles:** `rounded-2xl`, bayangan lembut, angka besar (`text-3xl font-semibold text-slate-900`) dengan label kecil `text-slate-500` di bawahnya.
 - **Background:** `White`, grid 3 kolom untuk stat tiles di desktop, stack penuh di mobile.

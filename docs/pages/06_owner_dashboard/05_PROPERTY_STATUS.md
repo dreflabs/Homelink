@@ -56,6 +56,9 @@ app/(dashboard)/owner/properties/[propertyId]/status/page.tsx
 - **Size:** 24px, `text-green-600`.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Timeline:** Garis vertikal tipis `slate-200` menghubungkan titik-titik status, masing-masing titik berupa lingkaran berisi ikon dengan warna sesuai jenis aksi.
 - **Card Ringkasan Properti:** `rounded-2xl`, di-*pin* (sticky) di bagian atas pada desktop saat timeline panjang di-scroll.
 - **Banner Penolakan:** Background `red-50`, border `red-200`, teks `slate-900`, ikon `XCircle` merah di kiri.

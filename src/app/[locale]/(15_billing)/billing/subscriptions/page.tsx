@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -5,8 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSubscriptions } from "@/actions/billing";
 import { Check } from "lucide-react";
+import { TableEmptyState } from "@/components/shared/TableEmptyState";
 
 export default async function SubscriptionsPage() {
+  const tTable = await getTranslations('Common.table');
+
   const subscriptions = await getSubscriptions();
 
   const packages = [
@@ -85,17 +89,15 @@ export default async function SubscriptionsPage() {
           </CardHeader>
           <CardContent>
             {subscriptions.length === 0 ? (
-              <div className="text-center py-10 text-muted-foreground">
-                No active subscriptions found.
-              </div>
+              <TableEmptyState title="Daftar Langganan Kosong" description="Belum ada riwayat langganan yang terekam di sistem." />
             ) : (
-              <div className="rounded-md border">
+              <div className="w-full overflow-x-auto pb-2 rounded-xl border border-border/60 shadow-sm bg-card">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>User</TableHead>
+                      <TableHead>{tTable('user')}</TableHead>
                       <TableHead>Plan</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>{tTable('status')}</TableHead>
                       <TableHead>Start Date</TableHead>
                       <TableHead>End Date</TableHead>
                     </TableRow>

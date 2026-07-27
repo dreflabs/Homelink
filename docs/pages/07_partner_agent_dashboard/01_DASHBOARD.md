@@ -1,12 +1,53 @@
-# DASHBOARD PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** Dashboard\n**Module:** 07 PARTNER AGENT DASHBOARD\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman Dashboard.\n\n## 2. Next.js Routing Path\n```text\napp/(dashboard)/07_partner_agent_dashboard/dashboard/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
+# DASHBOARD PAGE SPECIFICATION
+**HomeLink 2.0 Enterprise Documentation**
+
+## 1. Title & Purpose
+**Page Name:** Dashboard (Ringkasan)
+**Module:** 07 PARTNER AGENT DASHBOARD
+**Role:** Partner Agent (B2B — Tier 3 SaaS, `13_PRODUCT_ROADMAP.md` §8.3 Fase 2)
+**Purpose:** Landing page bagi Partner Agent setelah login — menjawab satu pertanyaan utama: "lead mana yang butuh tindak lanjut saya sekarang?" Menyajikan Hero dinamis berisi lead paling mendesak (menunggu &gt;24 jam), pratinjau pipeline leads, ringkasan komisi bulan berjalan, dan agenda hari ini — sesuai keputusan Layout Blueprint di `27_DASHBOARD_DESIGN_GUIDELINES.md` §8.4.
+
+## 2. Next.js Routing Path
+```text
+app/(dashboard)/partner-agent/page.tsx
+```
+Sidebar label: "Ringkasan". Mengikuti konvensi slug peran (`partner-agent`), bukan prefix nomor modul — selaras dengan `06_owner_dashboard`/`09_surveyor`.
+
+## 3. Required UI Components (Shadcn/ui)
+- `Insight Card` (`17_COMPONENT_LIBRARY.md` §8.4) — Hero: "3 leads menunggu tindak lanjut &gt;24 jam" dengan CTA "Lihat Pipeline".
+- `Action Card` ×3 — pratinjau 3 lead teratas dari pipeline (nama, properti diminati, lama menunggu, Badge tahap).
+- `Metric Card` — total komisi bulan berjalan (estimasi, lihat gap §4).
+- Timeline Card ringkas — 2 agenda terdekat (survei/meeting).
+- `Skeleton` — loading state Hero dan Action Card.
+- `EmptyState` — jika belum ada lead sama sekali (agent baru).
+
+## 4. Data & State Management
+- **Hero (prioritas resolusi, tanpa entity baru):** lead dengan `lastContactedAt` &gt;24 jam yang lalu dan status belum `CLOSED` — **Gap skema:** tidak ada entity `Lead` di `40_ERD.md`. Halaman ini memerlukan `Lead` (fields: `id, agentId, propertyId?, buyerName, buyerContact, stage, lastContactedAt, createdAt`) sebelum dapat diimplementasikan — lihat proposal skema lengkap di `03_LEADS.md`.
+- **Agenda terdekat:** dapat memakai `BOOKING` (yang sudah ada di ERD) untuk jadwal survei terkait properti yang dikelola agent, tapi meeting non-survei (mis. bertemu klien) tidak punya entity — lihat gap di `06_CALENDAR.md`.
+- **Komisi bulan berjalan:** **Gap skema** — tidak ada entity `Commission` di ERD (sengaja ditunda per roadmap Fase 2, terikat monetisasi Tier-3 SaaS). Lihat proposal di `05_COMMISSION.md`.
+- Sampai entity di atas tersedia, seluruh Hero/Action Card/Metric Card di halaman ini dirender dalam `EmptyState`/nilai `0`, bukan data statis palsu.
+
+## 5. API Endpoints Referenced
+- `GET /api/v1/bookings` — sudah ada, dipakai untuk agenda survei terkait properti yang dikelola agent (setelah relasi Agent↔Property tersedia, lihat `02_PROPERTY_MANAGEMENT.md`).
+- Belum ada endpoint untuk Lead/Commission — diusulkan (`GET /api/v1/agents/me/leads?limit=3`, `GET /api/v1/agents/me/commission/summary`) menunggu skema di atas, dicatat sebagai gap, bukan diasumsikan ada.
+
+## 6. Acceptance Criteria (DoD)
+- [ ] Hero menampilkan tepat satu lead paling mendesak (aturan §4), atau `EmptyState` jika tidak ada lead sama sekali.
+- [ ] Seluruh kartu yang bergantung pada `Lead`/`Commission` merender `EmptyState`/`0`, tidak error 500, sampai backend tersedia.
+- [ ] Tidak ada data lead/komisi statis/dummy yang di-hardcode di komponen.
+- [ ] Lolos audit Lighthouse Accessibility &gt; 90.
+
+## 7. Iconography Specification
+**Library:** Lucide React, `strokeWidth={1.5}`.
+
+| Icon | Penggunaan | Size |
+| :--- | :--- | :--- |
+| `Flame` | Hero — menandakan lead mendesak/prioritas tinggi | 20px |
+| `Users` | Pratinjau pipeline leads | 20px |
+| `Wallet` | Metric Card komisi bulan berjalan | 20px |
+| `CalendarClock` | Timeline agenda terdekat | 20px |
+| `ChevronRight` | Tautan "Lihat Pipeline"/"Lihat Semua" | 16px |
+
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
-
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.4 Partner Agent Dashboard for full workspace design rules (tokens, layout blueprint, card hierarchy, motion, and Do/Don't) — this page inherits that specification in full; no page-specific deltas beyond it are required.

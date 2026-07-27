@@ -26,7 +26,7 @@ export default function BuyerDashboardError({
         Terjadi kendala saat mengambil data Anda. Mohon coba beberapa saat lagi.
       </p>
       <div className="flex justify-center gap-3">
-        <Button onClick={() => reset()} size="sm" className="rounded-xl bg-blue-700 hover:bg-blue-800 text-white">
+        <Button onClick={() => reset()} size="sm" className="rounded-xl bg-primary hover:bg-primary text-white">
           <RefreshCw className="w-3.5 h-3.5 mr-2" />
           Muat Ulang
         </Button>

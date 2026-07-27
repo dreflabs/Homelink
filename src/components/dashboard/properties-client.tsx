@@ -89,7 +89,7 @@ export function PropertiesClient({ initialProperties }: PropertiesClientProps) {
         <p className="text-gray-500 mb-4 text-sm max-w-sm mx-auto">
           Tidak ada listing yang sesuai dengan filter Anda, atau Anda belum menambahkan properti.
         </p>
-        <Button asChild className="bg-[#4169E1] hover:bg-blue-700">
+        <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <Link href="/owner/properties/new">Tambah Sekarang</Link>
         </Button>
       </div>
@@ -113,7 +113,7 @@ export function PropertiesClient({ initialProperties }: PropertiesClientProps) {
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold text-gray-900 line-clamp-1">{property.title}</h3>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-slate-100 hover:text-slate-900 -mt-2 -mr-2 h-8 w-8 text-gray-500" aria-label="Aksi lainnya">
+                  <DropdownMenuTrigger className="h-10 w-10 min-h-[44px] min-w-[44px] inline-flex items-center justify-center p-2 rounded-lg cursor-pointer text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-slate-100 hover:text-slate-900 -mt-2 -mr-2 text-gray-500" aria-label="Aksi lainnya">
                     <MoreVertical className="w-4 h-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
@@ -141,8 +141,8 @@ export function PropertiesClient({ initialProperties }: PropertiesClientProps) {
               </div>
               <p className="text-sm text-gray-500 line-clamp-1 mb-4">{property.address}</p>
               <div className="flex justify-between items-end">
-                <p className="text-[#4169E1] font-bold text-lg">{formatRupiah(property.price)}</p>
-                <Button variant="link" onClick={() => router.push(`/owner/properties/${property.id}/analytics`)} className="text-[#4169E1] p-0 h-auto font-medium">
+                <p className="text-primary font-semibold text-lg">{formatRupiah(property.price)}</p>
+                <Button variant="link" onClick={() => router.push(`/owner/properties/${property.id}/analytics`)} className="text-primary font-semibold p-0 h-auto">
                   Lihat Detail
                 </Button>
               </div>

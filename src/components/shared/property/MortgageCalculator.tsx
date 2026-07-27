@@ -8,9 +8,20 @@ import { Label } from "@/components/ui/label";
 import { ChartCandlestick, Percent, Calculator } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice?: number }) {
+export function MortgageCalculator({ 
+  defaultPrice = 1500000000, 
+  price, 
+  isOpen: controlledOpen = true, 
+  onClose 
+}: { 
+  defaultPrice?: number; 
+  price?: number; 
+  isOpen?: boolean; 
+  onClose?: () => void; 
+}) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(controlledOpen);
+  const activePrice = price ?? defaultPrice ?? 1500000000;
   
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
   const [tenorYears, setTenorYears] = useState(15);
@@ -27,13 +38,17 @@ export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice
   const handleClose = (open: boolean) => {
     if (!open) {
       setIsOpen(false);
-      router.back();
+      if (onClose) {
+        onClose();
+      } else {
+        router.back();
+      }
     }
   };
 
   const { monthlyInstallment, totalInterest, totalPayment, downPaymentAmount } = useMemo(() => {
-    const dpAmount = (downPaymentPercent / 100) * defaultPrice;
-    const principal = defaultPrice - dpAmount;
+    const dpAmount = (downPaymentPercent / 100) * activePrice;
+    const principal = activePrice - dpAmount;
     
     // Rumus anuitas: M = P * (r(1+r)^n) / ((1+r)^n - 1)
     const r = (interestRatePercent / 100) / 12;
@@ -55,7 +70,7 @@ export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice
       totalInterest: isNaN(totalInt) ? 0 : totalInt,
       totalPayment: isNaN(totalPay) ? 0 : totalPay
     };
-  }, [defaultPrice, downPaymentPercent, tenorYears, interestRatePercent]);
+  }, [activePrice, downPaymentPercent, tenorYears, interestRatePercent]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -63,17 +78,17 @@ export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice
         <div className="p-6 md:p-8 space-y-8">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900">
-              <Calculator className="h-6 w-6 text-blue-700" />
+              <Calculator className="h-6 w-6 text-primary" />
               Simulasi KPR
             </DialogTitle>
             <DialogDescription className="text-slate-500">
-              Estimasi cicilan bulanan berdasarkan harga properti {formatRupiah(defaultPrice)}. Ini adalah estimasi murni, bukan penawaran resmi dari bank.
+              Estimasi cicilan bulanan berdasarkan harga properti {formatRupiah(activePrice)}. Ini adalah estimasi murni, bukan penawaran resmi dari bank.
             </DialogDescription>
           </DialogHeader>
 
           {/* Result Card */}
           <div className="bg-primary rounded-2xl p-6 text-white shadow-card">
-            <div className="flex items-center gap-2 mb-2 text-blue-100">
+            <div className="flex items-center gap-2 mb-2 text-slate-100">
               <ChartCandlestick className="h-5 w-5" aria-hidden="true" />
               <span className="font-medium">Estimasi Cicilan Bulanan</span>
             </div>
@@ -81,7 +96,7 @@ export function MortgageCalculator({ defaultPrice = 1500000000 }: { defaultPrice
               {formatRupiah(monthlyInstallment)}
             </div>
             
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-blue-600/50 text-sm">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary/50 text-sm">
               <div>
                 <div className="text-blue-200 mb-1">Total Pembayaran</div>
                 <div className="font-semibold">{formatRupiah(totalPayment)}</div>

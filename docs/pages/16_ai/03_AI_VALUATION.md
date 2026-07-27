@@ -1,12 +1,23 @@
-# AI VALUATION PAGE SPECIFICATION\n**HomeLink 2.0 Enterprise Documentation**\n\n## 1. Title & Purpose\n**Page Name:** AI Valuation\n**Module:** 16 AI\n**Purpose:** Mengatur tampilan, logika, dan interaksi data spesifik untuk halaman AI Valuation.\n\n## 2. Next.js Routing Path\n```text\napp/(16_ai)/ai-valuation/page.tsx\n```\n\n## 3. Required UI Components (Shadcn/ui)\n- Card\n- Button\n- Input (Form)\n- Skeleton (Loading State)\n\n## 4. Data & State Management\n- **Local State:** Mengelola state UI sementara (seperti tab aktif atau form *input*).\n- **Server State:** Menggunakan React Server Components (RSC) untuk mengambil (*fetch*) data utama langsung di server sebelum dirender.\n- **Form Handling:** Menggunakan `react-hook-form` dan divalidasi ketat oleh Zod (`zodResolver`).\n\n## 5. API Endpoints Referenced\n- (Diperlukan integrasi dengan Service Layer untuk operasi CRUD spesifik pada halaman ini).\n\n## 6. Acceptance Criteria (DoD)\n- [ ] Halaman dirender tanpa *hydration error*.\n- [ ] Data ditangkap dengan aman (terdapat *Error Boundary* dan *Loading Suspense*).\n- [ ] Kontras warna dan tata letak lolos audit Lighthouse Aksesibilitas > 90.\n\n## 7. Iconography Specification\n\nThis chapter dictates the exact icon usage for this module to ensure a minimal, clean, Apple-inspired aesthetic. \n**Library:** Lucide React ONLY. No mixed libraries.\n\n### General Icon Design Principles\n- **Style:** Thin stroke (`strokeWidth={1.5}`), consistent visual weight.\n- **Role:** Icons support content and must not dominate the interface. Always accompany labels unless universally understood.\n- **Accessibility:** Ensure `aria-hidden="true"` is applied unless the icon itself acts as a standalone interactive button.\n\n### Icon Usage Rules\n\n#### Icon: `ChevronRight` (Example)\n- **Purpose & Business Meaning:** Menandakan navigasi ke detail lebih lanjut.\n- **Lucide React Name:** `ChevronRight`\n- **Recommended Size:** `20px` (Desktop), `24px` (Mobile).\n- **Stroke Width:** `1.5` (Strict Apple-inspired thinness).\n- **Color Rules:** `text-muted-foreground` by default.\n- **Hover State:** Translate-x 2px.\n- **Accessibility Notes:** `aria-hidden="true"` jika bersifat dekoratif.\n\n
-## 8. UI/UX Aesthetic Rules (Mockup Reference)
+# AI VALUATION PAGE — DEFERRED (FASE 4)
+**HomeLink 2.0 Enterprise Documentation**
 
-Halaman ini **DIWAJIBKAN** untuk dibangun dengan mematuhi pedoman visual dari `Mockup.png` guna mencapai standar desain "Apple × Airbnb × Stripe × Zillow":
+## Status: Fase 4 (Belum Aktif)
 
-- **Background Utama:** Dominan `White` (Putih Bersih) untuk memberi ruang bernapas (*Whitespace*).
-- **Warna Aksi Utama:** `Royal Blue` (Ekivalen Tailwind `blue-700`) untuk tombol dan tautan aktif.
-- **Teks Utama & Heading:** `Dark Navy` (`slate-900`). Dilarang keras menggunakan hitam pekat `#000000`.
-- **Warna Sekunder/Surface:** `Light Gray` (`slate-50`) untuk pembatas seksi atau *background card* sekunder.
-- **Card & Elevation:** *Card* putih harus menggunakan efek bayangan ultra-lembut (*Diffused Soft Shadow*).
-- **Bentuk (Shape):** Sudut elemen besar (Card, Modal, Gambar) wajib menggunakan *Border Radius* besar `16-24px` (Ekivalen Tailwind `rounded-2xl` atau `rounded-3xl`).
-- **Fotografi:** Hero image dan foto properti harus besar, jelas, dan memiliki *Warm Lighting* (Pencahayaan Hangat).
+Halaman ini terkait dengan estimasi harga properti berbasis AI (fitur yang diminta stakeholder di `06_STAKEHOLDER_REQUIREMENT_SPECIFICATION.md` sebagai kebutuhan Agen Properti B2B), yang menurut `13_PRODUCT_ROADMAP.md` §8.3 dijadwalkan **Fase 4** — sama status dengan `02_AI_RECOMMENDATION.md`.
+
+Spesifikasi detail sengaja BELUM ditulis untuk mencegah spekulasi pada model valuasi dan skema data yang scope-nya bisa berubah signifikan sebelum Fase 4 dimulai.
+
+**Prasyarat sebelum halaman ini bisa dispesifikasikan:**
+- Entitas untuk menyimpan hasil estimasi (mis. `ValuationEstimate`, dengan riwayat harga pembanding) harus ditambahkan ke `docs/database_architecture/40_ERD.md`.
+- Endpoint valuasi harus ditambahkan ke `docs/api_architecture/52_ENDPOINT_CATALOGUE.md`.
+- Sumber data pembanding harga pasar (data historis transaksi, bukan hanya listing aktif) harus diputuskan — belum tercakup skema apa pun saat ini, termasuk `Market Insights` yang juga masih berupa gap di audit fitur sebelumnya.
+
+
+## 8. UI/UX Aesthetic Rules (Visual Guidelines)
+
+
+**Premium UI Refinement Standards:**
+- Semua Heading h1/h2 di UI harus tertulis di dokumen menggunakan class `tracking-tighter` dan `leading-[1.05]`.
+- Jarak antar section adalah `py-24 lg:py-32`.
+- Shadow menggunakan OKLCH Semantic Shadows (`shadow-card`, `shadow-float`, dsb).
+- Penggunaan logo dengan `<Logo />` terpusat.

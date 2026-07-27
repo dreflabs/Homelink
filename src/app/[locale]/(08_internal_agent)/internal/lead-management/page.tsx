@@ -16,7 +16,7 @@ import { UserRound, ChartCandlestick, Clock, ShieldCheck, Filter } from "lucide-
 function getStatusStyle(status: string) {
   switch (status) {
     case "CONTACTED":
-      return "bg-blue-50 text-blue-700 border-blue-200";
+      return "bg-slate-50 text-primary border-slate-200";
     case "CLOSED":
       return "bg-emerald-50 text-emerald-700 border-emerald-200";
     default:
@@ -71,9 +71,9 @@ export default async function InternalLeadManagementPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: t("total_leads"), value: total, icon: UserRound, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: t("total_leads"), value: total, icon: UserRound, color: "text-primary", bg: "bg-slate-50" },
           { label: t("menunggu"), value: pending, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-          { label: t("dihubungi"), value: contacted, icon: ChartCandlestick, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: t("dihubungi"), value: contacted, icon: ChartCandlestick, color: "text-primary", bg: "bg-slate-50" },
           { label: t("ditutup"), value: closed, icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
         ].map((stat) => (
           <Card key={stat.label} className="p-5 rounded-xl shadow-sm border-gray-200/60">

@@ -26,10 +26,10 @@ interface UserNavProps {
 export function UserNav({ user }: UserNavProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+      <DropdownMenuTrigger className="relative h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
         <Avatar className="h-10 w-10 border border-slate-200">
           <AvatarImage src={user.image || ""} alt={user.name || "User"} />
-          <AvatarFallback className="bg-blue-100 text-blue-700 font-bold">
+          <AvatarFallback className="bg-slate-100 text-primary font-bold">
             {user.name?.charAt(0) || "U"}
           </AvatarFallback>
         </Avatar>

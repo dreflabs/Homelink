@@ -1,9 +1,12 @@
+import { getTranslations } from 'next-intl/server';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function SurveyorReportsPage() {
+export default async function SurveyorReportsPage() {
+  const tSearch = await getTranslations('Common.search');
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Survey Reports</h1>
@@ -14,7 +17,7 @@ export default function SurveyorReportsPage() {
         </CardHeader>
         <CardContent>
           <div className="mb-4">
-            <Input placeholder="Search reports by property ID..." className="max-w-md" />
+            <Input placeholder={tSearch("reports")} className="max-w-md" />
           </div>
           <div className="border rounded-md overflow-x-auto">
             <table className="w-full text-sm text-left">

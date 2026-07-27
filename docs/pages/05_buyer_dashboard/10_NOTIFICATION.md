@@ -61,6 +61,9 @@ Rute publik: `/dashboard/notifications`. Tidak ada Screen ID di `18_SCREEN_INVEN
 | `BellOff` | Empty state ilustratif (48px, Light Gray) — "Tidak ada notifikasi" | 48px |
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.2 Buyer Dashboard for the full workspace design system. Page-specific deltas below:
+
 Halaman ini **DIWAJIBKAN** mematuhi pedoman visual `Mockup.png` — standar "Apple × Airbnb × Stripe × Zillow":
 
 - **Background Utama:** `White`, item belum dibaca dengan latar `blue-50` sangat lembut untuk membedakan dari item sudah dibaca (`White` polos).

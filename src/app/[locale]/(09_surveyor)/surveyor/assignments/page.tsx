@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import {
   Table,
   TableBody,
@@ -11,6 +12,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin, Calendar, Upload, Clock, ShieldCheck, ShieldAlert } from "lucide-react"
 import { getSurveyTasks } from "@/actions/surveyor"
+import Link from "next/link"
+import { TableEmptyState } from "@/components/shared/TableEmptyState"
 
 export const metadata = {
   title: "Daftar Penugasan Surveyor | HomeLink 2.0",
@@ -27,7 +30,7 @@ const getStatusBadge = (status: string) => {
       )
     case "IN_PROGRESS":
       return (
-        <Badge variant="default" className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 w-fit">
+        <Badge variant="default" className="bg-primary hover:bg-primary flex items-center gap-1 w-fit">
           <Clock className="w-3 h-3" /> In Progress
         </Badge>
       )
@@ -49,6 +52,8 @@ const getStatusBadge = (status: string) => {
 }
 
 export default async function SurveyorAssignmentsPage() {
+  const tTable = await getTranslations('Common.table');
+
   const assignments = await getSurveyTasks();
   
   return (
@@ -68,15 +73,15 @@ export default async function SurveyorAssignmentsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          <div className="w-full overflow-x-auto pb-2">
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-900">
                   <TableHead className="w-[120px]">ID Tugas</TableHead>
                   <TableHead className="min-w-[300px]">Detail Properti & Alamat</TableHead>
                   <TableHead>Tenggat Waktu</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
+                  <TableHead>{tTable('status')}</TableHead>
+                  <TableHead className="text-right">{tTable('actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -108,22 +113,34 @@ export default async function SurveyorAssignmentsPage() {
                       {getStatusBadge(assignment.status)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        asChild={assignment.status !== "COMPLETED"}
                         variant={assignment.status === "COMPLETED" ? "secondary" : "default"}
-                        className={`shadow-sm transition-all ${assignment.status !== 'COMPLETED' ? 'hover:scale-105 active:scale-95' : ''}`}
+                        className={`min-h-[44px] min-w-[140px] px-4 font-medium shadow-sm transition-all ${assignment.status !== 'COMPLETED' ? 'hover:scale-105 active:scale-95' : ''}`}
                         disabled={assignment.status === "COMPLETED"}
                       >
-                        <Upload className="w-4 h-4 mr-2" />
-                        {assignment.status === "COMPLETED" ? "Laporan Terkirim" : "Upload Laporan"}
+                        {assignment.status === "COMPLETED" ? (
+                          <>
+                            <Upload className="w-4 h-4 mr-2" />
+                            Laporan Terkirim
+                          </>
+                        ) : (
+                          <Link href={`/surveyor/tasks/${assignment.id}/form`} className="flex items-center justify-center">
+                            <Upload className="w-4 h-4 mr-2" />
+                            Upload Laporan
+                          </Link>
+                        )}
                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
                 {assignments.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                      Tidak ada penugasan aktif saat ini.
+                    <TableCell colSpan={5} className="p-0 border-0">
+                      <TableEmptyState
+                        title="Belum Ada Penugasan Survey"
+                        description="Mantap! Semua jadwal pemeriksaan fisik dan verifikasi lapangan telah tuntas dicover, atau belum ada jadwal survey baru hari ini. Siapkan selalu kondisi fisik dan peralatan Anda!"
+                      />
                     </TableCell>
                   </TableRow>
                 )}

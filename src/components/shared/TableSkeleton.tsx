@@ -1,31 +1,58 @@
+import * as React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 interface TableSkeletonProps {
-  rows?: number;
+  columnCount?: number;
   columns?: number;
+  rowCount?: number;
+  rows?: number;
+  className?: string;
 }
 
-export function TableSkeleton({ rows = 5, columns = 4 }: TableSkeletonProps) {
+export function TableSkeleton({
+  columnCount,
+  columns = 5,
+  rowCount,
+  rows = 5,
+  className,
+}: TableSkeletonProps) {
+  const actualCols = columnCount ?? columns;
+  const actualRows = rowCount ?? rows;
+  const colArray = Array.from({ length: actualCols });
+  const rowArray = Array.from({ length: actualRows });
+
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center gap-4 border-b border-gray-100 bg-gray-50/50 p-4">
-        {Array.from({ length: columns }).map((_, i) => (
-          <Skeleton key={`header-${i}`} className="h-5 w-full max-w-[120px] rounded-md" />
-        ))}
-      </div>
-      <div className="divide-y divide-gray-100">
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={`row-${rowIndex}`} className="flex items-center gap-4 p-4">
-            {Array.from({ length: columns }).map((_, colIndex) => (
-              <Skeleton 
-                key={`cell-${rowIndex}-${colIndex}`} 
-                className={`h-4 w-full rounded-md ${colIndex === 0 ? 'max-w-[200px]' : 'max-w-[100px]'}`} 
-              />
+    <div className={`w-full overflow-x-auto rounded-xl border border-border/60 ${className || ""}`}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {colArray.map((_, colIndex) => (
+              <TableHead key={colIndex}>
+                <Skeleton className="h-4 w-24 rounded" />
+              </TableHead>
             ))}
-          </div>
-        ))}
-      </div>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rowArray.map((_, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {colArray.map((_, colIndex) => (
+                <TableCell key={colIndex}>
+                  <Skeleton className="h-6 w-full rounded" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

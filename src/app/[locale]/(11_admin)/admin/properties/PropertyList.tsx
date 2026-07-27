@@ -1,10 +1,13 @@
 "use client";
 
+
+import { useTranslations } from 'next-intl';
 import React, { useState } from "react";
 import { Building, Search, MapPin, SlidersHorizontal, MoreVertical, Eye, Ban } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { 
   Table, 
   TableBody, 
@@ -25,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TableEmptyState } from "@/components/shared/TableEmptyState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const getStatusColor = (status: string) => {
@@ -38,6 +42,8 @@ const getStatusColor = (status: string) => {
 };
 
 export default function PropertyList({ initialProperties }: { initialProperties: any[] }) {
+  const tTable = useTranslations('Common.table');
+  const tSearch = useTranslations('Common.search');
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [selectedProp, setSelectedProp] = useState<any>(null);
@@ -53,7 +59,7 @@ export default function PropertyList({ initialProperties }: { initialProperties:
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-blue-50 rounded-xl">
+          <div className="p-3 bg-slate-50 rounded-xl">
             <Building className="w-6 h-6 "  />
           </div>
           <div>
@@ -67,8 +73,8 @@ export default function PropertyList({ initialProperties }: { initialProperties:
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 " />
           <Input 
-            placeholder="Search by title, address, or owner..." 
-            className="pl-9 bg-slate-50 border-transparent focus-visible:ring-blue-500"
+            placeholder={tSearch("byTitle")} 
+            className="pl-9 bg-slate-50 border-transparent focus-visible:ring-primary"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -91,16 +97,16 @@ export default function PropertyList({ initialProperties }: { initialProperties:
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="w-full overflow-x-auto pb-3 rounded-xl border border-border/70 shadow-sm bg-white">
         <Table>
           <TableHeader className="bg-slate-50/50">
             <TableRow>
               <TableHead className="font-medium text-slate-500">Property Title</TableHead>
               <TableHead className="font-medium text-slate-500">Owner</TableHead>
-              <TableHead className="font-medium text-slate-500">Type</TableHead>
+              <TableHead className="font-medium text-slate-500">{tTable('type')}</TableHead>
               <TableHead className="font-medium text-slate-500">Price</TableHead>
-              <TableHead className="font-medium text-slate-500">Status</TableHead>
-              <TableHead className="font-medium text-slate-500">Date</TableHead>
+              <TableHead className="font-medium text-slate-500">{tTable('status')}</TableHead>
+              <TableHead className="font-medium text-slate-500">{tTable('date')}</TableHead>
               <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -127,7 +133,7 @@ export default function PropertyList({ initialProperties }: { initialProperties:
                         <Eye className="w-5 h-5 " /> View Details
                       </DropdownMenuItem>
                       {prop.status === "PUBLISHED" && (
-                        <DropdownMenuItem className="gap-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 p-2 rounded-lg m-1">
+                        <DropdownMenuItem onClick={() => toast.success("Listing properti berhasil ditangguhkan sementara sesuai regulasi dan pengawasan platform.")} className="gap-2 cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 p-2 rounded-lg m-1">
                           <Ban className="w-4 h-4" /> Suspend Listing
                         </DropdownMenuItem>
                       )}
@@ -138,8 +144,11 @@ export default function PropertyList({ initialProperties }: { initialProperties:
             ))}
             {filteredData.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-slate-500">
-                  No properties found matching your criteria.
+                <TableCell colSpan={7} className="p-0 border-0">
+                  <TableEmptyState
+                    title="Tidak Ada Properti"
+                    description="Belum ada listing properti yang sesuai dengan filter Anda."
+                  />
                 </TableCell>
               </TableRow>
             )}

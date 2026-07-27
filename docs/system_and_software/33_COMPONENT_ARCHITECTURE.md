@@ -14,7 +14,8 @@ Covers React 19 Client vs Server Components, Prop typing, and State Management a
 - **Frontend Engineers:** As a strict coding standard for UI implementation.
 
 ## 5. Dependencies
-- Complements `34_FRONTEND_ARCHITECTURE.md` and implements elements from `17_COMPONENT_LIBRARY.md`.
+- Complements `34_FRONTEND_ARCHITECTURE.md` and implements elements from `17_COMPONENT_LIBRARY.md` (26 components across Base Primitives, Overlay/Feedback, Data Display, the Card System, and Signature Composites — not merely the 5-component set from that document's earliest revision).
+- Governed by `94_FRONTEND_GOVERNANCE.md`'s SSOT ownership matrix; onboarding path documented in `95_FRONTEND_ENGINEERING_HANDBOOK.md`.
 
 ## 6. Definitions
 - **RSC (React Server Component):** Components that fetch data and render exclusively on the server, sending only HTML to the client (Zero JS bundle).
@@ -68,3 +69,4 @@ export default function Page() {
 | Version | Date       | Author               | Status   | Notes                 |
 | :---    | :---       | :---                 | :---     | :---                  |
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
+| 1.1.0   | 2026-07-27 | Frontend Documentation Suite Step 1 | APPROVED | Updated Dependencies to reflect `17_COMPONENT_LIBRARY.md`'s current 26-component inventory and to reference `94_FRONTEND_GOVERNANCE.md`/`95_FRONTEND_ENGINEERING_HANDBOOK.md`. No content contradictions found — this document's Server/Client Component rules and composition patterns remain accurate as written. |

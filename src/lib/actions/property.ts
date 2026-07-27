@@ -82,7 +82,7 @@ export async function createProperty(formData: FormData) {
     };
   } catch (error: any) {
     console.error("Failed to create property:", error);
-    return { success: false, error: error.message || "Internal Server Error: Gagal menyimpan data properti." };
+    return { success: false, error: "Internal Server Error: Gagal menyimpan data properti." };
   }
 }
 

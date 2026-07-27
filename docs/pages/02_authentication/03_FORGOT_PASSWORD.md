@@ -13,10 +13,12 @@ app/(02_authentication)/forgot-password/page.tsx
 Halaman ini umumnya diakses via link teks dari Login modal ("Lupa password?"). Dapat dirender sebagai halaman penuh (bukan modal wajib) karena melibatkan konfirmasi pengiriman yang idealnya persisten (pengguna mungkin berpindah ke aplikasi email/WhatsApp).
 
 ## 3. Required UI Components
-- `Input` — Email atau Nomor Telepon (satu field identifier, ikon `Mail` atau `Phone` tergantung mode terpilih; boleh menggunakan `Tabs` kecil untuk memilih "Email" vs "No. Telepon" mengikuti pola OTP WhatsApp/SMS di sistem).
-- `Button` (variant `default`) — "Kirim Instruksi Reset", dengan `isLoading`.
-- `Alert`/Banner sukses — muncul setelah submit, berisi pesan netral (lihat Acceptance Criteria) tanpa mengonfirmasi/menyangkal keberadaan akun.
-- Link — "Kembali ke Login" menuju `01_LOGIN`.
+- **Immersive Hero Panel (Desktop Only)**: Sama dengan halaman Login, panel di sisi kiri (`w-1/2`) dengan gambar arsitektural properti premium, overlay gelap (`bg-black/50`), dan teks edukasi keamanan ("Sistem Keamanan Tingkat Bank").
+- **Floating Glass Auth Card**: Kontainer form di sisi kanan dengan efek *glassmorphism* (`bg-white/80 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), dan `rounded-3xl` padding tebal.
+- `Input` — Email atau Nomor Telepon (ikon `Mail` atau `Phone`), radius `rounded-xl`, focus `ring-emerald-500`.
+- `Button` (variant `default`) — "Kirim Instruksi Reset" (`bg-slate-900` text white), transisi hover 200ms, dengan `isLoading`.
+- `Alert`/Banner sukses — muncul setelah submit, desain *sleek* menggantikan form.
+- Link teks — "Kembali ke Login" menuju `01_LOGIN`.
 - Tidak ada `Skeleton` loading data karena halaman ini tidak melakukan fetch data awal.
 
 ## 4. Data & State Management
@@ -51,6 +53,8 @@ const forgotPasswordSchema = z.object({
 - `MailCheck` — ikon pada state konfirmasi sukses setelah instruksi terkirim.
 
 ## 8. UI/UX Aesthetic Rules
-Konsisten dengan Design System: Background White, Royal Blue untuk CTA, Dark Navy untuk teks, radius rounded-2xl/3xl, bayangan lembut, font Inter/SF Pro Display.
+Mengikuti "The Exclusive Welcome" HomeLink 2.0:
+- **Konsep**: Seperti Login dan Register, halaman ini harus menenangkan dan elegan (Apple/Airbnb).
+- **Tipografi**: Heading `text-[28px] leading-[36px] font-semibold tracking-tight`. Teks sekunder warna `slate-500`.
+- **Glassmorphism & Elevasi**: Latar form `bg-white/80 backdrop-blur-xl border border-white/40` dengan Elevasi Tinggi (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`).
 - Halaman ini rawan menjadi titik cemas pengguna (lupa akses akun) — terapkan prinsip "Instant Clarity & Trust" dengan nada tenang dan meyakinkan, hindari kesan darurat/alarming; copy harus menenangkan ("Jangan khawatir, kami akan bantu Anda mengakses kembali akun").
-- Layout single-column minimal, satu field, satu CTA — hindari elemen dekoratif berlebihan yang mengalihkan perhatian dari alur pemulihan yang seharusnya cepat.

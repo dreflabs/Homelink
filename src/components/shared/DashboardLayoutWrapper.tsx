@@ -15,16 +15,22 @@ export interface SidebarLink {
 
 interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
-  title: string;
+  title?: string;
   links: SidebarLink[];
   sidebarTheme?: "light" | "dark";
+  logoutLabel?: string;
+  roleBadge?: string;
+  logoNode?: React.ReactNode;
 }
 
 export function DashboardLayoutWrapper({
   children,
   title,
   links,
-  sidebarTheme = "light"
+  sidebarTheme = "light",
+  logoutLabel = "Sign Out",
+  roleBadge,
+  logoNode
 }: DashboardLayoutWrapperProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -56,7 +62,21 @@ export function DashboardLayoutWrapper({
           "p-6 border-b flex justify-between items-center h-16 shrink-0",
           isDark ? "border-slate-800" : "border-gray-100"
         )}>
-          <h2 className={cn("text-xl font-bold truncate", isDark ? "text-white" : "text-gray-800")}>{title}</h2>
+          {logoNode ? (
+            <div className="flex items-center gap-2 overflow-hidden">
+              {logoNode}
+              {roleBadge && (
+                <span className={cn(
+                  "px-2 py-0.5 text-xs font-semibold rounded-full border shrink-0",
+                  isDark ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-primary"
+                )}>
+                  {roleBadge}
+                </span>
+              )}
+            </div>
+          ) : (
+            <h2 className={cn("text-xl font-bold truncate", isDark ? "text-white" : "text-gray-800")}>{title}</h2>
+          )}
           <button 
             className="md:hidden p-1 rounded-md hover:bg-black/10"
             onClick={() => setIsOpen(false)}
@@ -79,7 +99,7 @@ export function DashboardLayoutWrapper({
                       ? "bg-slate-800 text-white font-medium" 
                       : "hover:bg-slate-800/50 hover:text-white"
                     : isActive 
-                      ? "bg-blue-50 text-blue-700 font-semibold shadow-sm" 
+                      ? "bg-slate-50 text-primary font-semibold shadow-sm" 
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium"
                 )}
               >
@@ -104,7 +124,7 @@ export function DashboardLayoutWrapper({
             )}
           >
             <LogOut className="w-5 h-5" />
-            <span>Keluar</span>
+            <span>{logoutLabel}</span>
           </button>
         </div>
       </aside>

@@ -50,7 +50,10 @@ app/(dashboard)/11_admin/settings/page.tsx
 #### Icon: `Lock`
 - **Purpose:** Card "Keamanan" (ubah password). **Size:** 18px. **Color:** `text-slate-500`.
 
-## 8. UI/UX Aesthetic Rules
+## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.8 Admin Dashboard for the full workspace design system. Page-specific deltas below:
+
 Mengikuti Design System global: background `White`, aksi utama `Royal Blue` (`blue-700`), teks `slate-900`, surface sekunder `slate-50`, shadow ultra-lembut, radius `rounded-2xl`/`rounded-3xl`.
 
 **Catatan kepadatan khusus Admin:** Berbeda dari halaman moderasi lain di modul ini, Settings tidak berbentuk tabel data-dense — memakai layout form vertikal single-column dengan Card terpisah per kategori pengaturan (Profil/Notifikasi/Keamanan), mengikuti pola form akun standar, bukan pola queue/tabel.

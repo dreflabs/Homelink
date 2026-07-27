@@ -55,6 +55,9 @@ app/(dashboard)/owner/properties/[propertyId]/leads/page.tsx
 - **Size:** 16px, `text-slate-500`.
 
 ## 8. UI/UX Aesthetic Rules (Mockup Reference)
+
+See `27_DASHBOARD_DESIGN_GUIDELINES.md` § 8.3 Owner Dashboard for the full workspace design system. Page-specific deltas below:
+
 - **Background:** `White`, tabel dengan baris `hover:bg-slate-50` untuk keterbacaan.
 - **Empty State:** Ilustrasi minimal + ikon `Users` besar, teks `slate-500`, CTA opsional ke tips meningkatkan daya tarik listing.
 - **Badge Interaksi:** Warna lembut (`blue-50`/`amber-50` background dengan teks warna solid sesuai kategori), `rounded-full`, ukuran kecil agar tidak mendominasi baris tabel.

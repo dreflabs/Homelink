@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import path from "path";
 
 async function verifySuperAdmin() {
   const session = await auth();
@@ -255,17 +256,34 @@ export async function getBackupSnapshots() {
 
 export async function triggerBackupSnapshot() {
   await verifySuperAdmin();
+  const session = await auth();
 
-  await prisma.auditLog.create({
-    data: {
-      actorId: (await auth())?.user?.id || "system",
-      action: "MANUAL_BACKUP_TRIGGERED",
-      entityId: "SYSTEM_BACKUP",
-      newValues: JSON.stringify({ timestamp: new Date().toISOString() })
-    }
-  }).catch(() => null);
+  try {
+    const { exec } = await import("child_process");
+    const scriptPath = path.join(process.cwd(), "scripts", "backup_db.sh");
 
-  revalidatePath("/super-admin/backup");
-  return { success: true, message: "Manual database snapshot initiated successfully." };
+    exec(`bash ${scriptPath}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error("Backup script error:", error, stderr);
+      } else {
+        console.log("Backup script output:", stdout);
+      }
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        actorId: session?.user?.id || "system",
+        action: "MANUAL_BACKUP_TRIGGERED",
+        entityId: "SYSTEM_BACKUP",
+        newValues: JSON.stringify({ timestamp: new Date().toISOString() }),
+      },
+    }).catch(() => null);
+
+    revalidatePath("/super-admin/backup");
+    return { success: true, message: "Manual database snapshot initiated successfully." };
+  } catch (error) {
+    console.error("Failed to trigger backup snapshot:", error);
+    return { success: false, message: "Gagal memulai backup database." };
+  }
 }
 
