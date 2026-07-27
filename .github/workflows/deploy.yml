@@ -42,18 +42,14 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run build
 
-      - name: Prepare Standalone Build
-        run: |
-          # Next.js standalone tidak memaketkan external deps (Prisma & Argon2), jadi kita copy manual
-          cp -a public .next/standalone/
-          cp -a .next/static .next/standalone/.next/
-          mkdir -p .next/standalone/node_modules
-          cp -a node_modules/@prisma .next/standalone/node_modules/ || true
-          cp -a node_modules/prisma .next/standalone/node_modules/ || true
-          cp -a node_modules/argon2 .next/standalone/node_modules/ || true
-          cp ecosystem.config.js .next/standalone/
-
-      - name: Deploy via Rsync and PM2
+      # NOTE: build di atas hanya validasi (gate) sebelum deploy. Build produksi
+      # yang sesungguhnya dijalankan LANGSUNG di VPS (lihat step di bawah), karena:
+      # 1. argon2 adalah native module yang harus dikompilasi untuk OS target (Ubuntu 24.04 VPS)
+      # 2. TARGET_DIR di VPS adalah git checkout persisten (bukan folder sekali-pakai),
+      #    jadi deploy dilakukan lewat git pull + build ulang, BUKAN rsync --delete
+      #    (rsync --delete pernah menghapus .git/prisma/src di TARGET_DIR karena isi
+      #    foldernya diganti total dengan folder .next/standalone yang minimal).
+      - name: Deploy to VPS
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.SERVER_HOST }}
@@ -65,15 +61,24 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
-          # Sync HANYA folder standalone yang sudah siap pakai ke VPS
-          # Hapus file lama di VPS kecuali .env
-          rsync -avz --delete \
-            --exclude='.env' \
-            .next/standalone/ $USER@$HOST:$TARGET_DIR/
-
-          # Jalankan Migrasi dan Restart PM2 di VPS
           ssh $USER@$HOST "cd $TARGET_DIR \
+            && git fetch origin main \
+            && git reset --hard origin/main \
+            && git clean -fd -e .env -e node_modules -e .next \
+            && npm install \
+            && npx prisma generate \
+            && npm rebuild argon2 \
             && npx prisma migrate deploy \
+            && npm run build \
+            && cp -a public .next/standalone/ \
+            && cp -a .next/static .next/standalone/.next/ \
+            && mkdir -p .next/standalone/node_modules \
+            && cp -a node_modules/@prisma .next/standalone/node_modules/ \
+            && cp -a node_modules/.prisma .next/standalone/node_modules/ \
+            && cp -a node_modules/prisma .next/standalone/node_modules/ \
+            && cp -a node_modules/argon2 .next/standalone/node_modules/ \
+            && cp ecosystem.config.js .next/standalone/ \
+            && (pm2 delete homelink || true) \
             && pm2 start ecosystem.config.js \
             && pm2 save \
             && echo 'Waiting for server to verify health...' \
