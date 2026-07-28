@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { resetPassword } from "@/actions/auth";
 import { AuthShowcase } from "@/components/auth/AuthShowcase";
 import { useTranslations } from "next-intl";
+import { Logo } from "@/components/shared/Logo";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -103,15 +104,7 @@ function ResetPasswordForm() {
         
         {/* Brand Header */}
         <div className="absolute top-8 right-8 sm:right-12 md:right-24 xl:right-32 lg:left-8 lg:right-auto">
-          <Link href="/">
-            <Image
-              src="/LOGO_UTAMA_HOMELINK.png"
-              alt="HomeLink Logo"
-              width={130}
-              height={38}
-              className="h-8 w-auto object-contain"
-            />
-          </Link>
+          <Logo size="md" />
         </div>
 
         <div className="w-full max-w-md mx-auto mt-16 lg:mt-0">

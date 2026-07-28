@@ -14,8 +14,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { forgotPassword } from "@/actions/auth";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 
 export default function ForgotPasswordPage() {
+  const params = useParams();
+  const locale = (params.locale as string) || "id";
   const t = useTranslations("Auth.ForgotPassword");
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -74,16 +77,16 @@ export default function ForgotPasswordPage() {
 
         {/* ─── Right: Floating Glass Auth Card ─── */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
-          <div className="w-full max-w-md bg-white/85 backdrop-blur-xl border border-white/40 shadow-[0_24px_64px_rgb(0,0,0,0.16)] rounded-3xl p-6 sm:p-8 lg:p-12 relative overflow-hidden">
+          <div className="w-full max-w-md bg-white/85 backdrop-blur-xl border border-white/40 shadow-[0_24px_64px_rgb(0,0,0,0.16)] rounded-3xl p-5 sm:p-7 lg:p-12 relative overflow-hidden">
             
             <div className="absolute top-6 left-6 lg:top-8 lg:left-8">
-              <Link
-                href="/login"
+              <a
+                href={`/${locale}/login`}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
                 title={t("backToLogin")}
               >
                 <ArrowLeft className="h-5 w-5" />
-              </Link>
+              </a>
             </div>
 
             <div className="mt-12 lg:mt-8">
@@ -171,7 +174,7 @@ export default function ForgotPasswordPage() {
                   </div>
 
                   <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
-                    <Link href="/login">{t("backToLoginPage")}</Link>
+                    <a href={`/${locale}/login`}>{t("backToLoginPage")}</a>
                   </Button>
                 </div>
               )}

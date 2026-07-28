@@ -75,8 +75,8 @@ export async function POST(request: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    if (error.message === 'Email atau nomor telepon sudah terdaftar.') {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === 'Email atau nomor telepon sudah terdaftar.') {
       return NextResponse.json(
         {
           status: 'fail',

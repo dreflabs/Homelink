@@ -12,12 +12,16 @@ app/(02_authentication)/verify-email/page.tsx
 ```
 Diakses melalui tautan berisi token unik (mis. `/verify-email?token=...`) yang dikirim ke email pengguna setelah registrasi. Halaman ini WAJIB dirender penuh (bukan modal), karena diakses dari luar aplikasi (klik link di aplikasi email, sering di device/browser berbeda dari saat registrasi) — tidak boleh bergantung pada state client dari sesi sebelumnya.
 
+> **Architectural Navigation & Modal Interception Isolation Note:**
+> - **Direct Anchor Navigation:** Karena halaman `verify-email` merupakan layar penuh transisional pasca-registrasi, seluruh tombol tautan keluar menuju Login (seperti "Lanjut ke Login", "Kembali ke Login", atau "Batal dan Kembali") memanfaatkan navigasi langsung (`<a href="/{locale}/login">`) bukan komponen `<Link>` Next.js. Ini memastikan bahwa penekanan tombol tidak akan ditangkap oleh rute paralel `@modal/(.)login` yang dapat menyebapkan popup tumpang tindih di atas layar verifikasi.
+
 ## 3. Required UI Components
-- Tidak ada form input — halaman ini bersifat **otomatis** (memproses token dari URL saat mount, tanpa aksi pengguna).
-- `Skeleton`/Spinner — state "Memverifikasi email Anda..." selama request ke server berlangsung.
-- `Alert`/ikon besar sukses + CTA "Lanjut ke Login" (menuju `01_LOGIN`) atau auto-redirect dengan countdown singkat.
-- `Alert`/ikon besar gagal (token invalid/expired/sudah dipakai) + CTA "Kirim ulang email verifikasi".
-- Tidak ada `Button` submit karena tidak ada form; hanya CTA navigasi pasca-hasil.
+- **Immersive Hero Panel (Desktop Only):** Panel arsitektur di sisi kiri (`w-1/2`) dengan latar foto properti premium dan overlay gelap (`bg-slate-950/50 backdrop-blur`), menciptakan pengalaman merek kelas dunia.
+- **Floating Glass Auth Card:** Kontainer di sisi kanan dengan *glassmorphism* (`bg-white/85 backdrop-blur-xl`), sudut `rounded-3xl`, dan dilengkapi atribut aksesibilitas `aria-live="polite"` agar screen reader membacakan perubahan status seketika.
+- Tidak ada form input untuk verifikasi standar — halaman ini bersifat **otomatis** (memproses token dari URL saat mount).
+- `Loader2`/Spinner — state "Memverifikasi email Anda..." selama request ke server berlangsung.
+- `Alert`/ikon besar sukses (`MailCheck` berbingkai emerald) + CTA "Lanjut ke Login".
+- `Alert`/ikon besar gagal (`MailX` berbingkai merah untuk token invalid/expired) + CTA & input "Kirim ulang email verifikasi" (`RotateCw`).
 
 ## 4. Data & State Management
 - **Local State:** `verificationStatus: "verifying"|"success"|"invalid"|"expired"|"already_verified"` — dikelola sebagai state machine sederhana, bukan boolean tunggal, karena UX pesan berbeda untuk tiap kasus (token sudah pernah dipakai ≠ token kedaluwarsa).

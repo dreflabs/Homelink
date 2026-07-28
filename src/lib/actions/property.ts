@@ -94,7 +94,11 @@ const SearchPropertiesSchema = z.object({
   bedrooms: z.number().optional(),
   lat: z.number().optional(),
   lng: z.number().optional(),
-  radiusInKm: z.number().optional().default(10)
+  radiusInKm: z.number().optional().default(10),
+  minLat: z.number().optional(),
+  maxLat: z.number().optional(),
+  minLng: z.number().optional(),
+  maxLng: z.number().optional(),
 });
 
 export async function searchProperties(params: z.infer<typeof SearchPropertiesSchema>) {
@@ -103,8 +107,9 @@ export async function searchProperties(params: z.infer<typeof SearchPropertiesSc
     throw new Error(`Invalid search parameters: ${result.error.message}`);
   }
 
-  const { query, type, minPrice, maxPrice, bedrooms, lat, lng, radiusInKm } = result.data;
+  const { query, type, minPrice, maxPrice, bedrooms, lat, lng, radiusInKm, minLat, maxLat, minLng, maxLng } = result.data;
 
+  // Case 1: Search by Radius (Haversine)
   if (lat !== undefined && lng !== undefined) {
     const rawProperties = await prisma.$queryRaw`
       SELECT * FROM (
@@ -125,22 +130,58 @@ export async function searchProperties(params: z.infer<typeof SearchPropertiesSc
       ORDER BY distance ASC
       LIMIT 50;
     `;
-    return rawProperties;
-  } else {
+    
+    // Fetch associated media for these properties (since queryRaw doesn't include relations natively easily)
+    const propertyIds = (rawProperties as any[]).map(p => p.id);
+    const media = await prisma.propertyMedia.findMany({
+      where: { propertyId: { in: propertyIds } }
+    });
+    
+    return (rawProperties as any[]).map(p => ({
+      ...p,
+      media: media.filter(m => m.propertyId === p.id)
+    }));
+  } 
+  
+  // Case 2: Search by Bounding Box (Map Viewport)
+  if (minLat !== undefined && maxLat !== undefined && minLng !== undefined && maxLng !== undefined) {
     const properties = await prisma.property.findMany({
       where: {
         isDeleted: false,
         status: 'PUBLISHED',
+        latitude: { gte: minLat, lte: maxLat },
+        longitude: { gte: minLng, lte: maxLng },
         ...(type && { propertyType: type }),
         ...(bedrooms !== undefined && { bedrooms: { gte: bedrooms } }),
         ...(minPrice !== undefined && { price: { gte: minPrice } }),
         ...(maxPrice !== undefined && { price: { lte: maxPrice } }),
         ...(query && { title: { contains: query, mode: 'insensitive' } })
       },
-      take: 50
+      include: {
+        media: true
+      },
+      take: 100
     });
     return properties;
   }
+
+  // Case 3: Default Search (List View)
+  const properties = await prisma.property.findMany({
+    where: {
+      isDeleted: false,
+      status: 'PUBLISHED',
+      ...(type && { propertyType: type }),
+      ...(bedrooms !== undefined && { bedrooms: { gte: bedrooms } }),
+      ...(minPrice !== undefined && { price: { gte: minPrice } }),
+      ...(maxPrice !== undefined && { price: { lte: maxPrice } }),
+      ...(query && { title: { contains: query, mode: 'insensitive' } })
+    },
+    include: {
+      media: true
+    },
+    take: 50
+  });
+  return properties;
 }
 
 const SubmitLeadSchema = z.object({
@@ -230,34 +271,28 @@ export async function saveSearch(params: z.infer<typeof SaveSearchSchema>) {
 }
 
 export async function getNearbyProperties(lat: number, lng: number, radiusKm: number = 5) {
-  // Skeleton API call to fetch nearby properties
-  // In a real application, you would use PostGIS or a similar geospatial DB extension to query by distance.
-  // For now, we will just return mock data so the frontend logic is complete.
-  return {
-    success: true,
-    data: [
-      {
-        id: "prop-1-db",
-        title: "Rumah Mewah Minimalis (DB)",
-        price: 15000000000,
-        address: "0.5 km dari lokasi Anda",
-        bedrooms: 4,
-        bathrooms: 3,
-        buildingArea: 350,
-        media: [{ s3Url: "/property_1.jpg" }],
-        status: "ACTIVE",
-      },
-      {
-        id: "prop-2-db",
-        title: "Apartemen Strategis (DB)",
-        price: 3500000000,
-        address: "1.2 km dari lokasi Anda",
-        bedrooms: 2,
-        bathrooms: 1,
-        buildingArea: 85,
-        media: [{ s3Url: "/property_2.jpg" }],
-        status: "ACTIVE",
-      }
-    ]
-  };
+  try {
+    const properties = await searchProperties({
+      lat,
+      lng,
+      radiusInKm: radiusKm
+    });
+
+    // Format distance for display
+    const formattedData = (properties as any[]).map(prop => ({
+      ...prop,
+      address: prop.distance !== undefined ? `${prop.distance.toFixed(1)} km dari lokasi Anda` : prop.address
+    }));
+
+    return {
+      success: true,
+      data: formattedData
+    };
+  } catch (error) {
+    console.error("Error fetching nearby properties:", error);
+    return {
+      success: false,
+      error: "Gagal mengambil properti terdekat"
+    };
+  }
 }

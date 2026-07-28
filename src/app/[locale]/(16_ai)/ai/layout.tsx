@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic';
 
 import Link from "next/link";
-import Image from "next/image";
 import { Bot, Building, ChartCandlestick, Sparkles } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Logo } from "@/components/shared/Logo";
 
 export default async function AILayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -21,15 +21,9 @@ export default async function AILayout({ children }: { children: React.ReactNode
       {/* Sidebar */}
       <aside className="w-64 border-r border-slate-200 bg-white hidden md:flex flex-col shadow-sm">
         <div className="p-6">
-          <Link href="/" className="flex items-center mb-8">
-            <Image
-              src="/LOGO_UTAMA_HOMELINK.png"
-              alt="HomeLink Logo"
-              width={130}
-              height={38}
-              className="h-8 w-auto object-contain"
-            />
-          </Link>
+          <div className="mb-8">
+            <Logo size="md" />
+          </div>
           
           <nav className="flex flex-col gap-1">
             <Link 

@@ -12,9 +12,16 @@ app/(02_authentication)/register/page.tsx
 ```
 Seperti Login, halaman ini dapat dirender via Auth Modal / Intercepting Routes (`app/(02_authentication)/@modal/(.)register/page.tsx`) mengikuti `55_AUTHENTICATION_FLOW.md` dan `18_SCREEN_INVENTORY.md` SCR-004, agar pengguna dapat beralih dari modal Login ke Register tanpa kehilangan konteks halaman. Route penuh `/register` tetap tersedia sebagai fallback.
 
+> **Architectural Implementation & Component Decoupling:**
+> - **Core UI Card:** Logika Wizard 3-Langkah dan validasi Zod diletakkan pada komponen modular `src/components/auth/RegisterCard.tsx` (mendukung prop `inModal?: boolean`).
+> - **Intercepted Route Modal:** `app/[locale]/@modal/(.)register/page.tsx` memotong dan merender `<AuthModalWrapper><RegisterCard inModal={true} /></AuthModalWrapper>`, menghasilkan popup registrasi yang ringan dan bebas kontainer berlebih.
+> - **Standard Full Page:** `app/[locale]/(02_authentication)/register/page.tsx` mempekerjakan `<RegisterCard />` disempurnakan dengan foto villa mewah dan Immersive Hero Panel di sisi kiri.
+> - **Konsistensi i18n:** Seluruh teks antarmuka pada Wizard Registrasi telah terdesentralisasi 100% ke dalam sistem `next-intl` (`messages/id.json` & `en.json`), bebas dari teks statis yang di-hardcode.
+
 ## 3. Required UI Components
 - **Immersive Hero Panel (Desktop Only)**: Panel arsitektur premium di sisi kiri (`w-1/2`) dengan `bg-black/50` overlay, testimoni nyata, dan *trust badges* (sekelas Airbnb/Apple).
-- **Floating Glass Auth Card**: Kontainer form dengan *glassmorphism* (`bg-white/70 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), `rounded-2xl` padding tebal.
+- **Floating Glass Auth Card**: Kontainer form dengan *glassmorphism* (`bg-white/70 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), `rounded-3xl` padding tebal saat layar penuh.
+  - *Zero-Scroll Modal Ergonomics:* Saat diakses dalam mode modal (`inModal={true}`), komponen menerapkan optimasi dimensi kompak (`p-5 sm:p-6 lg:p-7`, kartu pilihan peran & ikon lebih ringkas, serta margin antar-elemen yang presisi) sehingga seluruh wizard 3-langkah termuat utuh dan elok di viewport laptop/desktop tanpa memicu kemunculan bilah gulir vertikal (*vertical scrollbar*).
 - **Progressive Registration Wizard (3 Langkah)**:
   - **Minimalist Stepper**: Indikator langkah (misal: "Langkah 1 dari 3") di atas form.
   - **Langkah 1: Peran (The Gateway)**: 3 Kartu Visual interaktif (Pencari Properti, Pemilik Properti, Mitra Surveyor) dengan deskripsi singkat. Tidak ada input teks.

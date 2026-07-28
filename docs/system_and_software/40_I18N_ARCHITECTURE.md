@@ -6,7 +6,7 @@ Dokumen ini berfungsi sebagai **Single Source of Truth** untuk implementasi *Int
 ## 2. Pilihan Teknologi
 Platform ini secara eksklusif menggunakan **`next-intl`** untuk merender dan mendistribusikan kamus bahasa.
 - **Routing:** Rute dinamis berbasis *locale prefix* (`/[locale]/...`).
-- **Middleware:** Menggunakan *Composite Middleware* (gabungan `next-intl/middleware` dan `NextAuth`) untuk meneruskan permintaan dari domain akar (`/`) ke bahasa bawaan dan melindungi halaman ber-restriksi.
+- **Middleware:** Menggunakan *Composite Middleware* (gabungan `next-intl/middleware` dan `NextAuth`) yang diimplementasikan pada berkas **`src/proxy.ts`** (sesuai konvensi standar Next.js 16 sebagai pengganti `middleware.ts`) untuk meneruskan permintaan dari domain akar (`/`) ke bahasa bawaan dan melindungi halaman ber-restriksi.
 
 ## 3. Strategi Bahasa (Locale Strategy)
 - **Supported Locales:** `id` (Bahasa Indonesia) dan `en` (Bahasa Inggris).

@@ -19,6 +19,7 @@ enum Role {
   PHOTOGRAPHER
   ADMIN
   SUPER_ADMIN
+  CMS_EDITOR
 }
 
 model User {
@@ -31,6 +32,8 @@ model User {
   role            Role      @default(BUYER)
   passwordHash    String?   @map("password_hash")
   isEmailVerified Boolean   @default(false) @map("is_email_verified")
+  isPhoneVerified Boolean   @default(false) @map("is_phone_verified")
+  accountStatus   String    @default("ACTIVE") @map("account_status")
   emailVerified   DateTime? @map("email_verified") @db.Timestamptz()
   isDeleted       Boolean   @default(false) @map("is_deleted")
   termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz()

@@ -42,7 +42,7 @@ export async function Navbar() {
                 </Link>
                 <Link href="/register">
                   <Button className="shadow-sm font-semibold rounded-full px-6">
-                    Daftar
+                    {t('register')}
                   </Button>
                 </Link>
               </>

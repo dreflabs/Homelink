@@ -12,6 +12,10 @@ app/(02_authentication)/forgot-password/page.tsx
 ```
 Halaman ini umumnya diakses via link teks dari Login modal ("Lupa password?"). Dapat dirender sebagai halaman penuh (bukan modal wajib) karena melibatkan konfirmasi pengiriman yang idealnya persisten (pengguna mungkin berpindah ke aplikasi email/WhatsApp).
 
+> **Architectural Navigation & Modal Interception Isolation Note:**
+> - **Mencegah Modal Overlay Tumpuk (Modal Stacking Bug):** Mengingat halaman ini tidak dirancang sebagai intercepted route modal, navigasi menuju `/forgot-password` dari dalam modal Login secara langsung menutup slot `@modal` (didukung rute pembersih `app/[locale]/@modal/forgot-password/page.tsx` dan `[...catchAll]/page.tsx` yang merender `null`).
+> - **Direct Anchor Transition:** Tautan keluar dari halaman Forgot Password (seperti "Kembali ke Login") menggunakan navigasi langsung (`<a href="/{locale}/login">`) alih-alih komponen Next.js `<Link>`, guna mencegah sistem *Parallel Routes Interceptor* Next.js memicu pembukaan popup modal Login di atas layar penuh Forgot Password.
+
 ## 3. Required UI Components
 - **Immersive Hero Panel (Desktop Only)**: Sama dengan halaman Login, panel di sisi kiri (`w-1/2`) dengan gambar arsitektural properti premium, overlay gelap (`bg-black/50`), dan teks edukasi keamanan ("Sistem Keamanan Tingkat Bank").
 - **Floating Glass Auth Card**: Kontainer form di sisi kanan dengan efek *glassmorphism* (`bg-white/80 backdrop-blur-md`), Elevasi 4 (`shadow-[0_24px_64px_rgb(0,0,0,0.16)]`), dan `rounded-3xl` padding tebal.

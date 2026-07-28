@@ -30,6 +30,7 @@ export class AuthService {
         phone: data.phone,
         role: data.role,
         passwordHash,
+        accountStatus: data.role === 'SURVEYOR' ? 'PENDING_APPROVAL' : 'ACTIVE',
         termsAcceptedAt: new Date(),
       },
     });

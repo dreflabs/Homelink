@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { Loader2, Mail, MailCheck, MailX, RotateCw, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -18,6 +18,8 @@ type VerificationStatus = "awaiting_email" | "verifying" | "success" | "invalid"
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const params = useParams();
+  const locale = (params.locale as string) || "id";
   const t = useTranslations("Auth.VerifyEmail");
   
   const [status, setStatus] = useState<VerificationStatus>("verifying");
@@ -95,7 +97,7 @@ function VerifyEmailContent() {
 
         {/* ─── Right: Floating Glass Auth Card ─── */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-12 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
-          <div className="w-full max-w-md bg-white/85 backdrop-blur-xl border border-white/40 shadow-[0_24px_64px_rgb(0,0,0,0.16)] rounded-3xl p-6 sm:p-8 lg:p-12 relative overflow-hidden">
+          <div aria-live="polite" className="w-full max-w-md bg-white/85 backdrop-blur-xl border border-white/40 shadow-[0_24px_64px_rgb(0,0,0,0.16)] rounded-3xl p-5 sm:p-7 lg:p-12 relative overflow-hidden">
             
             {/* Mobile Logo (Hidden on Desktop) */}
             <div className="lg:hidden flex justify-center mb-8">
@@ -121,7 +123,7 @@ function VerifyEmailContent() {
                   </p>
                 </div>
                 <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200">
-                  <Link href="/login">{t("backToLogin")}</Link>
+                  <a href={`/${locale}/login`}>{t("backToLogin")}</a>
                 </Button>
               </div>
             )}
@@ -142,10 +144,10 @@ function VerifyEmailContent() {
                   </p>
                 </div>
                 <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200">
-                  <Link href="/login">
+                  <a href={`/${locale}/login`}>
                     {t("continueToDashboard")}
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
               </div>
             )}
@@ -203,7 +205,7 @@ function VerifyEmailContent() {
                   </Button>
                   
                   <Button asChild className="w-full h-12 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors" variant="ghost">
-                    <Link href="/login">{t("cancelAndBack")}</Link>
+                    <a href={`/${locale}/login`}>{t("cancelAndBack")}</a>
                   </Button>
                 </div>
               </div>

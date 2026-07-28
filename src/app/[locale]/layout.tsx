@@ -19,6 +19,11 @@ export const metadata: Metadata = {
     template: "%s | HomeLink 2.0",
   },
   description: "Platform properti paling aman tanpa ghost listing. Temukan rumah impian Anda dengan inspeksi ketat dan garansi AI valuation.",
+  icons: {
+    icon: "/FAV_ICON.png",
+    shortcut: "/FAV_ICON.png",
+    apple: "/FAV_ICON.png",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
@@ -44,9 +49,11 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  modal,
   params
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
   // Wait for the params to resolve before using properties from it
@@ -66,6 +73,7 @@ export default async function RootLayout({
           <AnimatePresence mode="wait">
             {children}
           </AnimatePresence>
+          {modal}
           <Toaster richColors closeButton position="top-center" />
         </NextIntlClientProvider>
       </body>

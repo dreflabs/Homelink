@@ -96,7 +96,19 @@ export const authConfig = {
         return true;
       } else if (isLoggedIn) {
         if (pathname === '/login' || pathname === '/register') {
-          return Response.redirect(new URL(`${localePrefix}/dashboard`, nextUrl));
+          switch (role) {
+            case 'OWNER':
+              return Response.redirect(new URL(`${localePrefix}/owner/properties`, nextUrl));
+            case 'SURVEYOR':
+              return Response.redirect(new URL(`${localePrefix}/surveyor/dashboard`, nextUrl));
+            case 'ADMIN':
+            case 'SUPER_ADMIN':
+              return Response.redirect(new URL(`${localePrefix}/admin`, nextUrl));
+            case 'BUYER':
+              return Response.redirect(new URL(`${localePrefix}/dashboard`, nextUrl));
+            default:
+              return Response.redirect(new URL(`${localePrefix}/`, nextUrl));
+          }
         }
       }
       return true;

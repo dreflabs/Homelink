@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { Menu, X, Search, PlusCircle, LayoutDashboard, LogOut, Sparkles } from "lucide-react";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
+import { Logo } from "@/components/shared/Logo";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader, SheetDescription } from "@/components/ui/sheet";
 
 interface MobileNavProps {
@@ -56,16 +57,8 @@ function _MobileNav({ session, t }: MobileNavProps & { t: any }) {
       </SheetHeader>
       <div>
         {/* Drawer Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-          <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
-            <Image
-              src="/LOGO_UTAMA_HOMELINK.png"
-              alt="HomeLink Logo"
-              width={120}
-              height={36}
-              className="h-8 w-auto object-contain"
-            />
-          </Link>
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6" onClick={() => setIsOpen(false)}>
+          <Logo size="sm" />
         </div>
               {user && (
                 <div className="mb-6 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3">
@@ -157,12 +150,12 @@ function _MobileNav({ session, t }: MobileNavProps & { t: any }) {
                 <div className="grid grid-cols-2 gap-3">
                   <Link href="/login" className="w-full">
                     <Button variant="outline" className="w-full rounded-xl font-semibold border-slate-200">
-                      Masuk
+                      {t("login")}
                     </Button>
                   </Link>
                   <Link href="/register" className="w-full">
                     <Button className="w-full rounded-xl font-semibold shadow-sm">
-                      Daftar
+                      {t("register")}
                     </Button>
                   </Link>
                 </div>

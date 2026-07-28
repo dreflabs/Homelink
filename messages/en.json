@@ -9,6 +9,7 @@
     "contact": "Contact",
     "faq": "FAQ",
     "login": "Login",
+    "register": "Sign Up",
     "search": "Search Properties",
     "sell": "Sell Property"
   },
@@ -60,7 +61,7 @@
       "role_owner": "Owner",
       "role_surveyor": "Surveyor",
       "fullname": "Full Name",
-      "fullname_placeholder": "John Doe",
+      "fullname_placeholder": "e.g. Budi Santoso",
       "email": "Email Address",
       "email_placeholder": "name@email.com",
       "phone": "Phone Number",
@@ -88,7 +89,34 @@
       "fail": "Failed to register",
       "fail_desc": "Please double-check the data you entered.",
       "network_error": "Network Error",
-      "network_error_desc": "Cannot connect to the server. Please try again."
+      "network_error_desc": "Cannot connect to the server. Please try again.",
+      "heroTitle": "The first step towards your dream property.",
+      "heroDesc": "Register today and enjoy the experience of finding, buying, or renting properties without worry.",
+      "badge": "100% Verified",
+      "stepPrefix": "Step",
+      "stepSuffix": "of 3",
+      "step1Title": "How would you like to use HomeLink?",
+      "step1Desc": "Select the role that best matches your goals.",
+      "step2Title": "Let's get acquainted.",
+      "step2Desc": "This information helps us personalize your experience.",
+      "step3Title": "Secure your access.",
+      "step3Desc": "Create a strong password to protect your account.",
+      "buyerLabel": "Property Finder",
+      "buyerDesc": "Find your dream home",
+      "ownerLabel": "Property Owner",
+      "ownerDesc": "Rent or sell your assets",
+      "surveyorLabel": "Surveyor Partner",
+      "surveyorDesc": "Help us verify listings",
+      "orQuickRegister": "or quick register",
+      "phoneNotice": "We use this to verify user authenticity for security.",
+      "strengthType": "Type password...",
+      "strengthWeak": "Weak (Add capital letter & number)",
+      "strengthMedium": "Medium (Almost strong)",
+      "strengthStrong": "Strong ✓",
+      "nextBtn": "Next Step",
+      "submitBtn": "Join HomeLink",
+      "alreadyAccount": "Already have an account?",
+      "signInHere": "Sign in here"
     },
     "VerifyEmail": {
       "title": "Bank-grade security that always protects your account.",
@@ -1020,7 +1048,9 @@
     "rights": "All rights reserved."
   },
   "MobileNav": {
-    "search": "Search Properties"
+    "search": "Search Properties",
+    "login": "Login",
+    "register": "Sign Up"
   },
   "PropertySearch": {
     "AdvancedSearch": {
