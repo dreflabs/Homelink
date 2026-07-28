@@ -10,6 +10,28 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    
+    # Menambahkan service PostgreSQL dengan ekstensi pgvector
+    services:
+      postgres:
+        image: ankane/pgvector:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: homelink_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: "postgresql://postgres:password@localhost:5432/homelink_test?schema=public"
+      AUTH_SECRET: "mock_secret_for_ci_testing_only"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -22,6 +44,8 @@ jobs:
     - name: Set up Database (Mock/Seed)
       run: |
         npx prisma generate
+        npx prisma db push
+        npm run seed
     - name: Build Next.js
       run: npm run build
     - name: Run Playwright tests
