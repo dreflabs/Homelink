@@ -72,8 +72,9 @@ export const authConfig = {
       if (isProtectedRoute) {
         if (!isLoggedIn) return false; // Triggers redirect to /login?callbackUrl=...
         
-        // Force onboarding if they haven't completed it
-        if (!isOnboarded && pathname !== '/onboarding') {
+        // Force onboarding if they haven't completed it (Admins bypass this)
+        const isAdmin = role === 'ADMIN' || role === 'SUPER_ADMIN';
+        if (!isOnboarded && !isAdmin && pathname !== '/onboarding') {
           return Response.redirect(new URL(`${localePrefix}/onboarding`, nextUrl));
         }
 
@@ -108,7 +109,8 @@ export const authConfig = {
         return true;
       } else if (isLoggedIn) {
         if (pathname === '/login' || pathname === '/register') {
-          if (!isOnboarded) {
+          const isAdmin = role === 'ADMIN' || role === 'SUPER_ADMIN';
+          if (!isOnboarded && !isAdmin) {
             return Response.redirect(new URL(`${localePrefix}/onboarding`, nextUrl));
           }
           switch (role) {
