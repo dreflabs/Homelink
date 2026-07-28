@@ -57,10 +57,10 @@ function OnboardingContent() {
 
       toast.success("Profil berhasil diperbarui!");
       
-      // Redirect based on role
-      if (selectedRole === "OWNER") router.push("/owner/properties");
-      else if (selectedRole === "SURVEYOR") router.push("/surveyor/dashboard");
-      else router.push("/dashboard");
+      // Redirect based on role (using window.location.href to prevent App Router race conditions with useSession.update)
+      if (selectedRole === "OWNER") window.location.href = "/owner/properties";
+      else if (selectedRole === "SURVEYOR") window.location.href = "/surveyor/dashboard";
+      else window.location.href = "/dashboard";
 
     } catch (error) {
       console.error(error);
