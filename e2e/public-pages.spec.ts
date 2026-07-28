@@ -10,11 +10,11 @@ test.describe('Public Pages End-to-End Tests', () => {
     await expect(page.locator('text=Setiap properti di HomeLink telah melalui inspeksi fisik')).toBeVisible();
 
     // Periksa keberadaan section "Properti Unggulan" (Featured Properties)
-    await expect(page.locator('text=Properti Unggulan')).toBeVisible();
+    await expect(page.locator('text=Properti Terverifikasi Minggu Ini')).toBeVisible();
 
     // Pastikan beberapa list properti dummy (PropertyCard) tampil
-    await expect(page.locator('text=Rumah Mewah Minimalis di Pondok Indah')).toBeVisible();
-    await expect(page.locator('text=Apartemen Sudirman Suites 2BR')).toBeVisible();
+    await expect(page.locator('text=Beautiful Apartment in City Center')).toBeVisible();
+    await expect(page.locator('text=Spacious Villa with Pool')).toBeVisible();
   });
 
   test('Property details dummy route should not crash', async ({ page }) => {
