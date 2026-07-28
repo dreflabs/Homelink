@@ -52,7 +52,9 @@ sequenceDiagram
 ### 8.4. The Onboarding Gate (UX Interception)
 - Segera setelah *login* (terutama melalui OAuth), *middleware* (`auth.config.ts`) akan memeriksa nilai atribut `isOnboarded` pada sesi JWT.
 - Jika pengguna belum memilih peran (Role) pada saat pendaftaran awal (`isOnboarded: false`), mereka akan secara paksa diarahkan ke halaman `/onboarding`.
-- Hal ini memastikan bahwa data peran pengguna di database akurat sejak detik pertama dan tidak ada *user* yang salah dasbor.
+- Halaman ini **hanya** muncul untuk pengguna baru yang benar-benar belum memiliki peran (contoh: login Google pertama kali).
+- Setelah pengguna memilih peran dan klik "Lanjutkan", status `isOnboarded` mereka menjadi `true` di database, dan mereka tidak akan pernah lagi melihat halaman ini seumur hidup.
+- **Admin Bypass (God Mode):** Pengguna dengan peran `ADMIN` atau `SUPER_ADMIN` dikecualikan secara mutlak dari Onboarding Gate. Hal ini mencegah kemungkinan Admin terkunci di luar sistem *(lockout)* akibat status `isOnboarded` yang tidak sesuai di memori sesi.
 
 ### 8.5. Security Mandates
 - **XSS Protection:** Token Sesi TIDAK BOLEH dikirim dalam *response body* JSON untuk disimpan Klien di `localStorage`. Token HARUS dikirim eksklusif melalui *header* `Set-Cookie` dengan flag `HttpOnly=true` dan `Secure=true`.
@@ -81,3 +83,4 @@ sequenceDiagram
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
 | 1.1.0   | 2026-07-29 | AI Engineer          | APPROVED | Added OAuth Account Linking documentation |
 | 1.2.0   | 2026-07-29 | CPO & AI Engineer    | APPROVED | Added The Onboarding Gate documentation |
+| 1.3.0   | 2026-07-29 | AI Engineer          | APPROVED | Documented Admin Bypass rules and Onboarding exclusions |
