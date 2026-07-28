@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession, SessionProvider } from "next-auth/react";
 import { Building2, Home, Camera, Loader2, ArrowRight } from "lucide-react";
 import { completeOnboarding } from "@/actions/onboarding";
 import { Role } from "@prisma/client";
@@ -33,7 +33,7 @@ const ROLES = [
   }
 ];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
   const { data: session, update } = useSession();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
@@ -162,5 +162,13 @@ export default function OnboardingPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <SessionProvider>
+      <OnboardingContent />
+    </SessionProvider>
   );
 }
