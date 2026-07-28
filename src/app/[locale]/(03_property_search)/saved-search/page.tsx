@@ -3,8 +3,10 @@ import { SearchHeroWrapper } from '@/components/shared/SearchHeroWrapper';
 import { Bookmark, Bell, ChevronRight, SlidersHorizontal, MapPin } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function SavedSearchPage() {
+  const t = useTranslations("PropertySearch.SavedSearch");
   const savedSearches = [
     {
       id: "search-1",
@@ -46,8 +48,8 @@ export default function SavedSearchPage() {
             <Bookmark className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Pencarian Tersimpan</h1>
-            <p className="text-slate-500 text-sm mt-1">Kelola kriteria pencarian Anda dan dapatkan notifikasi properti baru.</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("pageTitle")}</h1>
+            <p className="text-slate-500 text-sm mt-1">{t("pageDesc")}</p>
           </div>
         </div>
 
@@ -61,7 +63,7 @@ export default function SavedSearchPage() {
                     <h3 className="text-lg font-bold text-slate-900 group-hover:text-primary transition-colors">{search.title}</h3>
                     {search.newResults > 0 && (
                       <span className="bg-slate-100 text-primary text-xs font-bold px-2 py-1 rounded-md">
-                        {search.newResults} Properti Baru
+                        {search.newResults} {t("newProperties")}
                       </span>
                     )}
                   </div>
@@ -71,7 +73,7 @@ export default function SavedSearchPage() {
                     <span>{search.filters}</span>
                   </div>
                   
-                  <p className="text-xs text-slate-400">Disimpan pada {search.dateAdded}</p>
+                  <p className="text-xs text-slate-400">{t("savedOn", { date: search.dateAdded })}</p>
                 </div>
 
                 <div className="flex items-center gap-4 w-full md:w-auto border-t md:border-t-0 border-slate-100 pt-4 md:pt-0">
@@ -82,12 +84,12 @@ export default function SavedSearchPage() {
                       defaultChecked={search.alertEnabled}
                     />
                     <Bell className="w-5 h-5" />
-                    Notifikasi Email
+                    {t("emailNotification")}
                   </label>
                   
                   <Link href={`/search-result?q=${encodeURIComponent(search.title)}`} className="ml-auto md:ml-0">
                     <Button className="bg-slate-50 text-primary hover:bg-slate-100 border-0 shadow-none rounded-xl">
-                      Lihat Hasil <ChevronRight className="w-4 h-4 ml-1" />
+                      {t("viewResults")} <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
                 </div>

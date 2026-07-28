@@ -15,12 +15,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const loginSchema = z.object({
-  email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid"),
-  password: z.string().min(1, "Kata sandi wajib diisi"),
-  rememberMe: z.boolean()
-});
-type LoginFormValues = z.infer<typeof loginSchema>;
+// Schema will be defined inside the component to use translations
+type LoginFormValues = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+};
 
 export default function LoginPage() {
   const t = useTranslations("Auth.login");
@@ -28,6 +28,12 @@ export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const loginSchema = z.object({
+    email: z.string().min(1, t("emailRequired")).email(t("emailInvalid")),
+    password: z.string().min(1, t("passwordRequired")),
+    rememberMe: z.boolean()
+  });
 
   const {
     register,
@@ -76,10 +82,10 @@ export default function LoginPage() {
           
           <div className="mb-20">
             <h1 className="text-4xl lg:text-5xl leading-tight font-semibold tracking-tight mb-6">
-              Platform properti paling eksklusif dan terpercaya di Indonesia.
+              {t("heroTitle")}
             </h1>
             <p className="text-lg text-slate-200/90 font-medium max-w-md mb-10 leading-relaxed">
-              Bergabunglah dengan ribuan pembeli dan pemilik properti yang telah membuktikan keamanan transaksi bersama kami.
+              {t("heroDesc")}
             </p>
             
             <div className="flex items-center gap-4">
@@ -89,7 +95,7 @@ export default function LoginPage() {
                 <Image src="https://i.pravatar.cc/100?img=3" width={40} height={40} className="w-10 h-10 rounded-full border-2 border-slate-900" alt="User" />
               </div>
               <div className="text-sm text-slate-300">
-                <span className="text-white font-semibold">4.9/5</span> dari 2.000+ ulasan
+                <span className="text-white font-semibold">4.9/5</span> {t("reviews")}
               </div>
             </div>
           </div>
@@ -107,10 +113,10 @@ export default function LoginPage() {
             {/* Header */}
             <div className="mb-6 lg:mb-8 text-center">
               <h2 className="text-2xl lg:text-3xl leading-snug font-semibold tracking-tight text-slate-900 mb-2">
-                Selamat Datang Kembali
+                {t("welcomeBack")}
               </h2>
               <p className="text-sm text-slate-500">
-                Lanjutkan perjalanan Anda di HomeLink.
+                {t("continueJourney")}
               </p>
             </div>
 
@@ -134,13 +140,13 @@ export default function LoginPage() {
                     <path fill="none" d="M0 0h48v48H0z"/>
                   </svg>
                 )}
-                Lanjutkan dengan Google
+                {t("continueWithGoogle")}
               </Button>
             </div>
 
             <div className="my-6 flex items-center gap-4">
               <div className="h-px flex-1 bg-slate-200/80" />
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">atau dengan email</span>
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{t("orWithEmail")}</span>
               <div className="h-px flex-1 bg-slate-200/80" />
             </div>
 
@@ -148,7 +154,7 @@ export default function LoginPage() {
               {/* Email */}
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-semibold text-slate-600 uppercase tracking-widest ml-1">
-                  Alamat Email
+                  {t("emailAddress")}
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" aria-hidden="true" />
@@ -170,10 +176,10 @@ export default function LoginPage() {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between ml-1">
                   <Label htmlFor="password" className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                    Kata Sandi
+                    {t("password")}
                   </Label>
                   <Link href="/forgot-password" className="text-sm text-slate-500 hover:text-slate-800 font-medium transition-colors">
-                    Lupa sandi?
+                    {t("forgotPassword")}
                   </Link>
                 </div>
                 <div className="relative">
@@ -190,7 +196,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                    aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                    aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
                   </button>
@@ -209,7 +215,7 @@ export default function LoginPage() {
                   {...register("rememberMe")}
                 />
                 <Label htmlFor="rememberMe" className="text-sm text-slate-600 font-medium cursor-pointer">
-                  Ingat saya
+                  {t("rememberMe")}
                 </Label>
               </div>
 
@@ -228,17 +234,17 @@ export default function LoginPage() {
                 disabled={isPending || isGoogleLoading}
               >
                 {isPending ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Memproses...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />{t("processing")}</>
                 ) : (
-                  "Masuk ke Akun"
+                  t("loginToAccount")
                 )}
               </Button>
             </form>
 
             <p className="text-center text-sm text-slate-500 mt-8">
-              Belum punya akun?{" "}
+              {t("noAccount")}{" "}
               <Link href="/register" className="font-semibold text-slate-900 hover:underline transition-all">
-                Mulai perjalanan Anda
+                {t("startJourney")}
               </Link>
             </p>
 

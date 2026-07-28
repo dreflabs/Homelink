@@ -105,6 +105,7 @@ export async function toggleFeatureFlag(flagId: string, isEnabled: boolean) {
 // 6. System Health
 export async function getSystemHealth() {
   await verifySuperAdmin();
+  const os = await import("os");
 
   let dbStatus = "Healthy";
   let latencyMs = 0;
@@ -122,13 +123,26 @@ export async function getSystemHealth() {
     prisma.property.count()
   ]);
 
+  const uptimeSeconds = os.uptime();
+  const uptimeDays = Math.floor(uptimeSeconds / 86400);
+  const memTotal = os.totalmem();
+  const memFree = os.freemem();
+  const memUsage = (((memTotal - memFree) / memTotal) * 100).toFixed(1);
+  const loadAvg = os.loadavg()[0].toFixed(2);
+  const cores = os.cpus().length;
+
   return {
     database: { status: dbStatus, latencyMs, userCount, propertyCount },
+    os: {
+      uptime: `${uptimeDays} days`,
+      memTotalGb: (memTotal / 1e9).toFixed(1),
+      memUsagePercent: parseFloat(memUsage),
+      loadAvg: parseFloat(loadAvg),
+      cores
+    },
     services: [
-      { name: "Main API Server", status: "Healthy", uptime: "99.99%", color: "bg-green-500" },
+      { name: "Main API Server", status: "Healthy", uptime: `${uptimeDays} days`, color: "bg-green-500" },
       { name: "Authentication Service", status: "Healthy", uptime: "100%", color: "bg-green-500" },
-      { name: "Payment Worker", status: "Healthy", uptime: "99.8%", color: "bg-green-500" },
-      { name: "Email Queue", status: "Healthy", uptime: "99.9%", color: "bg-green-500" },
       { name: "Search Indexer (pgvector)", status: dbStatus === "Healthy" ? "Healthy" : "Down", uptime: "99.5%", color: dbStatus === "Healthy" ? "bg-green-500" : "bg-red-500" },
     ]
   };

@@ -14,31 +14,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { resetPassword } from "@/actions/auth";
 import { AuthShowcase } from "@/components/auth/AuthShowcase";
-
-const resetPasswordSchema = z
-  .object({
-    token: z.string().min(1),
-    password: z
-      .string()
-      .min(8, "Password minimal 8 karakter.")
-      .regex(/[A-Z]/, "Harus mengandung minimal 1 huruf besar.")
-      .regex(/[0-9]/, "Harus mengandung minimal 1 angka.")
-      .refine(
-        (pw) => !["password123", "12345678"].includes(pw.toLowerCase()),
-        "Password terlalu umum."
-      ),
-    confirmPassword: z.string(),
-  })
-  .refine((d) => d.password === d.confirmPassword, {
-    message: "Konfirmasi password tidak cocok.",
-    path: ["confirmPassword"],
-  });
-
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+import { useTranslations } from "next-intl";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const t = useTranslations("Auth.ResetPassword");
+  
+  const resetPasswordSchema = z
+    .object({
+      token: z.string().min(1),
+      password: z
+        .string()
+        .min(8, t("passwordMin"))
+        .regex(/[A-Z]/, t("passwordUppercase"))
+        .regex(/[0-9]/, t("passwordNumber"))
+        .refine(
+          (pw) => !["password123", "12345678"].includes(pw.toLowerCase()),
+          t("passwordCommon")
+        ),
+      confirmPassword: z.string(),
+    })
+    .refine((d) => d.password === d.confirmPassword, {
+      message: t("passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
+  type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
   const tokenStatus: "valid" | "invalid" = token ? "valid" : "invalid";
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -71,7 +74,7 @@ function ResetPasswordForm() {
         setIsSuccess(true);
       }
     } catch (e) {
-      setErrorMsg("An unexpected error occurred.");
+      setErrorMsg(t("errorOccurred"));
     }
   };
 
@@ -115,7 +118,7 @@ function ResetPasswordForm() {
           
           <Link href="/login" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-8">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Kembali ke Login
+            {t("backToLogin")}
           </Link>
 
           {tokenStatus === "invalid" ? (
@@ -124,13 +127,13 @@ function ResetPasswordForm() {
                 <XCircle className="h-8 w-8 text-destructive" />
               </div>
               <div className="space-y-4 mb-8">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Tautan Tidak Valid</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t("invalidLinkTitle")}</h1>
                 <p className="text-base text-slate-500 leading-relaxed">
-                  Tautan reset ini sudah tidak berlaku atau salah. Silakan minta tautan pemulihan yang baru.
+                  {t("invalidLinkDesc")}
                 </p>
               </div>
               <Button asChild className="w-full h-12 text-base shadow-sm" variant="default">
-                <Link href="/forgot-password">Minta Tautan Baru</Link>
+                <Link href="/forgot-password">{t("requestNewLink")}</Link>
               </Button>
             </div>
           ) : isSuccess ? (
@@ -139,23 +142,23 @@ function ResetPasswordForm() {
                 <ShieldCheck className="h-8 w-8 text-emerald-600" />
               </div>
               <div className="space-y-4 mb-8">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Password Diperbarui</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-900">{t("successTitle")}</h1>
                 <p className="text-base text-slate-500 leading-relaxed">
-                  Kata sandi Anda berhasil diubah. Akun Anda kini kembali aman dan siap digunakan.
+                  {t("successDesc")}
                 </p>
               </div>
               <Button asChild className="w-full h-12 text-base shadow-sm" variant="default">
-                <Link href="/login">Masuk ke Akun</Link>
+                <Link href="/login">{t("loginToAccount")}</Link>
               </Button>
             </div>
           ) : (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="space-y-3 mb-10">
                 <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
-                  Buat Password Baru
+                  {t("formTitle")}
                 </h1>
                 <p className="text-base text-slate-500 leading-relaxed">
-                  Masukkan kata sandi baru yang kuat untuk mengamankan kembali akun Anda.
+                  {t("formDesc")}
                 </p>
               </div>
 
@@ -164,7 +167,7 @@ function ResetPasswordForm() {
 
                 <div className="space-y-2.5">
                   <Label htmlFor="password" className="font-medium text-slate-700 uppercase tracking-wider text-xs">
-                    Password Baru
+                    {t("newPasswordLabel")}
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
@@ -173,7 +176,7 @@ function ResetPasswordForm() {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Minimal 8 karakter"
+                      placeholder={t("newPasswordPlaceholder")}
                       className="h-12 pl-11 pr-11 bg-white border-slate-200 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                       {...register("password")}
                       aria-invalid={!!errors.password}
@@ -210,7 +213,7 @@ function ResetPasswordForm() {
 
                 <div className="space-y-2.5">
                   <Label htmlFor="confirmPassword" className="font-medium text-slate-700 uppercase tracking-wider text-xs">
-                    Konfirmasi Password
+                    {t("confirmPasswordLabel")}
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
@@ -219,7 +222,7 @@ function ResetPasswordForm() {
                     <Input
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Ulangi password baru"
+                      placeholder={t("confirmPasswordPlaceholder")}
                       className="h-12 pl-11 pr-11 bg-white border-slate-200 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                       {...register("confirmPassword")}
                       aria-invalid={!!errors.confirmPassword}
@@ -249,10 +252,10 @@ function ResetPasswordForm() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Menyimpan...
+                      {t("saving")}
                     </>
                   ) : (
-                    "Simpan Password Baru"
+                    t("saveNewPassword")
                   )}
                 </Button>
               </form>
@@ -264,16 +267,21 @@ function ResetPasswordForm() {
   );
 }
 
+function LoadingFallback() {
+  const t = useTranslations("Auth.ResetPassword");
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex flex-col items-center space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-slate-500 font-medium">{t("loading")}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-slate-500 font-medium">Memuat antarmuka...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<LoadingFallback />}>
       <ResetPasswordForm />
     </Suspense>
   );

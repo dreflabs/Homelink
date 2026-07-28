@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PropertyCard } from "@/components/shared/PropertyCard";
 import { semanticSearch } from "@/actions/ai-search";
+import { useTranslations } from "next-intl";
 
 type SearchResult = {
   id: string;
@@ -20,6 +21,7 @@ type SearchResult = {
 };
 
 export default function AISearchPage() {
+  const t = useTranslations("AI.Search");
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -46,10 +48,10 @@ export default function AISearchPage() {
           <Sparkles className="w-8 h-8 text-primary" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
-          AI Semantic Search
+          {t("pageTitle")}
         </h1>
         <p className="text-lg text-slate-500 max-w-2xl">
-          Find exactly what you're looking for by describing it naturally. Our AI understands context, amenities, and lifestyle preferences.
+          {t("pageDesc")}
         </p>
       </div>
 
@@ -62,7 +64,7 @@ export default function AISearchPage() {
           name="query"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="e.g. 'A quiet apartment near a park with a balcony for my cat'"
+          placeholder={t("searchPlaceholder")}
           className="pl-12 pr-32 py-8 text-lg rounded-full shadow-lg border-slate-200 bg-white/80 backdrop-blur-sm focus-visible:ring-primary focus-visible:ring-offset-2 transition-all relative z-0"
           disabled={isSearching}
         />
@@ -72,7 +74,7 @@ export default function AISearchPage() {
             disabled={!query.trim() || isSearching}
             className="rounded-full px-6 h-full bg-primary hover:bg-primary text-white shadow-md disabled:opacity-60"
           >
-            {isSearching ? "Mencari..." : "Search"}
+            {isSearching ? t("searching") : t("search")}
           </Button>
         </div>
       </form>
@@ -100,16 +102,16 @@ export default function AISearchPage() {
         ) : (
           <div className="col-span-full py-20 text-center text-slate-400 flex flex-col items-center justify-center bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
             <SearchX className="w-12 h-12 mb-4 opacity-50" />
-            <p className="text-lg font-medium">Tidak ada hasil yang cocok</p>
-            <p className="text-sm">Coba deskripsikan properti yang Anda cari dengan cara lain.</p>
+            <p className="text-lg font-medium">{t("noResults")}</p>
+            <p className="text-sm">{t("noResultsDesc")}</p>
           </div>
         )
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="col-span-full py-20 text-center text-slate-400 flex flex-col items-center justify-center bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
             <Search className="w-12 h-12 mb-4 opacity-50" />
-            <p className="text-lg font-medium">Try searching for something specific</p>
-            <p className="text-sm">Results will appear here based on semantic relevance.</p>
+            <p className="text-lg font-medium">{t("trySpecific")}</p>
+            <p className="text-sm">{t("trySpecificDesc")}</p>
           </div>
         </div>
       )}

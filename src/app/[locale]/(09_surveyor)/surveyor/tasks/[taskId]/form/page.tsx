@@ -27,11 +27,10 @@ const PARAMETERS = [
 export default function SurveyorFormPage() {
   const router = useRouter();
   const params = useParams();
-  // Route segment is named [propertyId] but the value passed in is the SurveyTask id.
-  const taskId = params?.propertyId as string;
+  const taskId = params?.taskId as string;
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SurveyFormValues>({
+  const { control, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm<SurveyFormValues>({
     defaultValues: {
       atap: undefined,
       dinding: undefined,
@@ -41,19 +40,34 @@ export default function SurveyorFormPage() {
     },
   });
 
+  // Load from local storage
+  React.useEffect(() => {
+    const saved = localStorage.getItem(`survey_draft_${taskId}`);
+    if (saved) {
+      try {
+        reset(JSON.parse(saved));
+      } catch (e) {
+        // invalid json, ignore
+      }
+    }
+  }, [taskId, reset]);
+
+  // Save to local storage on change
+  React.useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem(`survey_draft_${taskId}`, JSON.stringify(value));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, taskId]);
+
   const onSubmit = async (data: SurveyFormValues) => {
     setSubmitError(null);
-    const notes = [
-      `Atap: ${data.atap}`,
-      `Dinding: ${data.dinding}`,
-      `Listrik: ${data.listrik}`,
-      `Sanitasi: ${data.sanitasi}`,
-      data.catatan ? `Catatan: ${data.catatan}` : null,
-    ].filter(Boolean).join('\n');
+    const payload = JSON.stringify(data); // Save as JSON instead of plaintext for easier parsing later
 
     try {
-      await submitSurveyReport(taskId, notes, []);
-      router.push('/surveyor/assignments');
+      await submitSurveyReport(taskId, payload, []);
+      localStorage.removeItem(`survey_draft_${taskId}`);
+      router.push(`/surveyor/tasks/${taskId}/verification`);
     } catch (error: any) {
       setSubmitError(error?.message || 'Gagal mengirim laporan. Silakan coba lagi.');
     }

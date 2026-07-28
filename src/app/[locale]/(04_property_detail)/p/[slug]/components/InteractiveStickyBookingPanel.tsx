@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { CalendarCheck, MessageCircle, ShieldCheck, Calculator } from 'lucide-react';
 import { submitLead, submitBooking } from '@/actions/property';
 import { MortgageCalculator } from '@/components/shared/property/MortgageCalculator';
+import { useTranslations } from 'next-intl';
 
 export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyId: string, price: number }) {
+  const t = useTranslations('PropertyDetail');
   const [activeTab, setActiveTab] = useState<'schedule' | 'contact'>('schedule');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -46,7 +48,7 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
         surveyDate: surveyDateString ? new Date(surveyDateString) : new Date(),
         timeSlot: "TBD",
       });
-      if (res.success) setSuccess('Jadwal survey berhasil diajukan!');
+      if (res.success) setSuccess(t('surveySuccess'));
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,7 +66,7 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
         propertyId,
         interactionType: "MESSAGE",
       });
-      if (res.success) setSuccess('Pesan berhasil dikirim. Agen akan segera menghubungi Anda.');
+      if (res.success) setSuccess(t('messageSuccess'));
     } catch (error) {
       console.error(error);
     } finally {
@@ -75,7 +77,7 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
   return (
     <div className="sticky top-24 bg-white rounded-2xl shadow-card border border-slate-100 p-6 flex flex-col gap-6">
       <div>
-        <p className="text-slate-500 text-sm font-medium mb-1">Harga Mulai</p>
+        <p className="text-slate-500 text-sm font-medium mb-1">{t('startingPrice')}</p>
         <h3 className="text-3xl font-bold text-slate-900">{formattedPrice}</h3>
         <div className="mt-3 flex items-center justify-between">
           <button
@@ -84,14 +86,14 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
             className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 group cursor-pointer transition-colors"
           >
             <Calculator className="w-4 h-4 text-primary transition-transform group-hover:scale-110" />
-            <span>Cicilan estimasi {estimatedInstallment}/bulan</span>
+            <span>{t('estimatedInstallment', { amount: estimatedInstallment })}</span>
           </button>
           <button
             type="button"
             onClick={() => setShowCalculator(true)}
             className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary font-semibold hover:bg-primary/20 transition-colors cursor-pointer"
           >
-            Simulasi KPR
+            {t('mortgageSimulation')}
           </button>
         </div>
       </div>
@@ -103,13 +105,13 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'schedule' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           onClick={() => { setActiveTab('schedule'); setSuccess(''); }}
         >
-          Jadwal Survey
+          {t('scheduleSurvey')}
         </button>
         <button
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${activeTab === 'contact' ? 'bg-white shadow-sm text-primary' : 'text-slate-500 hover:text-slate-700'}`}
           onClick={() => { setActiveTab('contact'); setSuccess(''); }}
         >
-          Hubungi Agen
+          {t('contactAgent')}
         </button>
       </div>
 
@@ -122,47 +124,47 @@ export function InteractiveStickyBookingPanel({ propertyId, price }: { propertyI
         <form onSubmit={handleSchedule} className="space-y-4">
           <div className="space-y-3">
             <div>
-              <label htmlFor="name" className="text-sm font-medium text-slate-700 block mb-1">Nama Lengkap</label>
-              <input type="text" id="name" name="name" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="Masukkan nama Anda" />
+              <label htmlFor="name" className="text-sm font-medium text-slate-700 block mb-1">{t('fullName')}</label>
+              <input type="text" id="name" name="name" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder={t('enterName')} />
             </div>
             <div>
-              <label htmlFor="phone" className="text-sm font-medium text-slate-700 block mb-1">Nomor WhatsApp</label>
+              <label htmlFor="phone" className="text-sm font-medium text-slate-700 block mb-1">{t('whatsappNumber')}</label>
               <input type="tel" id="phone" name="phone" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="08xx xxxx xxxx" />
             </div>
             <div>
-              <label htmlFor="date" className="text-sm font-medium text-slate-700 block mb-1">Pilih Tanggal Survey</label>
+              <label htmlFor="date" className="text-sm font-medium text-slate-700 block mb-1">{t('selectSurveyDate')}</label>
               <input type="date" id="date" name="date" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
             </div>
           </div>
           
           <Button type="submit" disabled={loading} size="lg" className="w-full bg-primary hover:bg-primary text-white rounded-xl h-14 text-base shadow-lg shadow-blue-700/20">
             <CalendarCheck className="w-5 h-5 mr-2" />
-            {loading ? 'Memproses...' : 'Jadwalkan Survey Lokasi'}
+            {loading ? t('processing') : t('scheduleLocationSurvey')}
           </Button>
           <p className="text-xs text-center text-slate-500">
-            Tidak dipungut biaya untuk survey lokasi.
+            {t('freeSurvey')}
           </p>
         </form>
       ) : (
         <form onSubmit={handleContact} className="space-y-4">
            <div className="space-y-3">
             <div>
-              <label htmlFor="contact-name" className="text-sm font-medium text-slate-700 block mb-1">Nama Lengkap</label>
-              <input type="text" id="contact-name" name="name" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="Masukkan nama Anda" />
+              <label htmlFor="contact-name" className="text-sm font-medium text-slate-700 block mb-1">{t('fullName')}</label>
+              <input type="text" id="contact-name" name="name" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder={t('enterName')} />
             </div>
             <div>
-              <label htmlFor="contact-phone" className="text-sm font-medium text-slate-700 block mb-1">Nomor WhatsApp</label>
+              <label htmlFor="contact-phone" className="text-sm font-medium text-slate-700 block mb-1">{t('whatsappNumber')}</label>
               <input type="tel" id="contact-phone" name="phone" required className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="08xx xxxx xxxx" />
             </div>
             <div>
-              <label htmlFor="message" className="text-sm font-medium text-slate-700 block mb-1">Pesan</label>
-              <textarea id="message" name="message" rows={3} className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder="Halo, saya tertarik dengan properti ini..." defaultValue="Halo, saya tertarik dengan properti ini. Apakah masih tersedia?" />
+              <label htmlFor="message" className="text-sm font-medium text-slate-700 block mb-1">{t('message')}</label>
+              <textarea id="message" name="message" rows={3} className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" placeholder={t('messagePlaceholder')} defaultValue={t('messageDefault')} />
             </div>
           </div>
           
           <Button type="submit" disabled={loading} size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-14 text-base shadow-lg shadow-emerald-600/20">
             <MessageCircle className="w-5 h-5 mr-2" />
-            {loading ? 'Mengirim...' : 'Kirim Pesan via Sistem'}
+            {loading ? t('sending') : t('sendMessage')}
           </Button>
         </form>
       )}

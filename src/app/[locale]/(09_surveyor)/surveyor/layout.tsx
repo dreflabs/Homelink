@@ -21,11 +21,7 @@ export default async function SurveyorLayout({ children }: { children: React.Rea
       sidebarTheme="light"
       links={[
         { href: "/surveyor", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-        { href: "/surveyor/assignments", label: "Assignments", icon: <ClipboardList className="w-5 h-5" /> },
-        { href: "/surveyor/survey-form", label: "Survey Form", icon: <FileCheck className="w-5 h-5" /> },
-        { href: "/surveyor/verification", label: "Verification", icon: <CheckSquare className="w-5 h-5" /> },
-        { href: "/surveyor/upload-photo", label: "Upload Photo", icon: <Camera className="w-5 h-5" /> },
-        { href: "/surveyor/upload-video", label: "Upload Video", icon: <Video className="w-5 h-5" /> },
+        { href: "/surveyor/tasks", label: "Assignments", icon: <ClipboardList className="w-5 h-5" /> },
         { href: "/surveyor/reports", label: "Reports", icon: <FileCheck className="w-5 h-5" /> },
         { href: "/surveyor/schedule", label: "Schedule", icon: <Calendar className="w-5 h-5" /> },
       ]}

@@ -6,8 +6,10 @@ import { PropertyCard } from '@/components/shared/PropertyCard';
 import { MapPin, Navigation, Map as MapIcon, Compass } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { getNearbyProperties } from '@/actions/property';
+import { useTranslations } from 'next-intl';
 
 export default function NearbySearchPage() {
+  const t = useTranslations("PropertySearch.NearbySearch");
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
   const [nearbyProperties, setNearbyProperties] = useState<any[]>([]);
@@ -35,11 +37,11 @@ export default function NearbySearchPage() {
         (error) => {
           console.error(error);
           setLoading(false);
-          alert('Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.');
+          alert(t("errorFailedFetch"));
         }
       );
     } else {
-      alert('Geolokasi tidak didukung di browser ini.');
+      alert(t("errorNotSupported"));
       setLoading(false);
     }
   };
@@ -60,8 +62,8 @@ export default function NearbySearchPage() {
             <Compass className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Properti di Sekitar Anda</h1>
-            <p className="text-slate-500 text-sm mt-1">Temukan properti idaman terdekat dari lokasi Anda saat ini.</p>
+            <h1 className="text-2xl font-bold text-slate-900">{t("pageTitle")}</h1>
+            <p className="text-slate-500 text-sm mt-1">{t("pageDesc")}</p>
           </div>
         </div>
 
@@ -70,9 +72,9 @@ export default function NearbySearchPage() {
             <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 relative">
               <Navigation className="w-10 h-10 text-primary absolute animate-pulse" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 mb-3">Izinkan Akses Lokasi</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-3">{t("allowLocationTitle")}</h2>
             <p className="text-slate-500 mb-8 max-w-md">
-              Untuk menemukan properti di sekitar Anda, kami memerlukan izin untuk mengakses lokasi perangkat Anda.
+              {t("allowLocationDesc")}
             </p>
             <Button 
               onClick={requestLocation} 
@@ -80,7 +82,7 @@ export default function NearbySearchPage() {
               className="bg-primary hover:bg-primary text-white px-8 py-6 rounded-xl text-base shadow-lg shadow-blue-600/20 w-full sm:w-auto"
             >
               <Navigation className="w-5 h-5 mr-2" />
-              {loading ? 'Mendeteksi...' : 'Deteksi Lokasi Saya'}
+              {loading ? t("detecting") : t("detectLocation")}
             </Button>
           </div>
         ) : (
@@ -88,10 +90,10 @@ export default function NearbySearchPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
               <div className="flex items-center gap-2 text-sm font-medium text-green-600 bg-green-50 px-3 py-1.5 rounded-lg border border-green-200">
                 <MapPin className="w-5 h-5" />
-                Lokasi terdeteksi (-6.2088, 106.8456)
+                {t("locationDetected")} ({location.lat.toFixed(4)}, {location.lng.toFixed(4)})
               </div>
               <Button variant="outline" className="text-sm rounded-lg border-slate-200" onClick={requestLocation}>
-                Perbarui Lokasi
+                {t("updateLocation")}
               </Button>
             </div>
 

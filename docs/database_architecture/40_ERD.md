@@ -108,6 +108,34 @@ erDiagram
         datetime createdAt
     }
 
+    AGENCY {
+        uuid id PK
+        string name
+        string address
+        string phone
+        datetime createdAt
+    }
+
+    PARTNER_AGENT_PROFILE {
+        uuid id PK
+        uuid userId FK
+        uuid agencyId FK
+        string licenseNo
+        string bio
+        decimal rating
+        datetime createdAt
+    }
+
+    AGENT_CLIENT {
+        uuid id PK
+        uuid agentId FK
+        string name
+        string email
+        string phone
+        string status
+        datetime createdAt
+    }
+
     %% Relationships
     USER ||--o{ PROPERTY : "owns (1:N)"
     USER ||--o{ BOOKING : "books (1:N)"
@@ -118,9 +146,15 @@ erDiagram
     PROPERTY ||--o{ PROPERTY_MEDIA : "has (1:N)"
     PROPERTY ||--o{ BOOKING : "receives (1:N)"
     PROPERTY ||--o{ VERIFICATION_AUDIT : "undergoes (1:N)"
+    
+    %% Phase 4 Relationships
+    AGENCY ||--o{ PARTNER_AGENT_PROFILE : "employs (1:N)"
+    USER ||--|| PARTNER_AGENT_PROFILE : "has profile (1:1)"
+    PARTNER_AGENT_PROFILE ||--o{ AGENT_CLIENT : "manages client (1:N)"
+    PARTNER_AGENT_PROFILE ||--o{ PROPERTY : "manages property (1:N)"
 ```
 
-**Catatan v1.0.1 (Audit):** Entitas `ACCOUNT` dan `AUDIT_LOG` ditambahkan untuk menutup celah dokumentasi — keduanya sudah dirujuk sebagai kewajiban di dokumen lain (`31_MODULE_BREAKDOWN.md` §8.1 untuk `Account`; `67_AUDIT_LOGGING.md` §Struktur Log untuk `AuditLog`) namun sebelumnya tidak pernah dimodelkan di ERD. `AUDIT_LOG` bersifat *append-only/immutable* — tidak ada relasi `onDelete: Cascade` dari `USER` ke `AUDIT_LOG` (lihat `43_RELATIONSHIP_SPECIFICATION.md` untuk aturan RESTRICT). Entitas pendukung modul Fase 2-4 (CMS, Billing, Notification, Commission — lihat `13_PRODUCT_ROADMAP.md` §8.3) sengaja **belum** dimodelkan di sini; akan ditambahkan saat modul tersebut memasuki fase aktif, agar ERD Fase 1 tetap ramping dan tidak berspekulasi pada skema yang scope-nya bisa berubah.
+**Catatan v1.0.2:** Penambahan `AGENCY`, `PARTNER_AGENT_PROFILE`, dan `AGENT_CLIENT` untuk melengkapi Ekstensi ERD Fase 4 (Agent Management).
 
 ## 9. Implementation
 - Backend engineers must map this ERD strictly into `schema.prisma`.
@@ -129,9 +163,10 @@ erDiagram
 ## 10. Acceptance Criteria
 - [x] All primary entities for Phase 1 are mapped.
 - [x] Cardinality (1:N, 1:1) is clearly visualized.
+- [x] Phase 4 Agent models are integrated.
 
 ## 11. Future Improvements
-- Expand ERD for Agent/Broker Management tables in Phase 4.
+- Expand ERD for Finance/Billing deeply.
 
 ## 12. References
 - *Mermaid ER Diagram Syntax*
@@ -140,4 +175,5 @@ erDiagram
 | Version | Date       | Author               | Status   | Notes                 |
 | :---    | :---       | :---                 | :---     | :---                  |
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
-| 1.0.1   | 2026-07-24 | Documentation Audit  | APPROVED | `PROPERTY.verificationStatus` diganti nama menjadi `status` agar konsisten dengan `42_TABLE_SPECIFICATION.md` dan `29_LOW_LEVEL_DESIGN_LLD.md`. `BOOKING.timeSlot` diperluas menjadi `MORNING, AFTERNOON, EVENING` agar konsisten dengan `29_LOW_LEVEL_DESIGN_LLD.md`. Menambahkan entitas `ACCOUNT` dan `AUDIT_LOG` yang sebelumnya dirujuk di dokumen lain tapi tidak pernah dimodelkan. |
+| 1.0.1   | 2026-07-24 | Documentation Audit  | APPROVED | Status/TimeSlot updates. |
+| 1.0.2   | 2026-07-28 | Data AI              | APPROVED | Phase 4 Agent extensions. |

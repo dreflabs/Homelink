@@ -23,7 +23,8 @@ export default async function AgentClientsPage() {
           <Table>
             <TableHeader className="bg-slate-50/50">
               <TableRow>
-                <TableHead className="font-semibold">{t('Clients.targetProperty')}</TableHead>
+                <TableHead className="font-semibold">Nama Klien</TableHead>
+                <TableHead className="font-semibold">Kontak</TableHead>
                 <TableHead className="font-semibold">{t('Clients.leadStatus')}</TableHead>
                 <TableHead className="font-semibold">{t('Clients.lastContact')}</TableHead>
               </TableRow>
@@ -31,12 +32,15 @@ export default async function AgentClientsPage() {
             <TableBody>
               {leads.map((lead) => (
                 <TableRow key={lead.id} className="hover:bg-slate-50 transition-colors">
-                  <TableCell className="font-medium text-slate-900">{lead.property}</TableCell>
+                  <TableCell className="font-medium text-slate-900">{lead.name}</TableCell>
+                  <TableCell className="text-slate-600 text-sm">
+                    {lead.email} <br /> {lead.phone}
+                  </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={
-                      lead.status === "CLOSED"
+                      lead.status === "ACTIVE"
                         ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : lead.status === "CONTACTED"
+                        : lead.status === "PENDING"
                         ? "bg-slate-50 text-primary border-slate-200"
                         : "bg-slate-100 text-slate-700 border-slate-200"
                     }>

@@ -21,9 +21,7 @@ export default async function OwnerDashboardLayout({
   const ownerLinks: SidebarLink[] = [
     { href: "/owner/dashboard", label: t("links.overview"), icon: <LayoutDashboard className="w-5 h-5" /> },
     { href: "/owner/properties", label: t("links.my_properties"), icon: <Building className="w-5 h-5" /> },
-    { href: "/owner/property-status", label: t("links.status_performance"), icon: <ChartArea className="w-5 h-5" /> },
     { href: "/owner/schedule", label: t("links.schedule"), icon: <Calendar className="w-5 h-5" /> },
-    { href: "/owner/documents", label: t("links.documents"), icon: <FileCheck className="w-5 h-5" /> },
     { href: "/owner/settings", label: t("links.settings"), icon: <Settings className="w-5 h-5" /> },
   ];
 

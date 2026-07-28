@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Loader2, Mail, MailCheck, MailX, RotateCw, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,8 @@ type VerificationStatus = "awaiting_email" | "verifying" | "success" | "invalid"
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations("Auth.VerifyEmail");
+  
   const [status, setStatus] = useState<VerificationStatus>("verifying");
   const [isResending, setIsResending] = useState(false);
   const [resendEmail, setResendEmail] = useState("");
@@ -51,7 +54,7 @@ function VerifyEmailContent() {
 
   const handleResend = async () => {
     if (!resendEmail) {
-      setResendMessage("Masukkan alamat email Anda terlebih dahulu.");
+      setResendMessage(t("enterEmailFirst"));
       return;
     }
     setIsResending(true);
@@ -60,7 +63,7 @@ function VerifyEmailContent() {
       const res = await resendVerificationEmail(resendEmail);
       setResendMessage(res.message);
     } catch (e) {
-      setResendMessage("Terjadi kesalahan. Silakan coba lagi.");
+      setResendMessage(t("errorOccurred"));
     } finally {
       setIsResending(false);
     }
@@ -82,10 +85,10 @@ function VerifyEmailContent() {
           
           <div className="mb-20">
             <h1 className="text-4xl lg:text-5xl leading-tight font-semibold tracking-tight mb-6">
-              Sistem keamanan tingkat bank yang selalu menjaga akun Anda.
+              {t("title")}
             </h1>
             <p className="text-lg text-slate-200/90 font-medium max-w-md leading-relaxed">
-              Keamanan data dan privasi Anda adalah prioritas utama kami. Verifikasi email Anda dengan cepat dan aman.
+              {t("subtitle")}
             </p>
           </div>
         </div>
@@ -102,7 +105,7 @@ function VerifyEmailContent() {
             {status === "verifying" && (
               <div className="flex flex-col items-center justify-center py-12 space-y-4">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-slate-500 font-medium">Memvalidasi email Anda...</p>
+                <p className="text-slate-500 font-medium">{t("verifying")}</p>
               </div>
             )}
 
@@ -112,13 +115,13 @@ function VerifyEmailContent() {
                   <Mail className="h-8 w-8 text-slate-800" />
                 </div>
                 <div className="space-y-4 mb-8 text-center">
-                  <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">Periksa Kotak Masuk</h1>
+                  <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">{t("checkInbox")}</h1>
                   <p className="text-sm text-slate-500 leading-relaxed">
-                    Kami telah mengirimkan tautan verifikasi ke email Anda. Silakan periksa kotak masuk atau folder spam Anda untuk mengaktifkan akun.
+                    {t("checkInboxDesc")}
                   </p>
                 </div>
                 <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200">
-                  <Link href="/login">Kembali ke Halaman Login</Link>
+                  <Link href="/login">{t("backToLogin")}</Link>
                 </Button>
               </div>
             )}
@@ -130,17 +133,17 @@ function VerifyEmailContent() {
                 </div>
                 <div className="space-y-4 mb-8 text-center">
                   <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
-                    {status === "already_verified" ? "Sudah Terverifikasi" : "Verifikasi Berhasil!"}
+                    {status === "already_verified" ? t("alreadyVerified") : t("success")}
                   </h1>
                   <p className="text-sm text-slate-500 leading-relaxed">
                     {status === "already_verified" 
-                      ? "Akun Anda sudah pernah diverifikasi sebelumnya."
-                      : "Email Anda berhasil diverifikasi. Akun Anda kini sepenuhnya aktif dan siap digunakan."}
+                      ? t("alreadyVerifiedDesc")
+                      : t("successDesc")}
                   </p>
                 </div>
                 <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200">
                   <Link href="/login">
-                    Lanjut ke Dashboard
+                    {t("continueToDashboard")}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -154,26 +157,26 @@ function VerifyEmailContent() {
                 </div>
                 <div className="space-y-4 mb-8 text-center">
                   <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
-                    {status === "expired" ? "Tautan Kedaluwarsa" : "Tautan Tidak Valid"}
+                    {status === "expired" ? t("linkExpired") : t("invalidLink")}
                   </h1>
                   <p className="text-sm text-slate-500 leading-relaxed">
                     {status === "expired"
-                      ? "Tautan verifikasi ini sudah melewati batas waktu aman. Silakan minta tautan baru."
-                      : "Tautan verifikasi ini tidak dapat dikenali, sudah digunakan, atau tidak valid."}
+                      ? t("linkExpiredDesc")
+                      : t("invalidLinkDesc")}
                   </p>
                 </div>
                 
                 <div className="space-y-5">
                   <div className="space-y-1.5">
                     <Label htmlFor="resendEmail" className="text-xs font-semibold text-slate-600 uppercase tracking-widest ml-1">
-                      Alamat Email
+                      {t("emailLabel")}
                     </Label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         id="resendEmail"
                         type="email"
-                        placeholder="nama@email.com"
+                        placeholder={t("emailPlaceholder")}
                         value={resendEmail}
                         onChange={(e) => setResendEmail(e.target.value)}
                         className="h-12 pl-11 bg-white/60 border-slate-200/60 rounded-xl focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all text-slate-900 placeholder:text-slate-400"
@@ -193,14 +196,14 @@ function VerifyEmailContent() {
                     disabled={isResending}
                   >
                     {isResending ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Mengirim ulang...</>
+                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t("resending")}</>
                     ) : (
-                      <><RotateCw className="mr-2 h-4 w-4" />Kirim Tautan Baru</>
+                      <><RotateCw className="mr-2 h-4 w-4" />{t("sendNewLink")}</>
                     )}
                   </Button>
                   
                   <Button asChild className="w-full h-12 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors" variant="ghost">
-                    <Link href="/login">Batal & Kembali ke Login</Link>
+                    <Link href="/login">{t("cancelAndBack")}</Link>
                   </Button>
                 </div>
               </div>
@@ -213,17 +216,23 @@ function VerifyEmailContent() {
   );
 }
 
+function LoadingFallback() {
+  const t = useTranslations("Auth.VerifyEmail");
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex flex-col items-center space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-slate-500 font-medium">{t("loading")}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-slate-500 font-medium">Memuat antarmuka...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<LoadingFallback />}>
       <VerifyEmailContent />
     </Suspense>
   );
 }
+

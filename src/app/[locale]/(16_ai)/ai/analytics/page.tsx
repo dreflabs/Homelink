@@ -4,9 +4,10 @@ import { Activity, Coins, Cpu, Clock, Zap, ChartCandlestick, BarChart3, Database
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import type { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type StatItem = {
-  title: string;
+  titleKey: string;
   value: string;
   change: string;
   isPositive: boolean;
@@ -18,7 +19,7 @@ type StatItem = {
 // Static stats — icon components defined here, never from API response
 const DEFAULT_STATS: StatItem[] = [
   {
-    title: "Total Token Digunakan",
+    titleKey: "totalTokens",
     value: "—",
     change: "—",
     isPositive: true,
@@ -27,7 +28,7 @@ const DEFAULT_STATS: StatItem[] = [
     bgClass: "bg-amber-50",
   },
   {
-    title: "Rata-rata Waktu Respon",
+    titleKey: "avgResponseTime",
     value: "—",
     change: "—",
     isPositive: true,
@@ -36,7 +37,7 @@ const DEFAULT_STATS: StatItem[] = [
     bgClass: "bg-emerald-50",
   },
   {
-    title: "Akurasi Prediksi Harga",
+    titleKey: "pricePredictionAccuracy",
     value: "—",
     change: "—",
     isPositive: true,
@@ -45,7 +46,7 @@ const DEFAULT_STATS: StatItem[] = [
     bgClass: "bg-slate-50",
   },
   {
-    title: "Beban Server AI",
+    titleKey: "aiServerLoad",
     value: "—",
     change: "—",
     isPositive: false,
@@ -58,6 +59,7 @@ const DEFAULT_STATS: StatItem[] = [
 const CHART_HEIGHTS = [40, 60, 45, 80, 55, 90, 75, 100, 65, 85, 50, 70];
 
 export default function AIAnalyticsPage() {
+  const t = useTranslations("AI.Analytics");
   const [stats, setStats] = useState<StatItem[]>(DEFAULT_STATS);
   const [chartHeights, setChartHeights] = useState<number[]>(CHART_HEIGHTS);
   const [loading, setLoading] = useState(true);
@@ -98,10 +100,10 @@ export default function AIAnalyticsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            AI Performance Analytics
+            {t("pageTitle")}
           </h1>
           <p className="text-slate-500">
-            Monitor metrik penggunaan, biaya token, dan performa model AI secara real-time.
+            {t("pageDesc")}
           </p>
         </div>
 
@@ -110,7 +112,7 @@ export default function AIAnalyticsPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-          Sistem Optimal
+          {t("systemOptimal")}
         </div>
       </div>
 
@@ -122,7 +124,7 @@ export default function AIAnalyticsPage() {
             <Card key={idx} className="bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-slate-500">
-                  {stat.title}
+                  {t(stat.titleKey)}
                 </CardTitle>
                 <div className={`p-2 rounded-lg ${stat.bgClass}`}>
                   <Icon className={`w-4 h-4 ${stat.colorClass}`} />
@@ -135,7 +137,7 @@ export default function AIAnalyticsPage() {
                 <p className={`text-xs font-medium flex items-center gap-1 ${
                   stat.isPositive ? "text-emerald-600" : "text-rose-600"
                 }`}>
-                  {stat.isPositive ? "↑" : "↓"} {stat.change} dari bulan lalu
+                  {stat.isPositive ? "↑" : "↓"} {stat.change} {t("fromLastMonth")}
                 </p>
               </CardContent>
             </Card>
@@ -151,13 +153,13 @@ export default function AIAnalyticsPage() {
               <div>
                 <CardTitle className="text-slate-900 flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-primary" />
-                  Grafik Penggunaan Token
+                  {t("tokenUsageChart")}
                 </CardTitle>
-                <p className="text-sm text-slate-500 mt-1">Estimasi biaya berdasarkan model (GPT-4o & Claude 3.5)</p>
+                <p className="text-sm text-slate-500 mt-1">{t("tokenUsageDesc")}</p>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-slate-900">$142.50</div>
-                <div className="text-xs text-slate-400">Total Biaya Bulan Ini</div>
+                <div className="text-xs text-slate-400">{t("totalCostThisMonth")}</div>
               </div>
             </div>
           </CardHeader>
@@ -181,15 +183,15 @@ export default function AIAnalyticsPage() {
           <CardHeader>
             <CardTitle className="text-slate-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-rose-500" />
-              Kesehatan Sistem AI
+              {t("aiSystemHealth")}
             </CardTitle>
-            <p className="text-sm text-slate-500 mt-1">Status modul core AI saat ini</p>
+            <p className="text-sm text-slate-500 mt-1">{t("aiSystemHealthDesc")}</p>
           </CardHeader>
           <CardContent className="space-y-5">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-500" /> Latensi API
+                  <Zap className="w-4 h-4 text-amber-500" /> {t("apiLatency")}
                 </span>
                 <span className="text-slate-900 font-semibold">124ms</span>
               </div>
@@ -201,7 +203,7 @@ export default function AIAnalyticsPage() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-cyan-500" /> Kapasitas Vector DB
+                  <Database className="w-4 h-4 text-cyan-500" /> {t("vectorDbCapacity")}
                 </span>
                 <span className="text-slate-900 font-semibold">68%</span>
               </div>
@@ -213,7 +215,7 @@ export default function AIAnalyticsPage() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-600 flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-primary" /> Rate Limit Assistant
+                  <Bot className="w-4 h-4 text-primary" /> {t("rateLimitAssistant")}
                 </span>
                 <span className="text-slate-900 font-semibold">85%</span>
               </div>
@@ -226,7 +228,7 @@ export default function AIAnalyticsPage() {
               <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
                 <div className="w-2 h-2 rounded-full bg-slate-500 mt-1.5 animate-pulse shrink-0" />
                 <p className="text-xs text-primary leading-relaxed">
-                  Traffic prediksi harga sedang tinggi. Sistem telah mengalokasikan 2 node tambahan untuk menjaga stabilitas.
+                  {t("systemNotice")}
                 </p>
               </div>
             </div>

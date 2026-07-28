@@ -13,17 +13,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { forgotPassword } from "@/actions/auth";
-
-const identifierSchema = z.object({
-  identifier: z.string().min(3, "Email atau nomor telepon wajib diisi."),
-});
-
-const forgotPasswordSchema = identifierSchema;
-type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+import { useTranslations } from "next-intl";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("Auth.ForgotPassword");
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const forgotPasswordSchema = z.object({
+    identifier: z.string().min(3, t("identifierMin")),
+  });
+  type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
   const {
     register,
@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
         setSubmitted(true);
       }
     } catch {
-      setErrorMsg("Terjadi kesalahan. Silakan coba lagi.");
+      setErrorMsg(t("errorOccurred"));
     }
   };
 
@@ -64,10 +64,10 @@ export default function ForgotPasswordPage() {
           
           <div className="mb-20">
             <h1 className="text-4xl lg:text-5xl leading-tight font-semibold tracking-tight mb-6">
-              Sistem keamanan tingkat bank yang selalu menjaga akun Anda.
+              {t("title")}
             </h1>
             <p className="text-lg text-slate-200/90 font-medium max-w-md leading-relaxed">
-              Keamanan data dan privasi Anda adalah prioritas utama kami. Pulihkan akun Anda dengan cepat dan aman.
+              {t("subtitle")}
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
               <Link
                 href="/login"
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
-                title="Kembali ke Login"
+                title={t("backToLogin")}
               >
                 <ArrowLeft className="h-5 w-5" />
               </Link>
@@ -100,10 +100,10 @@ export default function ForgotPasswordPage() {
                       <KeyRound className="h-6 w-6 lg:h-7 lg:w-7 text-slate-800" />
                     </div>
                     <h2 className="text-2xl lg:text-3xl leading-snug font-semibold tracking-tight text-slate-900 mb-2">
-                      Lupa Kata Sandi?
+                      {t("formTitle")}
                     </h2>
                     <p className="text-sm text-slate-500">
-                      Jangan khawatir. Masukkan email Anda dan kami akan mengirimkan instruksi pemulihan segera.
+                      {t("formDesc")}
                     </p>
                   </div>
 
@@ -111,14 +111,14 @@ export default function ForgotPasswordPage() {
                     {/* Identifier */}
                     <div className="space-y-1.5">
                       <Label htmlFor="identifier" className="text-xs font-semibold text-slate-600 uppercase tracking-widest ml-1">
-                        Email atau Nomor Telepon
+                        {t("identifierLabel")}
                       </Label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" aria-hidden="true" />
                         <Input
                           id="identifier"
                           type="text"
-                          placeholder="nama@email.com atau 0812..."
+                          placeholder={t("identifierPlaceholder")}
                           className="h-12 pl-11 bg-white/60 border-slate-200/60 rounded-xl focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all text-slate-900 placeholder:text-slate-400"
                           {...register("identifier")}
                           aria-invalid={!!errors.identifier}
@@ -143,9 +143,9 @@ export default function ForgotPasswordPage() {
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
-                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Mengirim...</>
+                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t("sending")}</>
                       ) : (
-                        <><SendHorizontal className="mr-2 h-4 w-4" />Kirim Instruksi Reset</>
+                        <><SendHorizontal className="mr-2 h-4 w-4" />{t("sendInstructions")}</>
                       )}
                     </Button>
                   </form>
@@ -157,21 +157,21 @@ export default function ForgotPasswordPage() {
                     <MailCheck className="h-8 w-8 text-emerald-600" aria-hidden="true" />
                   </div>
                   <h2 className="text-2xl lg:text-3xl leading-snug font-semibold tracking-tight text-slate-900 mb-3">
-                    Instruksi Terkirim
+                    {t("successTitle")}
                   </h2>
                   <p className="text-slate-500 text-sm leading-relaxed mb-8">
-                    Jika email Anda terdaftar, kami telah mengirimkan instruksi pemulihan. Silakan periksa kotak masuk Anda.
+                    {t("successDesc")}
                   </p>
 
                   <div className="bg-white border border-slate-200 rounded-xl p-5 mb-8 shadow-sm">
                     <p className="text-sm text-slate-600 leading-relaxed text-left">
-                      <span className="font-semibold text-slate-900 block mb-1">Tidak menerima email?</span>
-                      Periksa folder spam atau pastikan alamat email yang Anda masukkan sudah benar.
+                      <span className="font-semibold text-slate-900 block mb-1">{t("didNotReceive")}</span>
+                      {t("checkSpam")}
                     </p>
                   </div>
 
                   <Button asChild className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-lg shadow-slate-900/20 hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5">
-                    <Link href="/login">Kembali ke Halaman Login</Link>
+                    <Link href="/login">{t("backToLoginPage")}</Link>
                   </Button>
                 </div>
               )}

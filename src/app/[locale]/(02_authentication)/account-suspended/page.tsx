@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldAlert, LifeBuoy, LogOut, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 
 export default function AccountSuspendedPage() {
+  const t = useTranslations("Auth.AccountSuspended");
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // In a real app, you might fetch suspension reason from an API or session
-  const suspensionReason = "Pelanggaran kebijakan layanan"; // Mock reason
+  const suspensionReason = t("defaultReason"); // Mock reason
 
   const handleSupportClick = () => {
     // Navigate to support page or open mailto
@@ -33,14 +35,14 @@ export default function AccountSuspendedPage() {
         </div>
         
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Akun Ditangguhkan</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t("title")}</h1>
           <p className="text-slate-600 leading-relaxed">
-            Akun Anda telah ditangguhkan sementara. Hubungi tim dukungan kami untuk informasi lebih lanjut dan proses banding.
+            {t("description")}
           </p>
           
           {suspensionReason && (
             <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
-              <p className="text-sm font-medium text-slate-500 mb-1">Alasan Penangguhan:</p>
+              <p className="text-sm font-medium text-slate-500 mb-1">{t("reasonLabel")}</p>
               <p className="text-sm text-slate-800">{suspensionReason}</p>
             </div>
           )}
@@ -52,7 +54,7 @@ export default function AccountSuspendedPage() {
             onClick={handleSupportClick}
           >
             <LifeBuoy className="mr-2 h-4 w-4" />
-            Hubungi Dukungan
+            {t("contactSupport")}
           </Button>
 
           <Button
@@ -66,7 +68,7 @@ export default function AccountSuspendedPage() {
             ) : (
               <LogOut className="mr-2 h-4 w-4" />
             )}
-            Keluar
+            {t("logout")}
           </Button>
         </div>
       </div>

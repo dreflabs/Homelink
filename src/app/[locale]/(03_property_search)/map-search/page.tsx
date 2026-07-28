@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { AiSearchSection } from "@/components/shared/property/AiSearchSection"
 
 import { searchProperties } from "@/actions/property";
+import { getTranslations } from "next-intl/server";
 
 export default async function MapSearchPage({ searchParams }: { searchParams: any }) {
+  const t = await getTranslations("PropertySearch.MapSearch");
   const resolvedParams = await searchParams || {}
   
   let properties: any[] = []
@@ -24,7 +26,7 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
         <div className="absolute top-4 left-4 z-10">
           <Button variant="outline" className="bg-white shadow-sm flex items-center gap-2 rounded-full px-4 border-slate-200 hover:bg-slate-50">
             <SlidersHorizontal className="w-4 h-4 text-slate-900" />
-            <span className="font-medium">Filter</span>
+            <span className="font-medium">{t("filter")}</span>
           </Button>
         </div>
         
@@ -43,10 +45,10 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
           ></iframe>
           <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-slate-200 z-10 flex items-center justify-between">
              <div>
-               <p className="font-semibold text-sm text-slate-900">Mapbox / Google Maps API Placeholder</p>
-               <p className="text-xs text-slate-500">Currently using OpenStreetMap for demo purposes.</p>
+               <p className="font-semibold text-sm text-slate-900">{t("mapPlaceholder")}</p>
+               <p className="text-xs text-slate-500">{t("mapPlaceholderDesc")}</p>
              </div>
-             <Button size="sm">Hubungkan API</Button>
+             <Button size="sm">{t("connectApi")}</Button>
           </div>
         </div>
       </div>
@@ -56,14 +58,14 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
         {/* Header / Mobile Controls */}
         <div className="flex items-center justify-between p-4 bg-white border-b border-slate-200 shrink-0">
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Properti di Area Ini</h1>
-            <p className="text-sm text-slate-500">{properties.length} properti ditemukan</p>
+            <h1 className="text-lg font-bold text-slate-900">{t("propertiesInArea")}</h1>
+            <p className="text-sm text-slate-500">{t("propertiesFound", { count: properties.length })}</p>
           </div>
 
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="lg:hidden flex items-center gap-2 border-slate-200">
               <SlidersHorizontal className="w-4 h-4" />
-              <span>Filter</span>
+              <span>{t("filter")}</span>
             </Button>
             
             {/* View Toggle */}
@@ -73,14 +75,14 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
                 aria-pressed="true"
               >
                 <List className="w-4 h-4" />
-                <span>List</span>
+                <span>{t("list")}</span>
               </button>
               <button 
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900 lg:hidden"
                 aria-pressed="false"
               >
                 <Map className="w-4 h-4" />
-                <span>Map</span>
+                <span>{t("map")}</span>
               </button>
             </div>
           </div>
@@ -91,7 +93,7 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
           <AiSearchSection />
           
           <div>
-            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Semua Properti</h2>
+            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">{t("allProperties")}</h2>
             {properties.length > 0 ? (
               <div className="grid grid-cols-1 gap-4">
                 {properties.map(property => (
@@ -114,8 +116,8 @@ export default async function MapSearchPage({ searchParams }: { searchParams: an
             ) : (
               <div className="text-center py-12 bg-white rounded-2xl border border-slate-200 p-6">
                 <MapPin className="w-10 h-10  mx-auto mb-3" />
-                <h3 className="text-base font-bold text-slate-900 mb-1">Tidak Ada Properti Ditemukan</h3>
-                <p className="text-xs text-slate-500">Coba ubah kata kunci atau area pencarian Anda.</p>
+                <h3 className="text-base font-bold text-slate-900 mb-1">{t("noPropertiesFound")}</h3>
+                <p className="text-xs text-slate-500">{t("tryChangeKeyword")}</p>
               </div>
             )}
           </div>

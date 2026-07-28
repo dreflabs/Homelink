@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, UserRound, Sparkles, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface Message {
   id: string;
@@ -11,11 +12,12 @@ interface Message {
 }
 
 export default function AIAssistantPage() {
+  const t = useTranslations("AI.Assistant");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       role: "assistant",
-      content: "Halo! Saya adalah AI Assistant HOMELINK. Ada yang bisa saya bantu terkait properti, investasi, atau analisis pasar hari ini?\n\nCoba tanyakan:\n- `Bagaimana tren harga rumah di Jakarta Selatan?`\n- `Hitung estimasi KPR untuk rumah 1.5 M`\n- `Apa saja faktor penentu nilai properti?`"
+      content: t("welcomeMessage")
     }
   ]);
   const [input, setInput] = useState("");
@@ -44,7 +46,7 @@ export default function AIAssistantPage() {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `**Analisis Cepat Selesai!** 🚀\n\nBerdasarkan pertanyaan Anda, berikut adalah poin-poin utamanya:\n\n1. **Tren Pasar:** Saat ini menunjukkan tren positif dengan kenaikan stabil.\n2. **Rekomendasi:** Sangat disarankan untuk memantau suku bunga KPR.\n\nContoh perhitungan sederhana:\n\`\`\`javascript\nconst hargaRumah = 1500000000;\nconst dp = hargaRumah * 0.2;\nconsole.log("DP yang disiapkan:", dp);\n\`\`\`\n\nAda hal spesifik lain yang ingin dieksplorasi?`
+        content: t("analysisComplete")
       };
       setMessages((prev) => [...prev, assistantMessage]);
     }, 2000);
@@ -77,10 +79,10 @@ export default function AIAssistantPage() {
             <Bot className="w-5 h-5 text-indigo-400" />
           </div>
           <div>
-            <h1 className="font-semibold text-zinc-100">Smart Assistant</h1>
+            <h1 className="font-semibold text-zinc-100">{t("smartAssistant")}</h1>
             <p className="text-xs text-indigo-400 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
-              Online & Ready
+              {t("onlineReady")}
             </p>
           </div>
         </div>
@@ -143,7 +145,7 @@ export default function AIAssistantPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Tanyakan sesuatu pada AI..."
+            placeholder={t("askSomething")}
             className="w-full bg-zinc-900/50 border border-zinc-800 text-white rounded-full py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all placeholder:text-zinc-500"
             disabled={isTyping}
           />
@@ -157,7 +159,7 @@ export default function AIAssistantPage() {
           </Button>
         </div>
         <p className="text-center text-[10px] text-zinc-600 mt-3 font-medium">
-          AI dapat membuat kesalahan. Harap verifikasi informasi penting.
+          {t("aiDisclaimer")}
         </p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Hourglass, Mail, Phone, LogOut, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 
@@ -14,6 +15,7 @@ const mockPendingSteps = {
 };
 
 export default function AccountVerificationPendingPage() {
+  const t = useTranslations("Auth.AccountVerificationPending");
   const router = useRouter();
   const [pendingSteps, setPendingSteps] = useState(mockPendingSteps);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -57,14 +59,14 @@ export default function AccountVerificationPendingPage() {
   const isEmailPending = !pendingSteps.emailVerified;
   const isPhonePending = !pendingSteps.phoneVerified;
 
-  let statusTitle = "Menunggu Verifikasi";
-  let statusDesc = "Selesaikan langkah verifikasi berikut untuk mengaktifkan akun Anda sepenuhnya.";
+  let statusTitle = t("titlePending");
+  let statusDesc = t("descPending");
   if (isEmailPending && !isPhonePending) {
-    statusTitle = "Verifikasi Email Diperlukan";
-    statusDesc = "Silakan periksa kotak masuk email Anda dan klik tautan yang telah kami kirimkan.";
+    statusTitle = t("titleEmail");
+    statusDesc = t("descEmail");
   } else if (!isEmailPending && isPhonePending) {
-    statusTitle = "Verifikasi Telepon Diperlukan";
-    statusDesc = "Masukkan kode OTP yang telah dikirim ke nomor telepon Anda untuk melanjutkan.";
+    statusTitle = t("titlePhone");
+    statusDesc = t("descPhone");
   }
 
   return (
@@ -83,7 +85,7 @@ export default function AccountVerificationPendingPage() {
           {isPhonePending && (
             <Button className="w-full" variant="outline" onClick={() => router.push("/verify-otp")}>
                 <Phone className="mr-2 h-5 w-5" />
-                Verifikasi Nomor Telepon Sekarang
+                {t("verifyPhoneNow")}
             </Button>
           )}
 
@@ -100,8 +102,8 @@ export default function AccountVerificationPendingPage() {
                 <Mail className="mr-2 h-5 w-5" />
               )}
               {resendCooldown > 0
-                ? `Kirim Ulang Email (${resendCooldown}s)`
-                : "Kirim Ulang Email Verifikasi"}
+                ? t("resendEmailCountdown", { time: resendCooldown })
+                : t("resendEmail")}
             </Button>
           )}
         </div>
@@ -118,7 +120,7 @@ export default function AccountVerificationPendingPage() {
             ) : (
               <LogOut className="mr-2 h-4 w-4" />
             )}
-            Keluar
+            {t("logout")}
           </Button>
         </div>
       </div>

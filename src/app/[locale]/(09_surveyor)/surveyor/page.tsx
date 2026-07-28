@@ -1,91 +1,102 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Map, ShieldCheck, Clock, CalendarDays } from "lucide-react";
+import { ClipboardList, CheckCircle2, Clock, MapPin, AlertTriangle } from "lucide-react";
+import { getSurveyorStats } from "@/actions/surveyor";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
-export default function SurveyorDashboard() {
+export default async function SurveyorDashboard() {
+  const t = await getTranslations("SurveyorDashboard.page");
+  const stats = await getSurveyorStats();
+
   return (
-    <div className="flex flex-col gap-6 p-6 min-h-screen bg-gray-50/50 dark:bg-gray-900/50">
+    <div className="flex flex-col gap-6 p-4 md:p-6 min-h-screen bg-gray-50/50 dark:bg-gray-900/50">
+      
+      {/* GPS Permission Banner */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3 shadow-sm">
+        <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
+        <div>
+          <h3 className="text-sm font-semibold text-amber-900">{t("locationRequired")}</h3>
+          <p className="text-xs text-amber-700 mt-1">
+            {t("locationDesc")}
+          </p>
+        </div>
+      </div>
+
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-          Dashboard Surveyor
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          {t("dashboardTitle")}
         </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Pantau tugas survei Anda hari ini dan rute lokasi selanjutnya.
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t("dashboardDesc")}
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm col-span-2 md:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Tugas Hari Ini
+              {t("todayTasks")}
             </CardTitle>
-            <CalendarDays className="h-4 w-4 text-primary dark:text-blue-400" />
+            <ClipboardList className="h-4 w-4 text-primary dark:text-blue-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.todayTasks}</div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              2 lokasi baru ditambahkan
+              {t("todayTasksDesc")}
             </p>
           </CardContent>
         </Card>
         
-        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Selesai
+              {t("completed")}
             </CardTitle>
-            <ShieldCheck className="h-5 w-5  dark:" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">3</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.completed}</div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              +1 dari jam sebelumnya
+              {t("completedDesc")}
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              Tertunda
+              {t("pending")}
             </CardTitle>
-            <Clock className="h-5 w-5  dark:" />
+            <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">5</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.pending}</div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Harus diselesaikan sebelum 17:00
+              {t("pendingDesc")}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="mt-4">
-        <Card className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-          <CardHeader className="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
-              <Map className="h-5 w-5 text-primary dark:text-blue-400" />
-              Peta Lokasi Selanjutnya
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="flex flex-col items-center justify-center py-12 text-center h-[400px] border-2 border-dashed border-slate-200 rounded-xl relative overflow-hidden">
-              <div className="relative z-10 flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <div className="h-16 w-16 bg-slate-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center mb-4 shadow-inner">
-                  <Map className="h-8 w-8 text-primary dark:text-blue-400" />
-                </div>
-                <h3 className="text-xl font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Integrasi Peta Interaktif
-                </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm text-center">
-                  Tampilan peta akan dimuat di sini menggunakan layanan Maps API untuk memandu rute surveyor.
-                </p>
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-slate-500/10 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl"></div>
+      <div className="mt-4 flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">{t("startWorking")}</h2>
+        <Card className="bg-white border-primary/20 shadow-md">
+          <CardContent className="p-6 flex flex-col items-center text-center gap-4">
+            <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
+              <MapPin className="h-6 w-6 text-primary" />
             </div>
+            <div>
+              <h3 className="font-semibold text-lg">{t("readyToField")}</h3>
+              <p className="text-sm text-gray-500 mt-1 max-w-sm">
+                {t("readyToFieldDesc")}
+              </p>
+            </div>
+            <Link href="/surveyor/tasks" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto mt-2">
+                {t("viewTasks")}
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

@@ -32,21 +32,21 @@ async function DashboardHero() {
   
   let icon = <Sparkles className="w-5 h-5 text-primary" />;
   let title = `${t("dashboard.welcome")}, ${data.profile.name}!`;
-  let subtitle = "Mulai jelajahi properti terverifikasi.";
-  let ctaText = "Cari Properti";
+  let subtitle = t("dashboard.exploreVerified");
+  let ctaText = t("dashboard.searchProperty");
   let ctaLink = "/search-result";
 
   if (data.heroState.upcomingBooking) {
     icon = <CalendarClock className="w-5 h-5 text-primary" />;
-    title = `Jadwal Survei Terdekat`;
-    subtitle = `Anda memiliki jadwal survei untuk ${data.heroState.upcomingBooking.propertyTitle}.`;
-    ctaText = "Lihat Jadwal";
+    title = t("dashboard.upcomingSurvey");
+    subtitle = t("dashboard.youHaveSurvey", { title: data.heroState.upcomingBooking.propertyTitle });
+    ctaText = t("dashboard.viewSchedule");
     ctaLink = "/dashboard/bookings";
   } else if (data.heroState.recentlyViewed) {
     icon = <Eye className="w-5 h-5 text-primary" />;
-    title = `Lanjutkan Pencarian Anda`;
-    subtitle = `Anda terakhir melihat properti: ${data.heroState.recentlyViewed.propertyTitle}.`;
-    ctaText = "Lihat Properti";
+    title = t("dashboard.continueSearch");
+    subtitle = t("dashboard.lastViewed", { title: data.heroState.recentlyViewed.propertyTitle });
+    ctaText = t("dashboard.viewProperty");
     ctaLink = `/property/${data.heroState.recentlyViewed.propertyId}`;
   }
 
@@ -69,23 +69,24 @@ async function DashboardHero() {
 }
 
 async function SavedPropertiesGrid() {
+  const t = await getTranslations("BuyerDashboard");
   const { data } = await getBuyerFavorites(1, 4);
 
   if (!data || data.length === 0) {
     return (
       <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
         <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Properti Tersimpan</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">{t("dashboard.savedProperties")}</h2>
           <div className="h-1.5 w-16 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full mt-3 mb-8"></div>
         </div>
         <EmptyState 
           icon={Heart}
-          title="Belum Ada Properti Tersimpan"
-          description="Anda belum menyimpan properti apapun. Mulai jelajahi dan simpan properti impian Anda untuk membandingkannya nanti."
+          title={t("dashboard.noSavedProperties")}
+          description={t("dashboard.noSavedPropertiesDesc")}
           className="border-dashed border-2 border-slate-200/60 bg-gradient-to-b from-slate-50/50 to-white hover:border-blue-300 transition-colors duration-500 py-16"
           action={
             <Button className="rounded-full mt-4 bg-primary hover:bg-primary text-white px-8 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5" asChild>
-              <Link href="/search-result">Cari Properti <ArrowRight className="ml-2 w-4 h-4" /></Link>
+              <Link href="/search-result">{t("dashboard.searchProperty")} <ArrowRight className="ml-2 w-4 h-4" /></Link>
             </Button>
           }
         />
@@ -97,11 +98,11 @@ async function SavedPropertiesGrid() {
     <div className="mt-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Properti Tersimpan</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">{t("dashboard.savedProperties")}</h2>
           <div className="h-1.5 w-16 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full mt-3"></div>
         </div>
         <Link href="/dashboard/favorites" className="text-sm font-semibold text-primary hover:text-primary flex items-center group transition-colors">
-          Lihat Semua <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-1" />
+          {t("dashboard.viewAll")} <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -192,61 +192,53 @@ function requireAgent(session: any) {
 }
 
 /**
- * Properties this agent is actively working, derived from their lead pipeline
- * (the set of properties they have leads on).
+ * Properties managed by this partner agent.
  */
 export async function getAgentProperties() {
   const session = await auth();
   const currentUser = requireAgent(session);
 
-  const leads = await prisma.lead.findMany({
+  const properties = await prisma.property.findMany({
     where: {
-      buyerId: currentUser.id,
-      property: { isDeleted: false },
+      agentProfile: { userId: currentUser.id },
+      isDeleted: false,
     },
     select: {
-      property: {
-        select: {
-          id: true,
-          title: true,
-          address: true,
-          price: true,
-          status: true,
-          propertyType: true,
-          bedrooms: true,
-          bathrooms: true,
-          buildingArea: true,
-        },
-      },
+      id: true,
+      title: true,
+      address: true,
+      price: true,
+      status: true,
+      propertyType: true,
+      bedrooms: true,
+      bathrooms: true,
+      buildingArea: true,
     },
-    distinct: ["propertyId"],
+    orderBy: { createdAt: "desc" }
   });
 
-  return leads.map((l) => l.property);
+  return properties;
 }
 
 /**
- * This agent's lead/prospect pipeline. Note: the Lead model does not track a
- * separate client identity from the agent, so each entry represents one
- * property inquiry/follow-up rather than a distinct named client.
+ * Clients managed by this partner agent.
  */
 export async function getAgentClients() {
   const session = await auth();
   const currentUser = requireAgent(session);
 
-  const leads = await prisma.lead.findMany({
-    where: { buyerId: currentUser.id },
-    include: {
-      property: { select: { id: true, title: true } },
-    },
+  const clients = await prisma.agentClient.findMany({
+    where: { agent: { userId: currentUser.id } },
     orderBy: { createdAt: "desc" },
   });
 
-  return leads.map((lead) => ({
-    id: lead.id,
-    property: lead.property.title,
-    status: lead.followUpStatus,
-    lastContact: lead.createdAt,
+  return clients.map((client) => ({
+    id: client.id,
+    name: client.name,
+    email: client.email,
+    phone: client.phone,
+    status: client.status,
+    lastContact: client.updatedAt,
   }));
 }
 

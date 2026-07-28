@@ -106,3 +106,27 @@ export async function getSurveyTasks() {
   
   return tasks;
 }
+
+export async function getSurveyorStats() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Unauthorized");
+  
+  const surveyorId = (session.user as any).id;
+  const userRole = (session.user as any).role;
+  
+  const tasks = await prisma.surveyTask.findMany({
+    where: userRole === "SURVEYOR" ? { surveyorId } : {},
+    select: { status: true, scheduledAt: true }
+  });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const todayTasks = tasks.filter(t => t.scheduledAt >= today && t.scheduledAt < tomorrow).length;
+  const completed = tasks.filter(t => t.status === "COMPLETED").length;
+  const pending = tasks.filter(t => t.status === "PENDING").length;
+
+  return { todayTasks, completed, pending };
+}
