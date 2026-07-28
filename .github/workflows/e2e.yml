@@ -31,6 +31,8 @@ jobs:
       DATABASE_URL: "postgresql://postgres:password@localhost:5432/homelink_test?schema=public"
       AUTH_SECRET: "mock_secret_for_ci_testing_only"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
+      AUTH_TRUST_HOST: "true"
+      AUTH_URL: "http://localhost:3000"
 
     steps:
     - uses: actions/checkout@v4
