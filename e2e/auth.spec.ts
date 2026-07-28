@@ -18,6 +18,6 @@ test.describe('Authentication Flows', () => {
   test('should display verify email state correctly', async ({ page }) => {
     // With invalid token
     await page.goto('/verify-email?token=invalid');
-    await expect(page.locator('h1')).toContainText('Tautan Tidak Valid');
+    await expect(page.getByRole('heading', { name: 'Tautan Tidak Valid' })).toBeVisible();
   });
 });

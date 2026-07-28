@@ -6,8 +6,8 @@ test.describe('Public Pages End-to-End Tests', () => {
     await page.goto('/');
 
     // Periksa keberadaan elemen di Hero Section
-    await expect(page.locator('text=Temukan Properti Impian Anda')).toBeVisible();
-    await expect(page.locator('text=Lebih dari 10.000 properti terverifikasi di seluruh Indonesia.')).toBeVisible();
+    await expect(page.locator('text=Temukan Rumah Impian')).toBeVisible();
+    await expect(page.locator('text=Setiap properti di HomeLink telah melalui inspeksi fisik')).toBeVisible();
 
     // Periksa keberadaan section "Properti Unggulan" (Featured Properties)
     await expect(page.locator('text=Properti Unggulan')).toBeVisible();
@@ -18,8 +18,8 @@ test.describe('Public Pages End-to-End Tests', () => {
   });
 
   test('Property details dummy route should not crash', async ({ page }) => {
-    // Kunjungi route dummy untuk halaman detail properti
-    const response = await page.goto('/p/1234-dummy-slug');
+    // Kunjungi route dengan data tersimpan dari seed
+    const response = await page.goto('/p/beautiful-apartment-in-city-center');
     
     // Pastikan server merespon dengan status sukses (bukan 500 server error)
     expect(response?.status()).toBeLessThan(500);
