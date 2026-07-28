@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import React from 'react';
 import { DashboardLayoutWrapper } from "@/components/shared/DashboardLayoutWrapper";
 import { Building, UserRound, ScrollText, Settings, ShieldCheck, ToggleLeft, Activity, SlidersHorizontal, Blocks, ListOrdered, Database, Sparkles, Shield, Archive } from "lucide-react";
+import Image from "next/image";
 
 export default async function SuperAdminLayout({
   children,
@@ -21,7 +22,8 @@ export default async function SuperAdminLayout({
 
   return (
     <DashboardLayoutWrapper
-      title="Super Admin"
+      logoNode={<Image src="/1.png" alt="HomeLink Logo" width={140} height={40} className="object-contain" />}
+      roleBadge="Super Admin"
       sidebarTheme="light"
       links={[
         { href: "/super-admin", label: "Building", icon: <Building className="w-5 h-5" /> },
