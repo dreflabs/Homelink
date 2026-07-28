@@ -5,10 +5,15 @@ export const authConfig = {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = (user as any).role;
         token.id = (user as any).id;
+        token.isOnboarded = (user as any).isOnboarded;
+      }
+      if (trigger === "update" && session) {
+        if (session.role) token.role = session.role;
+        if (session.isOnboarded !== undefined) token.isOnboarded = session.isOnboarded;
       }
       return token;
     },
@@ -16,6 +21,7 @@ export const authConfig = {
       if (session.user) {
         (session.user as any).role = token.role;
         (session.user as any).id = token.id;
+        (session.user as any).isOnboarded = token.isOnboarded;
       }
       return session;
     },
@@ -48,6 +54,7 @@ export const authConfig = {
         console.log(`[DEBUG_AUTH_CONFIG] Normalized Path: ${pathname}, Original Path: ${nextUrl.pathname}, LoggedIn: ${isLoggedIn}`);
       }
       const role = (auth?.user as any)?.role;
+      const isOnboarded = (auth?.user as any)?.isOnboarded;
       
       const isProtectedRoute = 
         pathname.startsWith('/dashboard') || 
@@ -65,6 +72,11 @@ export const authConfig = {
       if (isProtectedRoute) {
         if (!isLoggedIn) return false; // Triggers redirect to /login?callbackUrl=...
         
+        // Force onboarding if they haven't completed it
+        if (!isOnboarded && pathname !== '/onboarding') {
+          return Response.redirect(new URL(`${localePrefix}/onboarding`, nextUrl));
+        }
+
         if (pathname.startsWith('/admin') && role !== 'ADMIN' && role !== 'SUPER_ADMIN') {
           return Response.redirect(new URL(`${localePrefix}/unauthorized`, nextUrl));
         }
@@ -96,6 +108,9 @@ export const authConfig = {
         return true;
       } else if (isLoggedIn) {
         if (pathname === '/login' || pathname === '/register') {
+          if (!isOnboarded) {
+            return Response.redirect(new URL(`${localePrefix}/onboarding`, nextUrl));
+          }
           switch (role) {
             case 'OWNER':
               return Response.redirect(new URL(`${localePrefix}/owner/properties`, nextUrl));

@@ -36,6 +36,7 @@ model User {
   accountStatus   String    @default("ACTIVE") @map("account_status")
   emailVerified   DateTime? @map("email_verified") @db.Timestamptz()
   isDeleted       Boolean   @default(false) @map("is_deleted")
+  isOnboarded     Boolean   @default(false) @map("is_onboarded")
   termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz()
   deletedAt       DateTime? @map("deleted_at") @db.Timestamptz()
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()

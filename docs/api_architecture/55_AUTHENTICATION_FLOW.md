@@ -49,18 +49,25 @@ sequenceDiagram
 - **Automatic Linking:** By default, NextAuth prevents linking OAuth accounts to existing Email/Password accounts for security. However, since Google is a trusted provider that strictly verifies emails, we explicitly enable `allowDangerousEmailAccountLinking: true` in the Google Provider configuration.
 - **UX Benefit:** This creates a seamless experience where users who previously registered with a password can click "Login with Google" and instantly access their existing account without encountering an `OAuthAccountNotLinked` error.
 
-### 8.4. Security Mandates
+### 8.4. The Onboarding Gate (UX Interception)
+- Segera setelah *login* (terutama melalui OAuth), *middleware* (`auth.config.ts`) akan memeriksa nilai atribut `isOnboarded` pada sesi JWT.
+- Jika pengguna belum memilih peran (Role) pada saat pendaftaran awal (`isOnboarded: false`), mereka akan secara paksa diarahkan ke halaman `/onboarding`.
+- Hal ini memastikan bahwa data peran pengguna di database akurat sejak detik pertama dan tidak ada *user* yang salah dasbor.
+
+### 8.5. Security Mandates
 - **XSS Protection:** Token Sesi TIDAK BOLEH dikirim dalam *response body* JSON untuk disimpan Klien di `localStorage`. Token HARUS dikirim eksklusif melalui *header* `Set-Cookie` dengan flag `HttpOnly=true` dan `Secure=true`.
 - **CSRF Protection:** Setiap permintaan modifikasi data (`POST/PUT/DELETE`) dari *browser* harus diverifikasi token CSRF bawaan NextAuth.
 
 ## 9. Implementation
 - Engineers must rely on the stable implementations provided by `Auth.js` rather than writing bespoke cryptography functions.
 - The `allowDangerousEmailAccountLinking` flag must only be used for trusted OAuth providers (e.g., Google, Apple) that mandate email verification.
+- Setiap rute halaman terlindungi (*Protected Routes*) harus dikecualikan dari `/onboarding` agar tidak terjadi *infinite loop*.
 
 ## 10. Acceptance Criteria
 - [x] Clear prohibition of storing sensitive tokens in `localStorage`.
 - [x] Sequence diagram illustrates the correct modern web auth flow.
 - [x] Automatic account linking is documented and justified for trusted providers.
+- [x] Pintu gerbang orientasi (Onboarding Gate) didokumentasikan untuk semua jenis login baru.
 
 ## 11. Future Improvements
 - Implement Refresh Token rotation in Phase 3 if session lifetimes need to be extended safely.
@@ -73,3 +80,4 @@ sequenceDiagram
 | :---    | :---       | :---                 | :---     | :---                  |
 | 1.0.0   | 2026-07-24 | Documentation Arch AI| APPROVED | Initial SSOT creation |
 | 1.1.0   | 2026-07-29 | AI Engineer          | APPROVED | Added OAuth Account Linking documentation |
+| 1.2.0   | 2026-07-29 | CPO & AI Engineer    | APPROVED | Added The Onboarding Gate documentation |
