@@ -45,7 +45,7 @@ jobs:
       run: |
         npx prisma generate
         npx prisma db push
-        npm run seed
+        npx prisma db seed
     - name: Build Next.js
       run: npm run build
     - name: Run Playwright tests
