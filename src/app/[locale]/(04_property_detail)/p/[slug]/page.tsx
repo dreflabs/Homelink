@@ -12,11 +12,12 @@ import { Metadata, ResolvingMetadata } from 'next';
 export const revalidate = 60; // ISR Caching: revalidate every 60 seconds
 
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  props: { params: Promise<{ slug: string }> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { slug } = await props.params;
   const property = await prisma.property.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { media: true },
   });
 
@@ -50,11 +51,12 @@ export async function generateMetadata(
   };
 }
 
-export default async function PropertyDetailPage({ params }: { params: { slug: string } }) {
+export default async function PropertyDetailPage(props: { params: Promise<{ slug: string }> }) {
+  const { slug } = await props.params;
   const t = await getTranslations('PropertyDetail');
   
   const property = await prisma.property.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { media: true, owner: true }
   });
 

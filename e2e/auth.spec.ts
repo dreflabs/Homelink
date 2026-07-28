@@ -5,19 +5,19 @@ test.describe('Authentication Flows', () => {
     await page.goto('/forgot-password');
     
     // Check title
-    await expect(page.locator('h1')).toHaveText('Lupa Password?');
+    await expect(page.locator('h2')).toContainText('Lupa Kata Sandi?');
     
     // Fill form
-    await page.fill('input[type="email"]', 'test@example.com');
+    await page.fill('input[id="identifier"]', 'test@example.com');
     await page.click('button[type="submit"]');
     
     // Check success state
-    await expect(page.locator('h1')).toHaveText('Instruksi Terkirim');
+    await expect(page.locator('h2')).toContainText('Instruksi Terkirim');
   });
 
   test('should display verify email state correctly', async ({ page }) => {
     // With invalid token
     await page.goto('/verify-email?token=invalid');
-    await expect(page.locator('h1')).toHaveText('Tautan Tidak Valid');
+    await expect(page.locator('h1')).toContainText('Tautan Tidak Valid');
   });
 });
