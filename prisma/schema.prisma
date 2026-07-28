@@ -31,6 +31,7 @@ model User {
   role            Role      @default(BUYER)
   passwordHash    String?   @map("password_hash")
   isEmailVerified Boolean   @default(false) @map("is_email_verified")
+  emailVerified   DateTime? @map("email_verified") @db.Timestamptz()
   isDeleted       Boolean   @default(false) @map("is_deleted")
   termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz()
   deletedAt       DateTime? @map("deleted_at") @db.Timestamptz()

@@ -28,7 +28,7 @@ export const {
       if (account?.provider === "google" && user?.id) {
         await prisma.user.updateMany({
           where: { id: user.id, isEmailVerified: false },
-          data: { isEmailVerified: true },
+          data: { isEmailVerified: true, emailVerified: new Date() },
         });
       }
       return true;
