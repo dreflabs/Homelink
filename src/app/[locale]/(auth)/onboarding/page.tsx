@@ -77,7 +77,7 @@ function OnboardingContent() {
 
       <div className="w-full max-w-4xl z-10 flex flex-col items-center">
         <div className="mb-12 text-center">
-          <Image src="/1.png" alt="HomeLink" width={60} height={60} className="mx-auto mb-6 opacity-90" />
+          <Image src="/LOGO_UTAMA_HOMELINK.png" alt="HomeLink" width={200} height={60} className="mx-auto mb-6 object-contain" priority />
           <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-4">
             Selamat datang di HomeLink
           </h1>
