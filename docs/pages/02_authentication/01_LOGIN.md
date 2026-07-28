@@ -47,6 +47,7 @@ const loginSchema = z.object({
 ## 5. API Endpoints Referenced
 - `POST /api/v1/auth/login` — payload `{ email, password }`, response JSend `{ status: "success", data: { user } }` (token dikelola via cookie, tidak dikembalikan di body).
 - OAuth: ditangani oleh Auth.js provider Google/Apple (bukan endpoint REST kustom `/api/v1`), hasil linking tersimpan di tabel `ACCOUNT`.
+  - **Environment Variables Wajib**: Implementasi Google OAuth menuntut presensi kunci `GOOGLE_CLIENT_ID` dan `GOOGLE_CLIENT_SECRET` pada berkas `.env` lokal maupun produksi, diregistrasikan via Google Cloud Console.
 - `POST /api/v1/auth/logout` — dipanggil dari halaman lain, direferensikan di sini untuk konteks lifecycle sesi.
 
 ## 6. Acceptance Criteria (DoD)
