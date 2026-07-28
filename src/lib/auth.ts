@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignJWT, jwtVerify } from "jose";
 import prisma from "@/lib/prisma";
 import { verifyPassword } from "@/lib/hash";
@@ -15,11 +17,28 @@ export const {
   auth
 } = NextAuth({
   ...authConfig,
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
-    maxAge: REFRESH_TOKEN_TTL, 
+    maxAge: REFRESH_TOKEN_TTL,
+  },
+  callbacks: {
+    ...authConfig.callbacks,
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user?.id) {
+        await prisma.user.updateMany({
+          where: { id: user.id, isEmailVerified: false },
+          data: { isEmailVerified: true },
+        });
+      }
+      return true;
+    },
   },
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {

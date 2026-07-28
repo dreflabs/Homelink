@@ -29,7 +29,7 @@ model User {
   image           String?
   address         String?
   role            Role      @default(BUYER)
-  passwordHash    String    @map("password_hash")
+  passwordHash    String?   @map("password_hash")
   isEmailVerified Boolean   @default(false) @map("is_email_verified")
   isDeleted       Boolean   @default(false) @map("is_deleted")
   termsAcceptedAt DateTime? @map("terms_accepted_at") @db.Timestamptz()
@@ -63,6 +63,7 @@ model User {
   internalTasks          Task[]                 @relation("InternalTasks")
   photographerTasks      PhotographerTask[]     @relation("PhotographerTasks")
   photographerDeliveries PhotographerDelivery[] @relation("PhotographerDeliveries")
+  partnerProfile         PartnerAgentProfile?
 
   @@map("users")
 }
@@ -89,6 +90,8 @@ model Property {
   updatedAt    DateTime                     @updatedAt
 
   owner                  User                   @relation(fields: [ownerId], references: [id]) // Default: RESTRICT (Soft-delete via isDeleted)
+  agentId                String?
+  agentProfile           PartnerAgentProfile?   @relation("AgentProperties", fields: [agentId], references: [id])
   media                  PropertyMedia[]
   bookings               Booking[]
   verificationAudits     VerificationAudit[]
@@ -120,14 +123,14 @@ model PropertyMedia {
 }
 
 model Booking {
-  id         String   @id @default(uuid())
+  id         String        @id @default(uuid())
   propertyId String
   buyerId    String
   surveyDate DateTime
   timeSlot   String
   status     BookingStatus @default(PENDING)
-  isDeleted  Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  isDeleted  Boolean       @default(false)
+  createdAt  DateTime      @default(now())
 
   property    Property     @relation(fields: [propertyId], references: [id]) // Default: RESTRICT
   buyer       User         @relation(fields: [buyerId], references: [id]) // Default: RESTRICT
@@ -155,13 +158,19 @@ model VerificationAudit {
 model Account {
   id                String   @id @default(uuid())
   userId            String   @map("user_id")
+  type              String
   provider          String
   providerAccountId String   @map("provider_account_id")
-  refreshToken      String?  @map("refresh_token")
-  accessToken       String?  @map("access_token")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -292,14 +301,14 @@ model SavedSearch {
 }
 
 model Offer {
-  id         String   @id @default(uuid())
+  id         String      @id @default(uuid())
   propertyId String
   buyerId    String
   ownerId    String
   amount     Decimal     @db.Decimal(15, 2)
   status     OfferStatus @default(PENDING) // PENDING, ACCEPTED, REJECTED, COUNTERED
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   property Property @relation(fields: [propertyId], references: [id])
   buyer    User     @relation("OffersSent", fields: [buyerId], references: [id])
@@ -721,4 +730,48 @@ model WebhookEvent {
   status      String    @default("PENDING") // PENDING | PROCESSED | FAILED
   createdAt   DateTime  @default(now())
   processedAt DateTime?
+}
+
+// ─── Partner Agent (Phase 4) ─────────────────────────────────────────────────
+
+model Agency {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agents PartnerAgentProfile[]
+}
+
+model PartnerAgentProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  agencyId  String?
+  licenseNo String?
+  bio       String?
+  rating    Decimal  @default(0.00) @db.Decimal(3, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User          @relation(fields: [userId], references: [id])
+  agency     Agency?       @relation(fields: [agencyId], references: [id])
+  clients    AgentClient[]
+  properties Property[]    @relation("AgentProperties")
+}
+
+model AgentClient {
+  id        String   @id @default(uuid())
+  agentId   String
+  name      String
+  email     String?
+  phone     String?
+  status    String   @default("ACTIVE")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agent PartnerAgentProfile @relation(fields: [agentId], references: [id])
+
+  @@index([agentId])
 }
